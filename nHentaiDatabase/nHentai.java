@@ -42,6 +42,7 @@ import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
 import newEntry.newEntryDialog;
+import newEntry.newEntryGeneral;
 import newEntry.newEntryPanel;
 import newEntry.newEntryPanelRead;
 
@@ -224,13 +225,39 @@ public class nHentai {
 		newEntry_panel1_bnt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt){
-            	newEntryPanel newEntry = new newEntryPanel();
-            	UIManager.put("OptionPane.minimumSize",new Dimension(450,250)); 
-            	int result = JOptionPane.showConfirmDialog(null, newEntry);
-            	if(result == JOptionPane.OK_OPTION) {
-            		String code = newEntry.getCode();
-            		String URL = newEntry.getURL();
-            		model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
+            	          	
+            	newEntryGeneral EntryGeneral = new newEntryGeneral();
+            	UIManager.put("OptionPane.minimumSize",new Dimension(600,800)); 
+            	JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+            	int result2 = pane2.showOptionDialog(null, EntryGeneral, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+            	if(result2 == JOptionPane.OK_OPTION) {
+            		String code = EntryGeneral.getCode();
+            		String URL = EntryGeneral.getURL();
+            		boolean selected = EntryGeneral.getSelected();
+            		if(!code.equals("") || !URL.equals(""))
+            			model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
+            		if(selected == false) {
+            			String[] TextAreaData = EntryGeneral.getDataInTextArea();
+            			for(int i=0;i<TextAreaData.length;i++) {
+            				String rawData = TextAreaData[i];
+            				String rawCode = "";
+            				String rawRating = "";
+            				boolean ratingTurn = false;
+            				char[] rawDataChar = rawData.toCharArray();
+            				for(int j=0;j<rawDataChar.length;j++) {
+            					if(ratingTurn == true) {
+            						rawRating = rawRating + rawDataChar[j];
+            					}
+            					if(rawDataChar[j] == ' ') {
+            						ratingTurn = true;
+            					}else if(ratingTurn == false){
+            						rawCode =  rawCode + rawDataChar[j];
+            					}
+            				}
+            				rawRating = rawRating.substring(0, rawRating.length() - 1);
+            				model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
+            			}
+            		}	
             	}
             }
         });
@@ -275,6 +302,21 @@ public class nHentai {
             }
         });
 		panel_panel1.add(loadTable__panel1_btn);
+		
+		JButton test_btn = new JButton("test");
+		test_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				newEntryGeneral EntryGeneral = new newEntryGeneral();
+            	UIManager.put("OptionPane.minimumSize",new Dimension(600,800)); 
+            	JOptionPane pane = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+            	int result = pane.showOptionDialog(null, EntryGeneral, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+            	if(result == JOptionPane.OK_OPTION) {
+            		
+            	}
+			}
+		});
+		test_btn.setBounds(10, 392, 89, 23);
+		panel_panel1.add(test_btn);
 		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
@@ -334,7 +376,7 @@ public class nHentai {
 		panel_panel2.setBounds(10, 11, 230, 632);
 		reading_tab.add(panel_panel2);
 		
-		JButton newEntry_panel2_bnt = new JButton("new EntryReading");
+		JButton newEntry_panel2_bnt = new JButton("new Entry");
 		newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
 		newEntry_panel2_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
 		newEntry_panel2_bnt.setForeground(Color.WHITE);
@@ -372,6 +414,18 @@ public class nHentai {
 		
 		JButton settings_panel2_bnt = new JButton("settings");
 		settings_panel2_bnt.setBounds(10, 586, 80, 35);
+		settings_panel2_bnt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+            	settingsPanel settings = new settingsPanel();
+            	UIManager.put("OptionPane.minimumSize",new Dimension(550,200)); 
+            	JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+            	int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+            	if(result == JOptionPane.OK_OPTION) {
+            		fileLocation = settings.getFileLocation();
+            	}
+            }
+        });
 		panel_panel2.add(settings_panel2_bnt);
 		
 		JButton saveTable_panel2_btn = new JButton("save");
@@ -470,7 +524,7 @@ public class nHentai {
 		tableArr[tableArr.length - 1][4] = artist;
 		tableArr[tableArr.length - 1][5] = pages;
 		tableArr[tableArr.length - 1][6] = status;
-		tableArr[tableArr.length - 1][7] = rating;
+		tableArr[tableArr.length - 1][8] = rating;
 		
 		tableArr = expandArr(tableArr);
 		return expandTable(model, id);
@@ -642,7 +696,7 @@ public class nHentai {
         		String tags = tableArr[Integer.valueOf(row)][9];
         		String artist = tableArr[Integer.valueOf(row)][4];
         		String pages = tableArr[Integer.valueOf(row)][5];
-        		String rating = tableArr[Integer.valueOf(row)][7];
+        		String rating = tableArr[Integer.valueOf(row)][8];
         		String status = tableArr[Integer.valueOf(row)][6];
         		String URL = tableArr[Integer.valueOf(row)][1];
         		
@@ -661,7 +715,17 @@ public class nHentai {
                 	if(newStatus.equals("reading")) {
                 		((DefaultTableModel)table_panel1.getModel()).removeRow(Integer.valueOf(row));
                 		tableArr = rearangeArr(tableArr, Integer.valueOf(row));
-                		modelReading = nHentaiAPIRunReading(id, URL, rating, "reading");
+                		tableArrReading[tableArrReading.length - 1][1] = URL;
+                		tableArrReading[tableArrReading.length - 1][3] = title;
+                		tableArrReading[tableArrReading.length - 1][2] = id;
+                		tableArrReading[tableArrReading.length - 1][9] = tags;
+                		tableArrReading[tableArrReading.length - 1][4] = artist;
+                		tableArrReading[tableArrReading.length - 1][5] = pages;
+                		tableArrReading[tableArrReading.length - 1][7] = "reading";
+                		tableArrReading[tableArrReading.length - 1][6] = rating;
+                		
+                		tableArrReading = expandArr(tableArrReading);
+                		expandTableReading(modelReading, id);
                 	}
                 }
             }
@@ -685,7 +749,7 @@ public class nHentai {
     @Override
     public Component getTableCellEditorComponent(JTable arg0, Object arg1,
             boolean arg2, int arg3, int arg4) {
-        button.setText("inpect");
+        button.setText("inspect");
         value = ""+arg3;
         return button;
     }
@@ -710,8 +774,9 @@ public class nHentai {
 	        		String tags = tableArrReading[Integer.valueOf(row)][9];
 	        		String artist = tableArrReading[Integer.valueOf(row)][4];
 	        		String pages = tableArrReading[Integer.valueOf(row)][5];
-	        		String rating = tableArrReading[Integer.valueOf(row)][7];
+	        		String rating = tableArrReading[Integer.valueOf(row)][8];
 	        		String status = tableArrReading[Integer.valueOf(row)][6];
+	        		String URL = tableArrReading[Integer.valueOf(row)][1];
 	        		
 	            	moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating, "1", status, tags, appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
 	            	UIManager.put("OptionPane.minimumSize",new Dimension(500, 900)); 
@@ -725,8 +790,20 @@ public class nHentai {
 	                	if(!newRating.equals(rating)) {
 	                		tableArrReading[Integer.valueOf(row)][7] = newRating;
 	                	}
-	                	if(!newStatus.equals(status)) {
-	                		//TODO write second table
+	                	if(newStatus.equals("plan to read")) {
+	                		((DefaultTableModel)table_panel2.getModel()).removeRow(Integer.valueOf(row));
+	                		tableArrReading = rearangeArr(tableArrReading, Integer.valueOf(row));
+	                		tableArr[tableArr.length - 1][1] = URL;
+	                		tableArr[tableArr.length - 1][3] = title;
+	                		tableArr[tableArr.length - 1][2] = id;
+	                		tableArr[tableArr.length - 1][9] = tags;
+	                		tableArr[tableArr.length - 1][4] = artist;
+	                		tableArr[tableArr.length - 1][5] = pages;
+	                		tableArr[tableArr.length - 1][6] = "plan to read";
+	                		tableArr[tableArr.length - 1][8] = rating;
+	                		
+	                		tableArr = expandArr(tableArr);
+	                		expandTable(model, id);
 	                	}
 	                }
 	            }
@@ -750,7 +827,7 @@ public class nHentai {
 	    @Override
 	    public Component getTableCellEditorComponent(JTable arg0, Object arg1,
 	            boolean arg2, int arg3, int arg4) {
-	        button.setText("inpect");
+	        button.setText("inspect");
 	        value = ""+arg3;
 	        return button;
 	    }

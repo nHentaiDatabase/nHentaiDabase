@@ -112,7 +112,7 @@ public class moreInformationPanel extends JPanel {
 		
 		pages_TField.setText(pages);
 		
-		timesRead_TField.setText(rating);
+		timesRead_TField.setText(timesRead);
 		
 		JLabel tags_lbl = new JLabel("tags");
 		tags_lbl.setBounds(22, 641, 46, 14);
