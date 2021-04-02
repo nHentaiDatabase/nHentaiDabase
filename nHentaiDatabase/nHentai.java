@@ -249,34 +249,70 @@ public class nHentai {
 					String rating = EntryGeneral.getRating();
 					String status = EntryGeneral.getStatus();
 					boolean selected = EntryGeneral.getSelected();
-					if (!code.equals("") || !URL.equals("")) {
-						tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", "N/A", "plan to read");
-						model = expandTable(model, code);
-						//model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
-					}
-					if (selected == true) {
-						String[] TextAreaData = EntryGeneral.getDataInTextArea();
-						for (int i = 0; i < TextAreaData.length; i++) {
-							String rawData = TextAreaData[i];
-							String rawCode = "";
-							String rawRating = "";
-							boolean ratingTurn = false;
-							char[] rawDataChar = rawData.toCharArray();
-							for (int j = 0; j < rawDataChar.length; j++) {
-								if (ratingTurn == true) {
-									rawRating = rawRating + rawDataChar[j];
-								}
-								if (rawDataChar[j] == ' ') {
-									ratingTurn = true;
-								} else if (ratingTurn == false) {
-									rawCode = rawCode + rawDataChar[j];
+					//TODO outsource following
+					switch (status){
+						case "plan to read":
+							if (!code.equals("") || !URL.equals("")) {
+								tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+								model = expandTable(model, code);
+								//model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
+							}
+							if (selected == true) {
+								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+								for (int i = 0; i < TextAreaData.length; i++) {
+									String rawData = TextAreaData[i];
+									String rawCode = "";
+									String rawRating = "";
+									boolean ratingTurn = false;
+									char[] rawDataChar = rawData.toCharArray();
+									for (int j = 0; j < rawDataChar.length; j++) {
+										if (ratingTurn == true) {
+											rawRating = rawRating + rawDataChar[j];
+										}
+										if (rawDataChar[j] == ' ') {
+											ratingTurn = true;
+										} else if (ratingTurn == false) {
+											rawCode = rawCode + rawDataChar[j];
+										}
+									}
+									if(!rawRating.equals(""))
+										rawRating = rawRating.substring(0, rawRating.length() - 1);
+									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+									model = expandTable(model, rawCode);
+									//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
 								}
 							}
-							rawRating = rawRating.substring(0, rawRating.length() - 1);
-							tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-							model = expandTable(model, rawCode);
-							//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
-						}
+						case "reading":
+							if (!code.equals("") || !URL.equals("")) {
+								tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+								modelReading = expandTableReading(modelReading, code);
+								//model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
+							}
+							if (selected == true) {
+								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+								for (int i = 0; i < TextAreaData.length; i++) {
+									String rawData = TextAreaData[i];
+									String rawCode = "";
+									String rawRating = "";
+									boolean ratingTurn = false;
+									char[] rawDataChar = rawData.toCharArray();
+									for (int j = 0; j < rawDataChar.length; j++) {
+										if (ratingTurn == true) {
+											rawRating = rawRating + rawDataChar[j];
+										}
+										if (rawDataChar[j] == ' ') {
+											ratingTurn = true;
+										} else if (ratingTurn == false) {
+											rawCode = rawCode + rawDataChar[j];
+										}
+									}
+									if(!rawRating.equals(""))
+										rawRating = rawRating.substring(0, rawRating.length() - 1);
+									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
+									modelReading = expandTableReading(modelReading, rawCode);
+									//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
+								}
+							}
 					}
 				}
 			}
