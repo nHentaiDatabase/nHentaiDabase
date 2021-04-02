@@ -65,7 +65,6 @@ public class nHentai {
 	private DefaultTableModel model;
 	private DefaultTableModel modelReading;
 
-	private settings set;
 	private dataManager dataManager;
 	private newEntry addNewEntry;
 	private nHentaiWebBase nHentaiAPI;
@@ -111,7 +110,6 @@ public class nHentai {
 	 * Create the application.
 	 */
 	public nHentai() {
-		set = new settings();
 		dataManager = new dataManager();
 		addNewEntry = new newEntry();
 		nHentaiAPI = new nHentaiWebBase();
@@ -342,7 +340,6 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				fileLocation = set.getFileLocation();
 				dataManager.saveTable(tableArr, fileLocation);
 			}
 		});
@@ -353,7 +350,6 @@ public class nHentai {
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				fileLocation = set.getFileLocation();
 				tableArr = dataManager.readTable(fileLocation);
 				model = ArrToTable(model);
 			}
@@ -634,6 +630,10 @@ public class nHentai {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void checkImages() {
+		//TODO write fucking code
 	}
 
 	public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
