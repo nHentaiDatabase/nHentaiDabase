@@ -15,9 +15,9 @@ public class dataManager {
 		
 	}
 	
-	public void saveTable(String[][] table, String location, String fileName) {
+	public void saveTable(String[][] table, String location) {
 		try {
-            outputStream = new PrintWriter(location+"\\"+fileName+".txt");
+            outputStream = new PrintWriter(location);
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -31,10 +31,10 @@ public class dataManager {
 		outputStream.close();
 	}
 	
-	public String[][] readTable(String location, String fileName) {
+	public String[][] readTable(String location) {
 		String[][] tmp = new String[][] {{""},{""}};
 		try {
-			File myObj = new File(location+"\\"+fileName+".txt");
+			File myObj = new File(location);
 			Scanner myReader = new Scanner(myObj);
 			int lines = 0;
 			while (myReader.hasNextLine()) {

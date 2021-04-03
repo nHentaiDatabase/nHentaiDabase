@@ -23,6 +23,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
@@ -55,6 +56,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.JScrollPane;
 
 public class nHentai {
@@ -335,44 +337,85 @@ public class nHentai {
 		});
 		panel_panel1.add(settings_panel1_bnt);
 
-		JButton saveTable_panel1_btn = new JButton("save");
-		saveTable_panel1_btn.setBounds(10, 552, 80, 23);
+		JButton saveTable_panel1_btn = new JButton("");
+		saveTable_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		saveTable_panel1_btn.setForeground(Color.WHITE);
+		saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
+		saveTable_panel1_btn.setBounds(10, 552, 80, 25);
+		saveTable_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		saveTable_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+		});
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				dataManager.saveTable(tableArr, fileLocation, "nHentaiDatabaseDataPlanToRead");
+				JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				myJFileChooserSave.setDialogTitle("Choose a file to load: ");
+				myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            	int returnValue = myJFileChooserSave.showOpenDialog(null);
+            	String SaveFileLocation = "";
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = myJFileChooserSave.getSelectedFile();
+                    System.out.println(selectedFile.getAbsolutePath());
+                    SaveFileLocation = selectedFile.getAbsolutePath();
+                }
+				dataManager.saveTable(tableArr, SaveFileLocation);
 			}
 		});
 		panel_panel1.add(saveTable_panel1_btn);
 
-		JButton loadTable__panel1_btn = new JButton("load");
-		loadTable__panel1_btn.setBounds(100, 552, 80, 23);
+		JButton loadTable__panel1_btn = new JButton("");
+		loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+		loadTable__panel1_btn.setBounds(100, 552, 80, 25);
+		loadTable__panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+		});
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				tableArr = dataManager.readTable(fileLocation, "nHentaiDatabaseDataPlanToRead");
+				JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				myJFileChooserLoad.setDialogTitle("Choose a file to load: ");
+				myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            	int returnValue = myJFileChooserLoad.showOpenDialog(null);
+            	String LoadFileLocation = "";
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = myJFileChooserLoad.getSelectedFile();
+                    System.out.println(selectedFile.getAbsolutePath());
+                    LoadFileLocation = selectedFile.getAbsolutePath();
+                }
+				tableArr = dataManager.readTable(LoadFileLocation);
 				model = ArrToTable(model);
 			}
 		});
 		panel_panel1.add(loadTable__panel1_btn);
-
-		JButton test_btn = new JButton("test");
-		test_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				newEntryGeneral EntryGeneral = new newEntryGeneral();
-				UIManager.put("OptionPane.minimumSize", new Dimension(600, 800));
-				JOptionPane pane = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.OK_CANCEL_OPTION);
-				
-				int result = pane.showOptionDialog(null, EntryGeneral, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,
-						null, null);
-				if (result == JOptionPane.OK_OPTION) {
-					
-				}
-			}
-		});
-		test_btn.setBounds(10, 392, 89, 23);
-		panel_panel1.add(test_btn);
 
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
