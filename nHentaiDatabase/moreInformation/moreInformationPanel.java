@@ -2,13 +2,18 @@ package moreInformation;
 
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import net.miginfocom.swing.MigLayout;
+import newEntry.newEntryGeneral;
+import newEntry.newEntryPanelRead;
+
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
@@ -16,10 +21,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class moreInformationPanel extends JPanel {
 	private JTextField id_TField;
@@ -76,6 +90,31 @@ public class moreInformationPanel extends JPanel {
 		add(panel);
 		
 		JLabel image_lbl = new JLabel("");
+		image_lbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				openWebsite open = new openWebsite();
+				UIManager.put("OptionPane.minimumSize", new Dimension(370, 170));
+				JOptionPane pane = new JOptionPane(open, JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.YES_NO_OPTION);
+				String[] buttonText = new String[]{"open", "copy"};
+				int result = pane.showOptionDialog(null, open, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,
+						buttonText, null);
+				if(result == JOptionPane.OK_OPTION) {
+					try {
+						Desktop.getDesktop().browse(new URI("https://nhentai.net/g/"+ id+ "/"));
+					} catch (IOException | URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else if(result == JOptionPane.NO_OPTION) {
+					String copy = "https://nhentai.net/g/"+ id+ "/";
+					StringSelection stringSelection = new StringSelection(copy);
+					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(stringSelection, null);
+				}
+			}
+		});
 		image_lbl.setIcon(new ImageIcon(pictureLocation));
 		panel.add(image_lbl);
 		

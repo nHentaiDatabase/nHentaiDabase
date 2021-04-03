@@ -340,7 +340,7 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				dataManager.saveTable(tableArr, fileLocation);
+				dataManager.saveTable(tableArr, fileLocation, "nHentaiDatabaseDataPlanToRead");
 			}
 		});
 		panel_panel1.add(saveTable_panel1_btn);
@@ -350,7 +350,7 @@ public class nHentai {
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				tableArr = dataManager.readTable(fileLocation);
+				tableArr = dataManager.readTable(fileLocation, "nHentaiDatabaseDataPlanToRead");
 				model = ArrToTable(model);
 			}
 		});
@@ -363,10 +363,11 @@ public class nHentai {
 				UIManager.put("OptionPane.minimumSize", new Dimension(600, 800));
 				JOptionPane pane = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.OK_CANCEL_OPTION);
+				
 				int result = pane.showOptionDialog(null, EntryGeneral, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,
 						null, null);
 				if (result == JOptionPane.OK_OPTION) {
-
+					
 				}
 			}
 		});
@@ -644,7 +645,7 @@ public class nHentai {
 			String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation +"\\" + IDs[i];
 			File f = new File(MainLocation + "_original.jpg");
 			if(!f.exists()) {
-				nHentaiAPI.saveImageAsFile(URL, MainLocation + "_original.jpg");
+				nHentaiAPI.saveImageAsFile(URLs[i], MainLocation + "_original.jpg");
 			}
 			f = new File(MainLocation + "_medium.jpg");
 			if(!f.exists()) {

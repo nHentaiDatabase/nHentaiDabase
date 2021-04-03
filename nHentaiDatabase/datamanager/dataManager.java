@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 public class dataManager {
 	
-	final String fileName = "nHentaiDatabaseData";
 	PrintWriter outputStream;
 	
 	
@@ -16,7 +15,7 @@ public class dataManager {
 		
 	}
 	
-	public void saveTable(String[][] table, String location) {
+	public void saveTable(String[][] table, String location, String fileName) {
 		try {
             outputStream = new PrintWriter(location+"\\"+fileName+".txt");
         }
@@ -32,7 +31,7 @@ public class dataManager {
 		outputStream.close();
 	}
 	
-	public String[][] readTable(String location) {
+	public String[][] readTable(String location, String fileName) {
 		String[][] tmp = new String[][] {{""},{""}};
 		try {
 			File myObj = new File(location+"\\"+fileName+".txt");
