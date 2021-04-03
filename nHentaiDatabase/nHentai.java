@@ -570,6 +570,7 @@ public class nHentai {
 			}
 			String Id = tableArr[i][2];
 			tmp[0] = String.valueOf(i + 1);
+			checkOneImage(Id, tableArr[i][1]);
 			Icon img = new ImageIcon(
 					appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");
 			tmp[1] = img;
@@ -632,8 +633,44 @@ public class nHentai {
 		}
 	}
 	
-	public void checkImages() {
-		//TODO write fucking code
+	public void checkAllImages(String[][] inputArr) {
+		String[] URLs = new String[inputArr.length-1];
+		String[] IDs = new String[inputArr.length-1];
+		for(int i=0;i<URLs.length;i++) {
+			URLs[i] = inputArr[i][1];
+			IDs[i] = inputArr[i][2];
+		}
+		for(int i=0;i<URLs.length;i++) {
+			String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation +"\\" + IDs[i];
+			File f = new File(MainLocation + "_original.jpg");
+			if(!f.exists()) {
+				nHentaiAPI.saveImageAsFile(URL, MainLocation + "_original.jpg");
+			}
+			f = new File(MainLocation + "_medium.jpg");
+			if(!f.exists()) {
+				scaleImage(MainLocation, "_medium.jpg", 150, 212);
+			}
+			f = new File(MainLocation + "low.jpg");
+			if(!f.exists()) {
+				scaleImage(MainLocation, "_low.jpg", 50, 71);
+			}
+		}
+	}
+	
+	public void checkOneImage(String Id, String URL) {
+		String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation +"\\" + Id ;
+		File f = new File(MainLocation + "_original.jpg");
+		if(!f.exists()) {
+			nHentaiAPI.saveImageAsFile(URL, MainLocation + "_original.jpg");
+		}
+		f = new File(MainLocation + "_medium.jpg");
+		if(!f.exists()) {
+			scaleImage(MainLocation, "_medium.jpg", 150, 212);
+		}
+		f = new File(MainLocation + "low.jpg");
+		if(!f.exists()) {
+			scaleImage(MainLocation, "_low.jpg", 50, 71);
+		}
 	}
 
 	public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
