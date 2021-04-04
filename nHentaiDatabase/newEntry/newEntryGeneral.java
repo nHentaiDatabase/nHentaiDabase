@@ -1,7 +1,7 @@
 package newEntry;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JTextField;import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JScrollPane;
+import java.awt.Color;
 
 public class newEntryGeneral extends JPanel {
 
@@ -38,14 +39,17 @@ public class newEntryGeneral extends JPanel {
 	 * Create the panel.
 	 */
 	public newEntryGeneral() {
+		setBackground(new Color(35, 35, 35));
 		setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("<html><body>insert new entry by entering the  code (ex. 177013),<br>or entring the full URL.</body></html>");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel.setBounds(10, 11, 549, 50);
 		add(lblNewLabel);
 		
 		JLabel code_lbl = new JLabel("code:");
+		code_lbl.setForeground(Color.WHITE);
 		code_lbl.setBounds(10, 83, 46, 14);
 		add(code_lbl);
 		
@@ -55,6 +59,7 @@ public class newEntryGeneral extends JPanel {
 		code_TField.setColumns(10);
 		
 		JLabel URL_lbl = new JLabel("URL:");
+		URL_lbl.setForeground(Color.WHITE);
 		URL_lbl.setBounds(10, 134, 46, 14);
 		add(URL_lbl);
 		
@@ -64,6 +69,7 @@ public class newEntryGeneral extends JPanel {
 		URL_TField.setColumns(10);
 		
 		JLabel rating_lbl = new JLabel("rating:");
+		rating_lbl.setForeground(Color.WHITE);
 		rating_lbl.setBounds(10, 205, 46, 14);
 		add(rating_lbl);
 		
@@ -83,6 +89,7 @@ public class newEntryGeneral extends JPanel {
 		scrollPane.setViewportView(textArea);
 		
 		JLabel infoMultipleCodes_lbl = new JLabel("<html><body>insert the codes in the text area below.<br>Each row represents a new entry in the Database.<br>You can also import a .txt file. (rating after the code with a space between)</body></html>");
+		infoMultipleCodes_lbl.setForeground(Color.WHITE);
 		infoMultipleCodes_lbl.setEnabled(false);
 		infoMultipleCodes_lbl.setBounds(10, 284, 338, 50);
 		add(infoMultipleCodes_lbl);
@@ -107,6 +114,8 @@ public class newEntryGeneral extends JPanel {
 		add(importFromFile_btn);
 		
 		insertMultipleId_ChBox = new JCheckBox("use multiple codes");
+		insertMultipleId_ChBox.setBackground(new Color(35, 35, 35));
+		insertMultipleId_ChBox.setForeground(Color.WHITE);
 		insertMultipleId_ChBox.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if(insertMultipleId_ChBox.isSelected()) {
@@ -128,10 +137,12 @@ public class newEntryGeneral extends JPanel {
 		add(insertMultipleId_ChBox);
 		
 		JLabel status_lbl = new JLabel("status:");
+		status_lbl.setForeground(Color.WHITE);
 		status_lbl.setBounds(195, 205, 46, 14);
 		add(status_lbl);
 		
 		status_CBox = new JComboBox();
+		status_CBox.setBackground(Color.DARK_GRAY);
 		status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
 		status_CBox.setBounds(195, 228, 84, 24);
 		add(status_CBox);

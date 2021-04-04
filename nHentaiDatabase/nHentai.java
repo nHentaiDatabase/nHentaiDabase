@@ -121,6 +121,10 @@ public class nHentai {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		UIManager.put("OptionPane.background", new Color(36, 36, 36));
+		UIManager.put("Panel.background", new Color(36, 36, 36));
+		
 		frmNhentaidatabase = new JFrame();
 		frmNhentaidatabase.getContentPane().setBackground(new java.awt.Color(54, 57, 63));
 		frmNhentaidatabase.setTitle("nHentaiDatabase");
@@ -240,7 +244,7 @@ public class nHentai {
 			public void actionPerformed(ActionEvent evt) {
 
 				newEntryGeneral EntryGeneral = new newEntryGeneral();
-				UIManager.put("OptionPane.minimumSize", new Dimension(600, 800));
+				UIManager.put("OptionPane.minimumSize", new Dimension(400, 550));
 				JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.OK_CANCEL_OPTION);
 				int result2 = pane2.showOptionDialog(null, EntryGeneral, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,

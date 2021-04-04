@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.awt.Color;
 
 public class settingsPanel extends JPanel {
 	private JTextField fileLocation_TField;
@@ -20,6 +21,8 @@ public class settingsPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public settingsPanel() {
+		setForeground(Color.WHITE);
+		setBackground(new Color(34, 34, 34));
 		setLayout(null);
 		
 		fileLocation_TField = new JTextField();
@@ -28,6 +31,7 @@ public class settingsPanel extends JPanel {
 		fileLocation_TField.setColumns(10);
 		
 		JLabel fileLocation_btn = new JLabel("file location:");
+		fileLocation_btn.setForeground(Color.WHITE);
 		fileLocation_btn.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		fileLocation_btn.setBounds(10, 18, 92, 19);
 		add(fileLocation_btn);

@@ -22,18 +22,26 @@ import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.DefaultComboBoxModel;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.awt.Color;
+import java.awt.Component;
 
 public class moreInformationPanel extends JPanel {
 	private JTextField id_TField;
@@ -48,40 +56,49 @@ public class moreInformationPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation) {
+		setBackground(new Color(35, 35, 35));
 		
 		splitTagsUp(tags);
 		
 		setLayout(null);
 		
 		JLabel Id_lbl = new JLabel("id");
+		Id_lbl.setForeground(Color.WHITE);
 		Id_lbl.setBounds(22, 151, 46, 14);
 		add(Id_lbl);
 		
 		JLabel title_lbl = new JLabel("title");
+		title_lbl.setForeground(Color.WHITE);
 		title_lbl.setBounds(22, 221, 46, 14);
 		add(title_lbl);
 		
 		JLabel author_lbl = new JLabel("author");
+		author_lbl.setForeground(Color.WHITE);
 		author_lbl.setBounds(22, 291, 46, 14);
 		add(author_lbl);
 		
 		JLabel pages_lbl = new JLabel("pages");
+		pages_lbl.setForeground(Color.WHITE);
 		pages_lbl.setBounds(22, 361, 46, 14);
 		add(pages_lbl);
 		
 		JLabel rating_lbl = new JLabel("rating");
+		rating_lbl.setForeground(Color.WHITE);
 		rating_lbl.setBounds(22, 431, 46, 14);
 		add(rating_lbl);
 		
 		JLabel timesRead_lbl = new JLabel("times read");
+		timesRead_lbl.setForeground(Color.WHITE);
 		timesRead_lbl.setBounds(22, 501, 82, 14);
 		add(timesRead_lbl);
 		
 		JLabel status_lbl = new JLabel("status");
+		status_lbl.setForeground(Color.WHITE);
 		status_lbl.setBounds(22, 571, 46, 14);
 		add(status_lbl);
 		
 		JLabel titlePicture_lbl = new JLabel("title picture");
+		titlePicture_lbl.setForeground(Color.WHITE);
 		titlePicture_lbl.setBounds(216, 11, 74, 14);
 		add(titlePicture_lbl);
 		
@@ -94,10 +111,82 @@ public class moreInformationPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				openWebsite open = new openWebsite();
-				UIManager.put("OptionPane.minimumSize", new Dimension(370, 170));
 				JOptionPane pane = new JOptionPane(open, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.YES_NO_OPTION);
-				String[] buttonText = new String[]{"open", "copy"};
+				
+				final JButton openButton = new JButton();
+				openButton.setPreferredSize(new Dimension(57,23));
+				openButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/openButton.png")));
+				openButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				openButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+						paneAP.setValue(openButton);
+						Window w = SwingUtilities.getWindowAncestor(openButton);
+
+					    if (w != null) {
+					      w.setVisible(false);
+					    }
+					}
+					
+				});
+				openButton.addMouseListener(new MouseAdapter() {
+					public void mouseEntered(MouseEvent evt) {
+						openButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/openButtonHover.png")));
+					}
+
+					public void mouseExited(MouseEvent evt) {
+						openButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/openButton.png")));
+					}
+
+					public void mousePressed(MouseEvent evt) {
+						openButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/openButtonSelected.png")));
+					}
+
+					public void mouseReleased(MouseEvent evt) {
+						openButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/openButtonHover.png")));
+					}
+				});
+				JButton copyButton = new JButton();
+				copyButton.setPreferredSize(new Dimension(57,23));
+				copyButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/copyButton.png")));
+				copyButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				copyButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+						paneAP.setValue(copyButton);
+						Window w = SwingUtilities.getWindowAncestor(openButton);
+
+					    if (w != null) {
+					      w.setVisible(false);
+					    }
+					}
+					
+				});
+				copyButton.addMouseListener(new MouseAdapter() {
+					public void mouseEntered(MouseEvent evt) {
+						copyButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/copyButtonHover.png")));
+					}
+
+					public void mouseExited(MouseEvent evt) {
+						copyButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/copyButton.png")));
+					}
+
+					public void mousePressed(MouseEvent evt) {
+						copyButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/copyButtonSelected.png")));
+					}
+
+					public void mouseReleased(MouseEvent evt) {
+						copyButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/openURLButtons/copyButtonHover.png")));
+					}
+				});
+				UIManager.put("OptionPane.minimumSize", new Dimension(400, 110));
+				Component[] buttonText = new Component[]{	openButton, 
+															copyButton};
 				int result = pane.showOptionDialog(null, open, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,
 						buttonText, null);
 				if(result == JOptionPane.OK_OPTION) {
@@ -154,6 +243,7 @@ public class moreInformationPanel extends JPanel {
 		timesRead_TField.setText(timesRead);
 		
 		JLabel tags_lbl = new JLabel("tags");
+		tags_lbl.setForeground(Color.WHITE);
 		tags_lbl.setBounds(22, 641, 46, 14);
 		add(tags_lbl);
 		
@@ -169,6 +259,8 @@ public class moreInformationPanel extends JPanel {
 			panel_1.add(tagButtonArr[i]);
 		}
 		JPanel container = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
+		container.setForeground(Color.WHITE);
+		container.setBackground(new Color(35, 35, 35));
         container.add(panel_1);
         
         JScrollPane tagsBody_SPane = new JScrollPane(container, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -225,4 +317,14 @@ public class moreInformationPanel extends JPanel {
 	public String getStatus() {
 		return (String) status_CBox.getSelectedItem();
 	}
+	
+	protected JOptionPane getOptionPane(JComponent parent) {
+        JOptionPane pane = null;
+        if (!(parent instanceof JOptionPane)) {
+            pane = getOptionPane((JComponent)parent.getParent());
+        } else {
+            pane = (JOptionPane) parent;
+        }
+        return pane;
+    }
 }
