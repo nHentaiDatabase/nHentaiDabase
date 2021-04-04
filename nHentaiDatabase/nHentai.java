@@ -4,10 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,15 +15,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.EventObject;
-import java.util.Vector;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -37,22 +29,16 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.View;
 
-import settings.settings;
 import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
-import newEntry.newEntryDialog;
 import newEntry.newEntryGeneral;
-import newEntry.newEntryPanel;
 import newEntry.newEntryPanelRead;
 import outsourcedClasses.nHentaiAPIRun;
 
@@ -60,17 +46,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 
-import javax.swing.border.LineBorder;
-import javax.swing.event.CellEditorListener;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.plaf.basic.BasicGraphicsUtils;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.JScrollPane;
 
 public class nHentai {
@@ -143,7 +122,7 @@ public class nHentai {
 	 */
 	private void initialize() {
 		frmNhentaidatabase = new JFrame();
-		frmNhentaidatabase.getContentPane().setBackground(Color.DARK_GRAY);
+		frmNhentaidatabase.getContentPane().setBackground(new java.awt.Color(54, 57, 63));
 		frmNhentaidatabase.setTitle("nHentaiDatabase");
 		frmNhentaidatabase.setBounds(100, 100, 947, 721);
 		frmNhentaidatabase.setUndecorated(true);
@@ -206,21 +185,25 @@ public class nHentai {
 		windowToolbar.add(closeWindow_btn);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBorder(null);
 		tabbedPane.setBounds(0, 25, 946, 696);
-		tabbedPane.setBackground(Color.BLACK);
+		tabbedPane.setBackground(new java.awt.Color(32, 34, 37));
 		tabbedPane.setUI(new renderEngine.CustomTabbedPaneUI());
+		tabbedPane.setBorder(BorderFactory.createLineBorder(new java.awt.Color(32, 34, 37), 1));
 		frmNhentaidatabase.getContentPane().add(tabbedPane);
 
 		JPanel planToRead_tab = new JPanel();
+		planToRead_tab.setBorder(null);
 		planToRead_tab.setOpaque(true);
-		planToRead_tab.setBackground(Color.BLACK);
+		planToRead_tab.setBorder(BorderFactory.createLineBorder(new java.awt.Color(32, 34, 37), 1));
+		planToRead_tab.setBackground(new java.awt.Color(32, 34, 37));
 		tabbedPane.addTab("plan to read", null, planToRead_tab, null);
 		planToRead_tab.setLayout(null);
 		
 		
 
 		JPanel panel_panel1 = new JPanel();
-		panel_panel1.setBackground(new Color(0, 0, 102));
+		panel_panel1.setBackground(new Color(0, 44, 88));
 		panel_panel1.setBounds(10, 11, 230, 632);
 		planToRead_tab.add(panel_panel1);
 		panel_panel1.setLayout(null);
@@ -442,7 +425,8 @@ public class nHentai {
 
 		table_panel1 = new JTable();
 		table_panel1.setForeground(Color.WHITE);
-		table_panel1.setBackground(new java.awt.Color(63, 63, 63));
+		table_panel1.setBackground(new Color(54, 57, 63));
+		table_panel1.setFillsViewportHeight(true);
 		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());;
 		table_panel1.setRowSelectionAllowed(false);
 		model = new DefaultTableModel(new Object[][] {
