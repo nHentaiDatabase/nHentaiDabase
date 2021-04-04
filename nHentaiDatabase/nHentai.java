@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,25 +18,31 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.View;
 
 import settings.settings;
 import settings.settingsPanel;
@@ -52,11 +60,17 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.JScrollPane;
 
 public class nHentai {
@@ -129,6 +143,7 @@ public class nHentai {
 	 */
 	private void initialize() {
 		frmNhentaidatabase = new JFrame();
+		frmNhentaidatabase.getContentPane().setBackground(Color.DARK_GRAY);
 		frmNhentaidatabase.setTitle("nHentaiDatabase");
 		frmNhentaidatabase.setBounds(100, 100, 947, 721);
 		frmNhentaidatabase.setUndecorated(true);
@@ -136,7 +151,7 @@ public class nHentai {
 		frmNhentaidatabase.getContentPane().setLayout(null);
 
 		JPanel windowToolbar = new JPanel();
-		windowToolbar.setBackground(Color.WHITE);
+		windowToolbar.setBackground(new java.awt.Color(28, 31, 34));
 		windowToolbar.setBounds(0, 0, 946, 25);
 		mouseCoord = null;
 		windowToolbar.addMouseListener(new MouseListener() {
@@ -180,7 +195,7 @@ public class nHentai {
 		JButton closeWindow_btn = new JButton("");
 		closeWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		closeWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
-		closeWindow_btn.setBounds(921, 0, 25, 25);
+		closeWindow_btn.setBounds(922, 0, 24, 24);
 		closeWindow_btn.setRequestFocusEnabled(false);
 		closeWindow_btn.addActionListener(new ActionListener() {
 			@Override
@@ -192,13 +207,17 @@ public class nHentai {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 25, 946, 696);
-		tabbedPane.setBackground(new Color(255, 255, 255));
+		tabbedPane.setBackground(Color.BLACK);
+		tabbedPane.setUI(new renderEngine.CustomTabbedPaneUI());
 		frmNhentaidatabase.getContentPane().add(tabbedPane);
 
 		JPanel planToRead_tab = new JPanel();
-		planToRead_tab.setBackground(Color.WHITE);
+		planToRead_tab.setOpaque(true);
+		planToRead_tab.setBackground(Color.BLACK);
 		tabbedPane.addTab("plan to read", null, planToRead_tab, null);
 		planToRead_tab.setLayout(null);
+		
+		
 
 		JPanel panel_panel1 = new JPanel();
 		panel_panel1.setBackground(new Color(0, 0, 102));
@@ -422,6 +441,9 @@ public class nHentai {
 		planToRead_tab.add(scrollPane_panel1);
 
 		table_panel1 = new JTable();
+		table_panel1.setForeground(Color.WHITE);
+		table_panel1.setBackground(new java.awt.Color(63, 63, 63));
+		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());;
 		table_panel1.setRowSelectionAllowed(false);
 		model = new DefaultTableModel(new Object[][] {
 
@@ -876,5 +898,4 @@ public class nHentai {
 			return button;
 		}
 	}
-
 }
