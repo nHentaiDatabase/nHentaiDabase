@@ -1,12 +1,22 @@
 package newEntry;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;import javax.swing.UIManager;
+import javax.swing.JScrollBar;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
+
 import java.awt.Font;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
@@ -17,9 +27,14 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JScrollPane;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 
 public class newEntryGeneral extends JPanel {
 
@@ -54,7 +69,10 @@ public class newEntryGeneral extends JPanel {
 		add(code_lbl);
 		
 		code_TField = new JTextField();
+		code_TField.setForeground(Color.WHITE);
+		code_TField.setBackground(new Color(59, 59, 59));
 		code_TField.setBounds(10, 103, 130, 20);
+		code_TField.setBorder(null);
 		add(code_TField);
 		code_TField.setColumns(10);
 		
@@ -64,7 +82,10 @@ public class newEntryGeneral extends JPanel {
 		add(URL_lbl);
 		
 		URL_TField = new JTextField();
+		URL_TField.setForeground(Color.WHITE);
+		URL_TField.setBackground(new Color(59, 59, 59));
 		URL_TField.setBounds(10, 153, 338, 20);
+		URL_TField.setBorder(null);
 		add(URL_TField);
 		URL_TField.setColumns(10);
 		
@@ -74,16 +95,66 @@ public class newEntryGeneral extends JPanel {
 		add(rating_lbl);
 		
 		rating_CBox = new JComboBox();
+		rating_CBox.addPopupMenuListener(new PopupMenuListener() {
+        	public void popupMenuCanceled(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+     	   {
+        		handlePopupMenuWillBecomeVisible(e);
+     	   }
+        });
+        rating_CBox.setUI(new BasicComboBoxUI(){
+        	   @Override
+        	   protected JButton createArrowButton() {
+        	       JButton arrowButton = new BasicArrowButton( 
+        	        BasicArrowButton.SOUTH,
+        	        new Color(40, 40, 40), 
+        	        new Color(59, 59, 59),
+        	        new Color(114, 118, 125),
+        	        new Color(59, 59, 59));
+        	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
+        	       return arrowButton;
+        	    }});
+        rating_CBox.setRenderer(new ColorBox());
+        rating_CBox.setBackground(new Color(59, 59, 59));
+        rating_CBox.setForeground(Color.WHITE);
 		rating_CBox.setModel(new DefaultComboBoxModel(new String[] {"N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
 		rating_CBox.setBounds(10, 228, 60, 24);
 		add(rating_CBox);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		JScrollBar scrollBar = scrollPane.getVerticalScrollBar();;
+        Dimension scrollBarDim = new Dimension(15, scrollBar
+              .getPreferredSize().height);
+        scrollBar.setPreferredSize(scrollBarDim);
+        scrollBar.setUI(new BasicScrollBarUI() {
+           @Override 
+           protected void configureScrollBarColors(){
+               this.thumbColor = new Color(10, 10, 10);
+               this.thumbDarkShadowColor = new Color(10, 10, 10);
+               this.thumbLightShadowColor = new Color(10, 10, 10);
+               this.trackColor = new Color(59, 59, 59);
+               this.trackHighlightColor = new Color(59, 59, 59);
+           }
+          @Override
+         protected JButton createDecreaseButton(int orientation) {
+             return createZeroButton();
+         }
+
+         @Override
+         protected JButton createIncreaseButton(int orientation) {
+             return createZeroButton();
+         }
+       });
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);
 		
 		textArea = new JTextArea();
+		textArea.setForeground(Color.WHITE);
+		textArea.setBackground(Color.DARK_GRAY);
 		textArea.setEnabled(false);
 		textArea.setBounds(10, 366, 359, 83);
 		scrollPane.setViewportView(textArea);
@@ -142,7 +213,31 @@ public class newEntryGeneral extends JPanel {
 		add(status_lbl);
 		
 		status_CBox = new JComboBox();
-		status_CBox.setBackground(Color.DARK_GRAY);
+		status_CBox.addPopupMenuListener(new PopupMenuListener() {
+        	public void popupMenuCanceled(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+     	   {
+        		handlePopupMenuWillBecomeVisible(e);
+     	   }
+        });
+        status_CBox.setUI(new BasicComboBoxUI(){
+        	   @Override
+        	   protected JButton createArrowButton() {
+        	       JButton arrowButton = new BasicArrowButton( 
+        	        BasicArrowButton.SOUTH,
+        	        new Color(40, 40, 40), 
+        	        new Color(59, 59, 59),
+        	        new Color(114, 118, 125),
+        	        new Color(59, 59, 59));
+        	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
+        	       return arrowButton;
+        	    }});
+        status_CBox.setRenderer(new ColorBox());
+        status_CBox.setBackground(new Color(59, 59, 59));
+        status_CBox.setForeground(Color.WHITE);
 		status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
 		status_CBox.setBounds(195, 228, 84, 24);
 		add(status_CBox);
@@ -218,4 +313,78 @@ public class newEntryGeneral extends JPanel {
 		}
 		return lowData;
 	}
+	
+	public void handlePopupMenuWillBecomeVisible(PopupMenuEvent e) {
+		JComboBox comboBox = (JComboBox) e.getSource();
+	      Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
+	      Component c = ((Container) popup).getComponent(0);
+	      if (c instanceof JScrollPane)
+	      {
+	         JScrollPane scrollpane = (JScrollPane) c;
+	         JScrollBar scrollBar = scrollpane.getVerticalScrollBar();
+	         Dimension scrollBarDim = new Dimension(15, scrollBar
+	               .getPreferredSize().height);
+	         scrollBar.setPreferredSize(scrollBarDim);
+	         scrollBar.setUI(new BasicScrollBarUI() {
+	            @Override 
+	            protected void configureScrollBarColors(){
+	                this.thumbColor = new Color(32, 34, 37);
+	                this.thumbDarkShadowColor = new Color(32, 34, 37);
+	                this.thumbLightShadowColor = new Color(32, 34, 37);
+	                this.trackColor = new Color(59, 59, 59);
+	                this.trackHighlightColor = new Color(59, 59, 59);
+	            }
+	           @Override
+	          protected JButton createDecreaseButton(int orientation) {
+	              return createZeroButton();
+	          }
+
+	          @Override
+	          protected JButton createIncreaseButton(int orientation) {
+	              return createZeroButton();
+	          }
+	        });
+	      }
+	}
+	
+	protected JButton createZeroButton() {
+	    JButton button = new JButton("zero button");
+	    Dimension zeroDim = new Dimension(0,0);
+	    button.setPreferredSize(zeroDim);
+	    button.setMinimumSize(zeroDim);
+	    button.setMaximumSize(zeroDim);
+	    return button;
+	}
+	
+	class ColorBox extends JLabel implements ListCellRenderer {
+
+        public ColorBox() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			setText(value.toString());
+			
+			Color background;
+			Color foreground;
+			
+			// check if this cell is selected
+			if (isSelected) {
+				background = new Color(0, 34, 58);
+				foreground = Color.WHITE;
+			
+			// unselected, and not the DnD drop location
+			} else {
+				background = new Color(15, 15, 15);
+				foreground = Color.WHITE;
+			};
+			
+			setBackground(background);
+			setForeground(foreground);
+			list.setSelectionBackground(new Color(59, 59, 59));
+			
+			return this;
+		}
+    }   
 }
