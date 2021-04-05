@@ -4,14 +4,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+import moreInformation.moreInformationPanel;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -22,6 +26,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -129,7 +135,7 @@ public class newEntryGeneral extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        scrollBar.setUI(new BasicScrollBarUI() {
+        /*scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -147,7 +153,7 @@ public class newEntryGeneral extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);
@@ -165,8 +171,10 @@ public class newEntryGeneral extends JPanel {
 		infoMultipleCodes_lbl.setBounds(10, 284, 338, 50);
 		add(infoMultipleCodes_lbl);
 		
-		JButton importFromFile_btn = new JButton("import from .txt");
+		JButton importFromFile_btn = new JButton();
 		importFromFile_btn.setEnabled(false);
+		importFromFile_btn.setIcon(new ImageIcon(newEntryGeneral.class.getResource("/grafics/newEntryButtons/importFromTxt.png")));
+		importFromFile_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		importFromFile_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				myJFileChooser.setDialogTitle("Choose a directory to save your file: ");
@@ -177,11 +185,28 @@ public class newEntryGeneral extends JPanel {
                     File selectedFile = myJFileChooser.getSelectedFile();
                     System.out.println(selectedFile.getAbsolutePath());
                     fileLocation = selectedFile.getAbsolutePath();
-                    importTxtInTField();
+                    importTxtInTField(fileLocation);
                 }
 			}
 		});
-		importFromFile_btn.setBounds(260, 332, 109, 23);
+		importFromFile_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				importFromFile_btn.setIcon(new ImageIcon(newEntryGeneral.class.getResource("/grafics/newEntryButtons/importFromTxtHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				importFromFile_btn.setIcon(new ImageIcon(newEntryGeneral.class.getResource("/grafics/newEntryButtons/importFromTxt.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				importFromFile_btn.setIcon(new ImageIcon(newEntryGeneral.class.getResource("/grafics/newEntryButtons/importFromTxtSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				importFromFile_btn.setIcon(new ImageIcon(newEntryGeneral.class.getResource("/grafics/newEntryButtons/importFromTxtHover.png")));
+			}
+		});
+		importFromFile_btn.setBounds(214, 332, 155, 23);
 		add(importFromFile_btn);
 		
 		insertMultipleId_ChBox = new JCheckBox("use multiple codes");
@@ -242,13 +267,13 @@ public class newEntryGeneral extends JPanel {
 		status_CBox.setBounds(195, 228, 84, 24);
 		add(status_CBox);
 		
-		
+		code_TField.requestFocus();
 	}
 	
-	private void importTxtInTField() {
+	public void importTxtInTField(String TXTFileLocation) {
 		
 		try {
-			File myObj = new File(fileLocation);
+			File myObj = new File(TXTFileLocation);
 			Scanner myReader = new Scanner(myObj);
 			
 			int rows = 0;
@@ -292,12 +317,16 @@ public class newEntryGeneral extends JPanel {
 		return (String)status_CBox.getSelectedItem();
 	}
 	
+	public String getFileLocation() {
+		return fileLocation;
+	}
+	
 	public boolean getSelected() {
 		return insertMultipleId_ChBox.isSelected();
 	}
 	
 	public String[] getDataInTextArea(){
-		String[] lowData = new String[Data.length];
+		String[] lowData = new String[1];
 		String rawData = textArea.getText();
 		char[] rawDataChar = rawData.toCharArray();
 		int index = 0;
@@ -305,13 +334,28 @@ public class newEntryGeneral extends JPanel {
 			if(rawDataChar[i] == '\n'){
 				index++;
 			}else {
-				if(lowData[index] == null)
+				if(index == 0 && lowData[index] == null) {
 					lowData[index] = ""+rawDataChar[i];
+					lowData = expandArr(lowData);
+				}
+				else if(index != 0 && lowData[index] == null) {
+					lowData[index] = ""+rawDataChar[i];
+					lowData = expandArr(lowData);
+				}
 				else
 					lowData[index] = lowData[index] + rawDataChar[i];
 			}
 		}
-		return lowData;
+		String[] tmp = new String[lowData.length-1];
+		System.arraycopy(lowData, 0, tmp, 0, lowData.length-1);
+		return tmp;
+	}
+	
+	public String[] expandArr(String[] input) {
+		String[] tmp = new String[input.length + 1];
+		System.arraycopy(input, 0, tmp, 0, input.length);
+		input = tmp;
+		return input;
 	}
 	
 	public void handlePopupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -325,7 +369,7 @@ public class newEntryGeneral extends JPanel {
 	         Dimension scrollBarDim = new Dimension(15, scrollBar
 	               .getPreferredSize().height);
 	         scrollBar.setPreferredSize(scrollBarDim);
-	         scrollBar.setUI(new BasicScrollBarUI() {
+	         /*scrollBar.setUI(new BasicScrollBarUI() {
 	            @Override 
 	            protected void configureScrollBarColors(){
 	                this.thumbColor = new Color(32, 34, 37);
@@ -343,7 +387,7 @@ public class newEntryGeneral extends JPanel {
 	          protected JButton createIncreaseButton(int orientation) {
 	              return createZeroButton();
 	          }
-	        });
+	        });*/
 	      }
 	}
 	

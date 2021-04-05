@@ -23,23 +23,33 @@ import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.LookAndFeel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import settings.settingsPanel;
 import datamanager.dataManager;
+import javafx.application.Platform;
+import javafx.stage.FileChooser;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
 import newEntry.newEntryGeneral;
 import newEntry.newEntryPanelRead;
+import outsourcedClasses.CustomFileChooser;
 import outsourcedClasses.nHentaiAPIRun;
 
 import java.awt.Color;
@@ -122,8 +132,8 @@ public class nHentai {
 	 */
 	private void initialize() {
 		
-		UIManager.put("OptionPane.background", new Color(36, 36, 36));
-		UIManager.put("Panel.background", new Color(36, 36, 36));
+		UIManager.put("OptionPane.background", new Color(35, 35, 35));
+		UIManager.put("Panel.background", new Color(35, 35, 35));
 		
 		frmNhentaidatabase = new JFrame();
 		frmNhentaidatabase.getContentPane().setBackground(new java.awt.Color(54, 57, 63));
@@ -261,7 +271,6 @@ public class nHentai {
 							if (!code.equals("") || !URL.equals("")) {
 								tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
 								model = expandTable(model, code);
-								//model = nHentaiAPIRun(code, URL, "N/A", "plan to read");
 							}
 							if (selected == true) {
 								String[] TextAreaData = EntryGeneral.getDataInTextArea();
@@ -281,9 +290,9 @@ public class nHentai {
 											rawCode = rawCode + rawDataChar[j];
 										}
 									}
-									if(!rawRating.equals(""))
+									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
 										rawRating = rawRating.substring(0, rawRating.length() - 1);
-									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "1", rawRating, "plan to read");
 									model = expandTable(model, rawCode);
 									//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
 								}
@@ -369,7 +378,11 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
+				UIManager.put("OptionPane.background", new Color(244, 244, 244));
+				UIManager.put("Panel.background", new Color(244, 244, 244));
+
 				JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
 				myJFileChooserSave.setDialogTitle("Choose a file to load: ");
 				myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
             	int returnValue = myJFileChooserSave.showOpenDialog(null);
@@ -379,6 +392,8 @@ public class nHentai {
                     System.out.println(selectedFile.getAbsolutePath());
                     SaveFileLocation = selectedFile.getAbsolutePath();
                 }
+                UIManager.put("OptionPane.background", new Color(35, 35, 35));
+        		UIManager.put("Panel.background", new Color(35, 35, 35));
 				dataManager.saveTable(tableArr, SaveFileLocation);
 			}
 		});
@@ -407,6 +422,8 @@ public class nHentai {
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
+				UIManager.put("OptionPane.background", new Color(244, 244, 244));
+				UIManager.put("Panel.background", new Color(244, 244, 244));
 				JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 				myJFileChooserLoad.setDialogTitle("Choose a file to load: ");
 				myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -417,6 +434,8 @@ public class nHentai {
                     System.out.println(selectedFile.getAbsolutePath());
                     LoadFileLocation = selectedFile.getAbsolutePath();
                 }
+                UIManager.put("OptionPane.background", new Color(35, 35, 35));
+        		UIManager.put("Panel.background", new Color(35, 35, 35));
 				tableArr = dataManager.readTable(LoadFileLocation);
 				model = ArrToTable(model);
 			}
@@ -427,7 +446,17 @@ public class nHentai {
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
 		planToRead_tab.add(scrollPane_panel1);
 
-		table_panel1 = new JTable();
+		table_panel1 = new JTable() {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) { 
+	        	if(column == 7) {
+	        		return true;
+	        	}else {
+	        		return false;               
+	        	}
+	        };
+	    };
 		table_panel1.setForeground(Color.WHITE);
 		table_panel1.setBackground(new Color(54, 57, 63));
 		table_panel1.setFillsViewportHeight(true);
@@ -462,6 +491,7 @@ public class nHentai {
 		 * end panel 1
 		 */
 
+		
 		/*
 		 * Start panel 2
 		 */
@@ -734,6 +764,25 @@ public class nHentai {
 
 		public ButtonColumn() {
 			button = new JButton();
+			button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
+			button.setHorizontalTextPosition(SwingConstants.CENTER);
+			button.addMouseListener(new MouseAdapter() {
+				public void mouseEntered(MouseEvent evt) {
+					
+				}
+
+				public void mouseExited(MouseEvent evt) {
+					
+				}
+
+				public void mousePressed(MouseEvent evt) {
+					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButtonHover.png")));
+				}
+
+				public void mouseReleased(MouseEvent evt) {
+					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
+				}
+			});
 			button.addActionListener(new ActionListener() {
 
 				@Override
@@ -749,17 +798,21 @@ public class nHentai {
 					String rating = tableArr[Integer.valueOf(row)][8];
 					String status = tableArr[Integer.valueOf(row)][6];
 					String URL = tableArr[Integer.valueOf(row)][1];
+					String timesRead = tableArr[Integer.valueOf(row)][7];
 
 					moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
-							"1", status, tags,
+							timesRead, status, tags,
 							appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
 					UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 					JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 							JOptionPane.OK_OPTION);
-					int result = inspectPane.showOptionDialog(null, moreInformation, "settings", 0,
+					int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
 							JOptionPane.PLAIN_MESSAGE, null, null, null);
 					System.out.println("pressed" + value);
-
+					
+					rating = moreInformation.getRating();
+					timesRead = moreInformation.getTimesRead();
+					
 					if (result == JOptionPane.OK_OPTION) {
 						String newRating = moreInformation.getRating();
 						String newStatus = moreInformation.getStatus();
@@ -789,7 +842,6 @@ public class nHentai {
 		@Override
 		public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
 				int arg5) {
-			button.setText("inspect");
 			value = " " + arg4;
 			return button;
 		}
@@ -801,7 +853,6 @@ public class nHentai {
 
 		@Override
 		public Component getTableCellEditorComponent(JTable arg0, Object arg1, boolean arg2, int arg3, int arg4) {
-			button.setText("inspect");
 			value = "" + arg3;
 			return button;
 		}
@@ -814,6 +865,25 @@ public class nHentai {
 
 		public ButtonColumnReading() {
 			button = new JButton();
+			button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
+			button.setHorizontalTextPosition(SwingConstants.CENTER);
+			button.addMouseListener(new MouseAdapter() {
+				public void mouseEntered(MouseEvent evt) {
+					
+				}
+
+				public void mouseExited(MouseEvent evt) {
+					
+				}
+
+				public void mousePressed(MouseEvent evt) {
+					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButtonHover.png")));
+				}
+
+				public void mouseReleased(MouseEvent evt) {
+					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
+				}
+			});
 			button.addActionListener(new ActionListener() {
 
 				@Override
@@ -836,7 +906,7 @@ public class nHentai {
 					UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 					JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 							JOptionPane.OK_OPTION);
-					int result = inspectPane.showOptionDialog(null, moreInformation, "settings", 0,
+					int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
 							JOptionPane.PLAIN_MESSAGE, null, null, null);
 					System.out.println("pressed" + value);
 
@@ -869,7 +939,6 @@ public class nHentai {
 		@Override
 		public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
 				int arg5) {
-			button.setText("inspect");
 			value = " " + arg4;
 			return button;
 		}
@@ -881,7 +950,6 @@ public class nHentai {
 
 		@Override
 		public Component getTableCellEditorComponent(JTable arg0, Object arg1, boolean arg2, int arg3, int arg4) {
-			button.setText("inspect");
 			value = "" + arg3;
 			return button;
 		}

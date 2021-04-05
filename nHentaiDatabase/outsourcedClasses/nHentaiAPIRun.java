@@ -59,6 +59,7 @@ public class nHentaiAPIRun {
 		tableArr[tableArr.length - 1][5] = pages;
 		tableArr[tableArr.length - 1][6] = status;
 		tableArr[tableArr.length - 1][8] = rating;
+		tableArr[tableArr.length - 1][7] = "1";
 		
 		tableArr = expandArr(tableArr);
 		return tableArr;
@@ -104,6 +105,7 @@ public class nHentaiAPIRun {
 		tableArrReading[tableArrReading.length - 1][5] = pages;
 		tableArrReading[tableArrReading.length - 1][6] = status;
 		tableArrReading[tableArrReading.length - 1][7] = rating;
+		tableArrReading[tableArrReading.length - 1][7] = "1";
 		
 		tableArrReading = expandArr(tableArrReading);
 		return tableArrReading;

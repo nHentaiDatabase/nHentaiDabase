@@ -60,11 +60,14 @@ public class dataManager {
 				rows++;
 			}
 		}
-		String[][] outputData = new String[rows][9];
+		String[][] outputData = new String[rows][10];
+		int Jrefrence = 0;
+		//TODO
 		for(int i=0;i<rows;i++) {
-			for(int j=0;j<9;j++) {
-				outputData[i][j] = fileData[j+(i*10)];
+			for(int j=Jrefrence;j<j+8;j++) {
+				outputData[i][j-Jrefrence] = fileData[j];
 			}
+			Jrefrence = Jrefrence+10;
 		}
 		return outputData;
 	}

@@ -432,6 +432,10 @@ public class moreInformationPanel extends JPanel {
 		return (String) status_CBox.getSelectedItem();
 	}
 	
+	public String getTimesRead() {
+		return timesRead_TField.getText();
+	}
+	
 	protected JOptionPane getOptionPane(JComponent parent) {
         JOptionPane pane = null;
         if (!(parent instanceof JOptionPane)) {
