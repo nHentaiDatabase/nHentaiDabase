@@ -1,6 +1,9 @@
 package moreInformation;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+
 import java.awt.CardLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -8,8 +11,11 @@ import java.awt.Dimension;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListCellRenderer;
+
 import net.miginfocom.swing.MigLayout;
 import newEntry.newEntryGeneral;
 import newEntry.newEntryPanelRead;
@@ -20,7 +26,9 @@ import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
@@ -29,8 +37,14 @@ import java.awt.datatransfer.StringSelection;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.plaf.metal.MetalScrollBarUI;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 
 import java.awt.event.ActionEvent;
@@ -42,6 +56,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import javax.swing.event.PopupMenuListener;
 
 public class moreInformationPanel extends JPanel {
 	private JTextField id_TField;
@@ -208,26 +224,36 @@ public class moreInformationPanel extends JPanel {
 		panel.add(image_lbl);
 		
 		id_TField = new JTextField();
+		id_TField.setForeground(Color.WHITE);
+		id_TField.setBackground(new Color(44, 49, 53));
 		id_TField.setBounds(22, 167, 86, 20);
 		add(id_TField);
 		id_TField.setColumns(10);
 		
 		title_TField = new JTextField();
+		title_TField.setBackground(new Color(44, 49, 53));
+		title_TField.setForeground(Color.WHITE);
 		title_TField.setBounds(22, 237, 268, 20);
 		add(title_TField);
 		title_TField.setColumns(10);
 		
 		author_TField = new JTextField();
+		author_TField.setBackground(new Color(44, 49, 53));
+		author_TField.setForeground(Color.WHITE);
 		author_TField.setBounds(22, 307, 140, 20);
 		add(author_TField);
 		author_TField.setColumns(10);
 		
 		pages_TField = new JTextField();
+		pages_TField.setBackground(new Color(44, 49, 53));
+		pages_TField.setForeground(Color.WHITE);
 		pages_TField.setBounds(22, 377, 74, 20);
 		add(pages_TField);
 		pages_TField.setColumns(10);
 		
 		timesRead_TField = new JTextField();
+		timesRead_TField.setBackground(new Color(44, 49, 53));
+		timesRead_TField.setForeground(Color.WHITE);
 		timesRead_TField.setBounds(22, 517, 46, 20);
 		add(timesRead_TField);
 		timesRead_TField.setColumns(10);
@@ -267,13 +293,71 @@ public class moreInformationPanel extends JPanel {
         tagsBody_SPane.setBounds(22, 667, 428, 80);
         add(tagsBody_SPane);
         
+        
         rating_CBox = new JComboBox();
+        rating_CBox.addPopupMenuListener(new PopupMenuListener() {
+        	public void popupMenuCanceled(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        	}
+        	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+     	   {
+     	      JComboBox comboBox = (JComboBox) e.getSource();
+     	      Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
+     	      Component c = ((Container) popup).getComponent(0);
+     	      if (c instanceof JScrollPane)
+     	      {
+     	         JScrollPane scrollpane = (JScrollPane) c;
+     	         JScrollBar scrollBar = scrollpane.getVerticalScrollBar();
+     	         Dimension scrollBarDim = new Dimension(15, scrollBar
+     	               .getPreferredSize().height);
+     	         scrollBar.setPreferredSize(scrollBarDim);
+     	         scrollBar.setUI(new BasicScrollBarUI() {
+     	            @Override 
+     	            protected void configureScrollBarColors(){
+     	                this.thumbColor = new Color(32, 34, 37);
+     	                this.thumbDarkShadowColor = new Color(32, 34, 37);
+     	                this.thumbLightShadowColor = new Color(32, 34, 37);
+     	                this.trackColor = new Color(59, 59, 59);
+     	                this.trackHighlightColor = new Color(59, 59, 59);
+     	            }
+     	           @Override
+     	          protected JButton createDecreaseButton(int orientation) {
+     	              return createZeroButton();
+     	          }
+
+     	          @Override
+     	          protected JButton createIncreaseButton(int orientation) {
+     	              return createZeroButton();
+     	          }
+     	        });
+     	         System.out.println(scrollBar.getUI());
+     	      }
+     	   }
+        });
+        rating_CBox.setUI(new BasicComboBoxUI(){
+        	   @Override
+        	   protected JButton createArrowButton() {
+        	       JButton arrowButton = new BasicArrowButton( 
+        	        BasicArrowButton.SOUTH,
+        	        new Color(40, 40, 40), 
+        	        new Color(59, 59, 59),
+        	        new Color(114, 118, 125),
+        	        new Color(59, 59, 59));
+        	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
+        	       return arrowButton;
+        	    }});
+        rating_CBox.setRenderer(new ColorBox());
+        rating_CBox.setBackground(new Color(59, 59, 59));
+        rating_CBox.setForeground(Color.WHITE);
         rating_CBox.setModel(new DefaultComboBoxModel(new String[] {"N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
         rating_CBox.setSelectedItem(rating);
         rating_CBox.setBounds(20, 447, 59, 24);
         add(rating_CBox);
         
         status_CBox = new JComboBox();
+        status_CBox.setBackground(new Color(44, 49, 53));
+        status_CBox.setForeground(Color.WHITE);
         status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
         status_CBox.setSelectedItem(status);
         status_CBox.setBounds(22, 587, 97, 24);
@@ -327,4 +411,45 @@ public class moreInformationPanel extends JPanel {
         }
         return pane;
     }
+	
+	class ColorBox extends JLabel implements ListCellRenderer {
+
+        public ColorBox() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			setText(value.toString());
+			
+			Color background;
+			Color foreground;
+			
+			// check if this cell is selected
+			if (isSelected) {
+				background = new Color(0, 34, 58);
+				foreground = Color.WHITE;
+			
+			// unselected, and not the DnD drop location
+			} else {
+				background = new Color(15, 15, 15);
+				foreground = Color.WHITE;
+			};
+			
+			setBackground(background);
+			setForeground(foreground);
+			list.setSelectionBackground(new Color(15, 15, 15));
+			
+			return this;
+		}
+    }   
+
+	protected JButton createZeroButton() {
+	    JButton button = new JButton("zero button");
+	    Dimension zeroDim = new Dimension(0,0);
+	    button.setPreferredSize(zeroDim);
+	    button.setMinimumSize(zeroDim);
+	    button.setMaximumSize(zeroDim);
+	    return button;
+	}
 }
