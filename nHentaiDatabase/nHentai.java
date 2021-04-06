@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,7 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
@@ -40,10 +43,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import settings.ButtonColumnPlanToRead;
 import settings.settingsPanel;
 import datamanager.dataManager;
-import javafx.application.Platform;
-import javafx.stage.FileChooser;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
@@ -77,6 +79,7 @@ public class nHentai {
 
 	private String[][] tableArr;
 	private String[][] tableArrReading;
+	private String[][] tableArrCompleted;
 	private String appdataLocation;
 	String mainFolderLocation = "\\nHentaiDatabse";
 	String photoFolderLocation = "\\savedPhotos";
@@ -121,6 +124,7 @@ public class nHentai {
 		nHentaiAPIRun = new nHentaiAPIRun();
 		tableArr = new String[1][10];
 		tableArrReading = new String[1][10];
+		tableArrCompleted = new String[1][10];
 		appdataLocation = System.getenv("APPDATA");
 		setUpAppData(appdataLocation);
 		initialize();
@@ -343,7 +347,7 @@ public class nHentai {
 		settings_panel1_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				settingsPanel settings = new settingsPanel();
+				settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted);
 				UIManager.put("OptionPane.minimumSize", new Dimension(550, 200));
 				JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 				int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null,
@@ -386,7 +390,7 @@ public class nHentai {
 
 				JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
-				myJFileChooserSave.setDialogTitle("Choose a file to load: ");
+				myJFileChooserSave.setDialogTitle("Chosse the save location");
 				myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
             	int returnValue = myJFileChooserSave.showOpenDialog(null);
             	String SaveFileLocation = "";
@@ -428,7 +432,7 @@ public class nHentai {
 				UIManager.put("OptionPane.background", new Color(244, 244, 244));
 				UIManager.put("Panel.background", new Color(244, 244, 244));
 				JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-				myJFileChooserLoad.setDialogTitle("Choose a file to load: ");
+				myJFileChooserLoad.setDialogTitle("Choose a file to load");
 				myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
             	int returnValue = myJFileChooserLoad.showOpenDialog(null);
             	String LoadFileLocation = "";
@@ -469,8 +473,10 @@ public class nHentai {
 
 		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "status", "" });
 		table_panel1.setModel(model);
-		table_panel1.getColumn(table_panel1.getColumnName(7)).setCellRenderer(new ButtonColumn());
-		table_panel1.getColumn(table_panel1.getColumnName(7)).setCellEditor(new ButtonColumn());
+
+		ButtonColumnPlanToRead buttonColumnTable_panel1 = new ButtonColumnPlanToRead(table_panel1, deleteTableArrRow, 7);
+		buttonColumnTable_panel1.setMnemonic(KeyEvent.VK_D);
+
 		table_panel1.getColumnModel().getColumn(0).setResizable(false);
 		table_panel1.getColumnModel().getColumn(1).setResizable(false);
 		table_panel1.getColumnModel().getColumn(2).setResizable(false);
@@ -558,7 +564,7 @@ public class nHentai {
 		settings_panel2_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				settingsPanel settings = new settingsPanel();
+				settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted);
 				UIManager.put("OptionPane.minimumSize", new Dimension(550, 200));
 				JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 				int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null,
@@ -641,8 +647,10 @@ public class nHentai {
 		table_panel2.setModel(modelReading);
 		table_panel2.getTableHeader().setBackground(Color.RED);
 		table_panel2.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
-		table_panel2.getColumn(table_panel2.getColumnName(8)).setCellRenderer(new ButtonColumnReading());
-		table_panel2.getColumn(table_panel2.getColumnName(8)).setCellEditor(new ButtonColumnReading());
+		
+		ButtonColumnPlanToRead buttonColumnTable_panel2 = new ButtonColumnPlanToRead(table_panel2, deleteTableArrReadingRow, 8);
+		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
+		
 		table_panel2.getColumnModel().getColumn(0).setResizable(false);
 		table_panel2.getColumnModel().getColumn(1).setResizable(false);
 		table_panel2.getColumnModel().getColumn(2).setResizable(false);
@@ -817,208 +825,117 @@ public class nHentai {
 			scaleImage(MainLocation, "_low.jpg", 50, 71);
 		}
 	}
+	
+	Action deleteTableArrRow = new AbstractAction()
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+	        JTable table = (JTable)e.getSource();
+	        int modelRow = Integer.valueOf( e.getActionCommand() );
+	        
+	        String title = tableArr[modelRow][3];
+			String id = tableArr[modelRow][2];
+			String tags = tableArr[modelRow][9];
+			String artist = tableArr[modelRow][4];
+			String pages = tableArr[modelRow][5];
+			String rating = tableArr[modelRow][8];
+			String status = tableArr[modelRow][6];
+			String URL = tableArr[modelRow][1];
+			String timesRead = tableArr[modelRow][7];
 
-	public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
+					timesRead, status, tags,
+					appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
+			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
+					JOptionPane.OK_OPTION);
+			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
+					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			System.out.println("pressed" + e.getActionCommand());
+			
+			
+			if (result == JOptionPane.OK_OPTION) {
+				rating = moreInformation.getRating();
+				timesRead = moreInformation.getTimesRead();
+				tableArr[modelRow][8] = rating;
+				tableArr[modelRow][7] = timesRead;
 
-		private JButton button;
-		private String value;
+				String newStatus = moreInformation.getStatus();
+				
+				if (newStatus.equals("reading")) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+					//table_panel1.getModel().setValueAt(null, (Integer.valueOf(row)), 7);
+					tableArr = rearangeArr(tableArr, modelRow);
+					tableArrReading[tableArrReading.length - 1][1] = URL;
+					tableArrReading[tableArrReading.length - 1][3] = title;
+					tableArrReading[tableArrReading.length - 1][2] = id;
+					tableArrReading[tableArrReading.length - 1][9] = tags;
+					tableArrReading[tableArrReading.length - 1][4] = artist;
+					tableArrReading[tableArrReading.length - 1][5] = pages;
+					tableArrReading[tableArrReading.length - 1][8] = timesRead;
+					tableArrReading[tableArrReading.length - 1][6] = rating;
+					tableArrReading[tableArrReading.length - 1][7] = "reading";
 
-		public ButtonColumn() {
-			button = new JButton();
-			button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
-			button.setHorizontalTextPosition(SwingConstants.CENTER);
-			button.addMouseListener(new MouseAdapter() {
-				public void mouseEntered(MouseEvent evt) {
+					tableArrReading = expandArr(tableArrReading);
+					expandTableReading(modelReading, id);
 					
 				}
+			}
+	    }
+	};
+	
+	Action deleteTableArrReadingRow = new AbstractAction()
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+	        JTable table = (JTable)e.getSource();
+	        int modelRow = Integer.valueOf( e.getActionCommand() );
+	        
+	        String title = tableArrReading[modelRow][3];
+			String id = tableArrReading[modelRow][2];
+			String tags = tableArrReading[modelRow][9];
+			String artist = tableArrReading[modelRow][4];
+			String pages = tableArrReading[modelRow][5];
+			String rating = tableArrReading[modelRow][6];
+			String status = tableArrReading[modelRow][7];
+			String URL = tableArrReading[modelRow][1];
+			String timesRead = tableArrReading[modelRow][8];
 
-				public void mouseExited(MouseEvent evt) {
-					
+			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
+					timesRead, status, tags,
+					appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
+			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
+					JOptionPane.OK_OPTION);
+			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
+					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			System.out.println("pressed" + e.getActionCommand());
+
+			if (result == JOptionPane.OK_OPTION) {
+				rating = moreInformation.getRating();
+				timesRead = moreInformation.getTimesRead();
+				tableArrReading[modelRow][6] = rating;
+				tableArrReading[modelRow][8] = timesRead;
+
+				String newStatus = moreInformation.getStatus();
+				
+				if (newStatus.equals("plan to read")) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArr[tableArr.length - 1][1] = URL;
+					tableArr[tableArr.length - 1][3] = title;
+					tableArr[tableArr.length - 1][2] = id;
+					tableArr[tableArr.length - 1][9] = tags;
+					tableArr[tableArr.length - 1][4] = artist;
+					tableArr[tableArr.length - 1][5] = pages;
+					tableArr[tableArr.length - 1][6] = "plan to read";
+					tableArr[tableArr.length - 1][8] = rating;
+					tableArr[tableArr.length - 1][7] = timesRead;
+
+					tableArr = expandArr(tableArr);
+					expandTable(model, id);
 				}
-
-				public void mousePressed(MouseEvent evt) {
-					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButtonHover.png")));
-				}
-
-				public void mouseReleased(MouseEvent evt) {
-					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
-				}
-			});
-			button.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-
-					String row = value;
-
-					String title = tableArr[Integer.valueOf(row)][3];
-					String id = tableArr[Integer.valueOf(row)][2];
-					String tags = tableArr[Integer.valueOf(row)][9];
-					String artist = tableArr[Integer.valueOf(row)][4];
-					String pages = tableArr[Integer.valueOf(row)][5];
-					String rating = tableArr[Integer.valueOf(row)][8];
-					String status = tableArr[Integer.valueOf(row)][6];
-					String URL = tableArr[Integer.valueOf(row)][1];
-					String timesRead = tableArr[Integer.valueOf(row)][7];
-
-					moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
-							timesRead, status, tags,
-							appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
-					UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
-					JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
-							JOptionPane.OK_OPTION);
-					int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
-							JOptionPane.PLAIN_MESSAGE, null, null, null);
-					System.out.println("pressed" + value);
-					
-					
-					if (result == JOptionPane.OK_OPTION) {
-						rating = moreInformation.getRating();
-						timesRead = moreInformation.getTimesRead();
-						tableArr[Integer.valueOf(row)][8] = rating;
-						tableArr[Integer.valueOf(row)][7] = timesRead;
-
-						String newStatus = moreInformation.getStatus();
-						
-						if (newStatus.equals("reading")) {
-							((DefaultTableModel) table_panel1.getModel()).removeRow(Integer.valueOf(row));
-							//table_panel1.getModel().setValueAt(null, (Integer.valueOf(row)), 7);
-							tableArr = rearangeArr(tableArr, Integer.valueOf(row));
-							tableArrReading[tableArrReading.length - 1][1] = URL;
-							tableArrReading[tableArrReading.length - 1][3] = title;
-							tableArrReading[tableArrReading.length - 1][2] = id;
-							tableArrReading[tableArrReading.length - 1][9] = tags;
-							tableArrReading[tableArrReading.length - 1][4] = artist;
-							tableArrReading[tableArrReading.length - 1][5] = pages;
-							tableArrReading[tableArrReading.length - 1][8] = timesRead;
-							tableArrReading[tableArrReading.length - 1][6] = rating;
-							tableArrReading[tableArrReading.length - 1][7] = "reading";
-
-							tableArrReading = expandArr(tableArrReading);
-							expandTableReading(modelReading, id);
-						}
-					}
-				}
-			});
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
-				int arg5) {
-			value = " " + arg4;
-			return button;
-		}
-
-		@Override
-		public Object getCellEditorValue() {
-			return null;
-		}
-
-		@Override
-		public Component getTableCellEditorComponent(JTable arg0, Object arg1, boolean arg2, int arg3, int arg4) {
-			value = "" + arg3;
-			return button;
-		}
-	}
-
-	public class ButtonColumnReading extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
-
-		private JButton button;
-		private String value;
-
-		public ButtonColumnReading() {
-			button = new JButton();
-			button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
-			button.setHorizontalTextPosition(SwingConstants.CENTER);
-			button.addMouseListener(new MouseAdapter() {
-				public void mouseEntered(MouseEvent evt) {
-					
-				}
-
-				public void mouseExited(MouseEvent evt) {
-					
-				}
-
-				public void mousePressed(MouseEvent evt) {
-					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButtonHover.png")));
-				}
-
-				public void mouseReleased(MouseEvent evt) {
-					button.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
-				}
-			});
-			button.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-
-					String row = value;
-
-					String title = tableArrReading[Integer.valueOf(row)][3];
-					String id = tableArrReading[Integer.valueOf(row)][2];
-					String tags = tableArrReading[Integer.valueOf(row)][9];
-					String artist = tableArrReading[Integer.valueOf(row)][4];
-					String pages = tableArrReading[Integer.valueOf(row)][5];
-					String rating = tableArrReading[Integer.valueOf(row)][6];
-					String status = tableArrReading[Integer.valueOf(row)][7];
-					String URL = tableArrReading[Integer.valueOf(row)][1];
-					String timesRead = tableArrReading[Integer.valueOf(row)][8];
-
-					moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
-							timesRead, status, tags,
-							appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
-					UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
-					JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
-							JOptionPane.OK_OPTION);
-					int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
-							JOptionPane.PLAIN_MESSAGE, null, null, null);
-					System.out.println("pressed" + value);
-
-					if (result == JOptionPane.OK_OPTION) {
-						rating = moreInformation.getRating();
-						timesRead = moreInformation.getTimesRead();
-						tableArrReading[Integer.valueOf(row)][6] = rating;
-						tableArrReading[Integer.valueOf(row)][8] = timesRead;
-
-						String newStatus = moreInformation.getStatus();
-						
-						if (newStatus.equals("plan to read")) {
-							((DefaultTableModel) table_panel2.getModel()).removeRow(Integer.valueOf(row));
-							tableArrReading = rearangeArr(tableArrReading, Integer.valueOf(row));
-							tableArr[tableArr.length - 1][1] = URL;
-							tableArr[tableArr.length - 1][3] = title;
-							tableArr[tableArr.length - 1][2] = id;
-							tableArr[tableArr.length - 1][9] = tags;
-							tableArr[tableArr.length - 1][4] = artist;
-							tableArr[tableArr.length - 1][5] = pages;
-							tableArr[tableArr.length - 1][6] = "plan to read";
-							tableArr[tableArr.length - 1][8] = rating;
-							tableArr[tableArr.length - 1][7] = timesRead;
-
-							tableArr = expandArr(tableArr);
-							expandTable(model, id);
-						}
-					}
-				}
-			});
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
-				int arg5) {
-			value = " " + arg4;
-			return button;
-		}
-
-		@Override
-		public Object getCellEditorValue() {
-			return null;
-		}
-
-		@Override
-		public Component getTableCellEditorComponent(JTable arg0, Object arg1, boolean arg2, int arg3, int arg4) {
-			value = "" + arg3;
-			return button;
-		}
-	}
+			}
+	    }
+	};
 }

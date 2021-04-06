@@ -2,8 +2,14 @@ package settings;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
+
+import moreInformation.moreInformationPanel;
+import stats.statsPanel;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -12,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.Color;
+import java.awt.Dimension;
 
 public class settingsPanel extends JPanel {
 	private JTextField fileLocation_TField;
@@ -20,7 +27,7 @@ public class settingsPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public settingsPanel() {
+	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed) {
 		setForeground(Color.WHITE);
 		setBackground(new Color(34, 34, 34));
 		setLayout(null);
@@ -58,6 +65,20 @@ public class settingsPanel extends JPanel {
 		JButton save_btn = new JButton("save");
 		save_btn.setBounds(380, 40, 60, 23);
 		add(save_btn);
+		
+		JButton stats_btn = new JButton("stats");
+		stats_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				statsPanel stats = new statsPanel(planToRead, reading, completed);
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.OK_OPTION);
+				int result = inspectPane.showOptionDialog(null, stats, "stats", 0,
+						JOptionPane.PLAIN_MESSAGE, null, null, null);
+			}
+		});
+		stats_btn.setBounds(10, 119, 89, 23);
+		add(stats_btn);
 
 	}
 	

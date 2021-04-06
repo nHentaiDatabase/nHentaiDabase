@@ -8,14 +8,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/Jsoup/src/jsoup-1.9.2.jar"/>
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/filechooser-0.0.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.base.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.controls.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.fxml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.media.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.swing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx.web.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/javafx-swt.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
