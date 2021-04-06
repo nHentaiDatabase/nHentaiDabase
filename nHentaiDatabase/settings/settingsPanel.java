@@ -48,6 +48,9 @@ public class settingsPanel extends JPanel {
 		changeLocation_btn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+            	UIManager.put("OptionPane.background", new Color(244, 244, 244));
+            	UIManager.put("Panel.background", new Color(244, 244, 244));
+            	
             	myJFileChooser.setDialogTitle("Choose a directory to save your file: ");
         		myJFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             	int returnValue = myJFileChooser.showOpenDialog(null);
@@ -58,6 +61,8 @@ public class settingsPanel extends JPanel {
                     fileLocation = selectedFile.getAbsolutePath();
                     fileLocation_TField.setText(fileLocation);
                 }
+                UIManager.put("OptionPane.background", new Color(35, 35, 35));
+        		UIManager.put("Panel.background", new Color(35, 35, 35));
             }
         });
 		add(changeLocation_btn);

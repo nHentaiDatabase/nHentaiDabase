@@ -135,7 +135,7 @@ public class newEntryGeneral extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        /*scrollBar.setUI(new BasicScrollBarUI() {
+        scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -153,7 +153,7 @@ public class newEntryGeneral extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);
@@ -177,6 +177,9 @@ public class newEntryGeneral extends JPanel {
 		importFromFile_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		importFromFile_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				UIManager.put("OptionPane.background", new Color(244, 244, 244));
+				UIManager.put("Panel.background", new Color(244, 244, 244));
+				
 				myJFileChooser.setDialogTitle("Choose a directory to save your file: ");
         		myJFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             	int returnValue = myJFileChooser.showOpenDialog(null);
@@ -187,6 +190,9 @@ public class newEntryGeneral extends JPanel {
                     fileLocation = selectedFile.getAbsolutePath();
                     importTxtInTField(fileLocation);
                 }
+                
+                UIManager.put("OptionPane.background", new Color(35, 35, 35));
+                UIManager.put("Panel.background", new Color(35, 35, 35));
 			}
 		});
 		importFromFile_btn.addMouseListener(new MouseAdapter() {
