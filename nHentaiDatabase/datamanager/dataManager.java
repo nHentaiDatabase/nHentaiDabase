@@ -64,10 +64,10 @@ public class dataManager {
 		int Jrefrence = 0;
 		//TODO
 		for(int i=0;i<rows;i++) {
-			for(int j=Jrefrence;j<j+8;j++) {
+			for(int j=Jrefrence;j<Jrefrence+10;j++) {
 				outputData[i][j-Jrefrence] = fileData[j];
 			}
-			Jrefrence = Jrefrence+10;
+			Jrefrence = Jrefrence+11;
 		}
 		return outputData;
 	}

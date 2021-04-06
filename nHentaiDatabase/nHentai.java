@@ -297,6 +297,8 @@ public class nHentai {
 									//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
 								}
 							}
+							break;
+							
 						case "reading":
 							if (!code.equals("") || !URL.equals("")) {
 								tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
@@ -328,6 +330,7 @@ public class nHentai {
 									//model = nHentaiAPIRun(rawCode, "", rawRating, "plan to read");
 								}
 							}
+							break;
 					}
 				}
 			}
@@ -444,6 +447,7 @@ public class nHentai {
 
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
+		scrollPane_panel1.getViewport().setBackground(new Color(54, 57, 63));
 		planToRead_tab.add(scrollPane_panel1);
 
 		table_panel1 = new JTable() {
@@ -459,8 +463,7 @@ public class nHentai {
 	    };
 		table_panel1.setForeground(Color.WHITE);
 		table_panel1.setBackground(new Color(54, 57, 63));
-		table_panel1.setFillsViewportHeight(true);
-		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());;
+		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		table_panel1.setRowSelectionAllowed(false);
 		model = new DefaultTableModel(new Object[][] {
 
@@ -496,12 +499,16 @@ public class nHentai {
 		 * Start panel 2
 		 */
 		JPanel reading_tab = new JPanel();
+		reading_tab.setBorder(null);
+		reading_tab.setOpaque(true);
+		reading_tab.setBorder(BorderFactory.createLineBorder(new java.awt.Color(32, 34, 37), 1));
+		reading_tab.setBackground(new java.awt.Color(32, 34, 37));
 		tabbedPane.addTab("reading", null, reading_tab, null);
 		reading_tab.setLayout(null);
 
 		JPanel panel_panel2 = new JPanel();
 		panel_panel2.setLayout(null);
-		panel_panel2.setBackground(new Color(0, 0, 102));
+		panel_panel2.setBackground(new Color(0, 44, 88));
 		panel_panel2.setBounds(10, 11, 230, 632);
 		reading_tab.add(panel_panel2);
 
@@ -563,23 +570,77 @@ public class nHentai {
 		});
 		panel_panel2.add(settings_panel2_bnt);
 
-		JButton saveTable_panel2_btn = new JButton("save");
-		saveTable_panel2_btn.setBounds(10, 552, 80, 23);
+		JButton saveTable_panel2_btn = new JButton("");
+		saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
+		saveTable_panel2_btn.setBounds(10, 552, 80, 25);
+		saveTable_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		saveTable_panel2_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+		});
 		panel_panel2.add(saveTable_panel2_btn);
 
-		JButton loadTable__panel2_btn = new JButton("load");
-		loadTable__panel2_btn.setBounds(100, 552, 80, 23);
+		JButton loadTable__panel2_btn = new JButton("");
+		loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+		loadTable__panel2_btn.setBounds(100, 552, 80, 25);
+		loadTable__panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		loadTable__panel2_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+		});
 		panel_panel2.add(loadTable__panel2_btn);
 
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
+		scrollPane_panel2.getViewport().setBackground(new Color(54, 57, 63));
 		reading_tab.add(scrollPane_panel2);
 
-		table_panel2 = new JTable();
+		table_panel2 = new JTable(){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) { 
+	        	if(column == 8) {
+	        		return true;
+	        	}else {
+	        		return false;               
+	        	}
+	        };
+	    };
+	    table_panel2.setForeground(Color.WHITE);
+		table_panel2.setBackground(new Color(54, 57, 63));
+		table_panel2.setRowSelectionAllowed(false);
 		modelReading = new DefaultTableModel(new Object[][] {
 
 		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "rating", "status", "" });
 		table_panel2.setModel(modelReading);
+		table_panel2.getTableHeader().setBackground(Color.RED);
+		table_panel2.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		table_panel2.getColumn(table_panel2.getColumnName(8)).setCellRenderer(new ButtonColumnReading());
 		table_panel2.getColumn(table_panel2.getColumnName(8)).setCellEditor(new ButtonColumnReading());
 		table_panel2.getColumnModel().getColumn(0).setResizable(false);
@@ -810,17 +871,18 @@ public class nHentai {
 							JOptionPane.PLAIN_MESSAGE, null, null, null);
 					System.out.println("pressed" + value);
 					
-					rating = moreInformation.getRating();
-					timesRead = moreInformation.getTimesRead();
 					
 					if (result == JOptionPane.OK_OPTION) {
-						String newRating = moreInformation.getRating();
+						rating = moreInformation.getRating();
+						timesRead = moreInformation.getTimesRead();
+						tableArr[Integer.valueOf(row)][8] = rating;
+						tableArr[Integer.valueOf(row)][7] = timesRead;
+
 						String newStatus = moreInformation.getStatus();
-						if (!newRating.equals(rating)) {
-							tableArr[Integer.valueOf(row)][7] = newRating;
-						}
+						
 						if (newStatus.equals("reading")) {
 							((DefaultTableModel) table_panel1.getModel()).removeRow(Integer.valueOf(row));
+							//table_panel1.getModel().setValueAt(null, (Integer.valueOf(row)), 7);
 							tableArr = rearangeArr(tableArr, Integer.valueOf(row));
 							tableArrReading[tableArrReading.length - 1][1] = URL;
 							tableArrReading[tableArrReading.length - 1][3] = title;
@@ -828,8 +890,9 @@ public class nHentai {
 							tableArrReading[tableArrReading.length - 1][9] = tags;
 							tableArrReading[tableArrReading.length - 1][4] = artist;
 							tableArrReading[tableArrReading.length - 1][5] = pages;
-							tableArrReading[tableArrReading.length - 1][7] = "reading";
+							tableArrReading[tableArrReading.length - 1][8] = timesRead;
 							tableArrReading[tableArrReading.length - 1][6] = rating;
+							tableArrReading[tableArrReading.length - 1][7] = "reading";
 
 							tableArrReading = expandArr(tableArrReading);
 							expandTableReading(modelReading, id);
@@ -896,12 +959,13 @@ public class nHentai {
 					String tags = tableArrReading[Integer.valueOf(row)][9];
 					String artist = tableArrReading[Integer.valueOf(row)][4];
 					String pages = tableArrReading[Integer.valueOf(row)][5];
-					String rating = tableArrReading[Integer.valueOf(row)][8];
-					String status = tableArrReading[Integer.valueOf(row)][6];
+					String rating = tableArrReading[Integer.valueOf(row)][6];
+					String status = tableArrReading[Integer.valueOf(row)][7];
 					String URL = tableArrReading[Integer.valueOf(row)][1];
+					String timesRead = tableArrReading[Integer.valueOf(row)][8];
 
 					moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
-							"1", status, tags,
+							timesRead, status, tags,
 							appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg");
 					UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 					JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
@@ -911,11 +975,13 @@ public class nHentai {
 					System.out.println("pressed" + value);
 
 					if (result == JOptionPane.OK_OPTION) {
-						String newRating = moreInformation.getRating();
+						rating = moreInformation.getRating();
+						timesRead = moreInformation.getTimesRead();
+						tableArrReading[Integer.valueOf(row)][6] = rating;
+						tableArrReading[Integer.valueOf(row)][8] = timesRead;
+
 						String newStatus = moreInformation.getStatus();
-						if (!newRating.equals(rating)) {
-							tableArrReading[Integer.valueOf(row)][7] = newRating;
-						}
+						
 						if (newStatus.equals("plan to read")) {
 							((DefaultTableModel) table_panel2.getModel()).removeRow(Integer.valueOf(row));
 							tableArrReading = rearangeArr(tableArrReading, Integer.valueOf(row));
@@ -927,6 +993,7 @@ public class nHentai {
 							tableArr[tableArr.length - 1][5] = pages;
 							tableArr[tableArr.length - 1][6] = "plan to read";
 							tableArr[tableArr.length - 1][8] = rating;
+							tableArr[tableArr.length - 1][7] = timesRead;
 
 							tableArr = expandArr(tableArr);
 							expandTable(model, id);
