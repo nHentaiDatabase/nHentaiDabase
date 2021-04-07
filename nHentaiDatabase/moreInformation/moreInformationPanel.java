@@ -230,6 +230,7 @@ public class moreInformationPanel extends JPanel {
 		panel.add(image_lbl);
 		
 		id_TField = new JTextField();
+		id_TField.setEditable(false);
 		id_TField.setForeground(Color.WHITE);
 		id_TField.setBackground(new Color(59, 59, 59));
 		id_TField.setBounds(22, 167, 86, 20);
@@ -238,6 +239,7 @@ public class moreInformationPanel extends JPanel {
 		id_TField.setColumns(10);
 		
 		title_TField = new JTextField();
+		title_TField.setEditable(false);
 		title_TField.setBackground(new Color(59, 59, 59));
 		title_TField.setForeground(Color.WHITE);
 		title_TField.setBounds(22, 237, 268, 20);
@@ -246,6 +248,7 @@ public class moreInformationPanel extends JPanel {
 		title_TField.setColumns(10);
 		
 		author_TField = new JTextField();
+		author_TField.setEditable(false);
 		author_TField.setBackground(new Color(59, 59, 59));
 		author_TField.setForeground(Color.WHITE);
 		author_TField.setBounds(22, 307, 140, 20);
@@ -254,6 +257,7 @@ public class moreInformationPanel extends JPanel {
 		author_TField.setColumns(10);
 		
 		pages_TField = new JTextField();
+		pages_TField.setEditable(false);
 		pages_TField.setBackground(new Color(59, 59, 59));
 		pages_TField.setForeground(Color.WHITE);
 		pages_TField.setBounds(22, 377, 74, 20);
@@ -311,7 +315,7 @@ public class moreInformationPanel extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        /*scrollBar.setUI(new BasicScrollBarUI() {
+        scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -329,7 +333,7 @@ public class moreInformationPanel extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
         tagsBody_SPane.setBounds(22, 667, 428, 80);
         add(tagsBody_SPane);
         

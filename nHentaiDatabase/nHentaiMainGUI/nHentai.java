@@ -39,13 +39,13 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import settings.ButtonColumnPlanToRead;
 import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
 import newEntry.newEntryGeneral;
+import outsourcedClasses.ButtonColumnAll;
 import outsourcedClasses.nHentaiAPIRun;
 
 import java.awt.Color;
@@ -64,6 +64,7 @@ public class nHentai {
 	private String fileLocation;
 	private DefaultTableModel model;
 	private DefaultTableModel modelReading;
+	private DefaultTableModel modelCompleted;
 
 	private dataManager dataManager;
 	private newEntry addNewEntry;
@@ -75,12 +76,12 @@ public class nHentai {
 	private String[][] tableArrCompleted;
 	private String appdataLocation;
 	private boolean SFW = false;
-	String mainFolderLocation = "\\nHentaiDatabse";
-	String photoFolderLocation = "\\savedPhotos";
-	String userDataFolderLocation = "\\userData";
-	String randomPhotoFolderLocation = "\\randomPhotos";
+	private String mainFolderLocation = "\\nHentaiDatabse";
+	private String photoFolderLocation = "\\savedPhotos";
+	private String userDataFolderLocation = "\\userData";
+	private String randomPhotoFolderLocation = "\\randomPhotos";
 
-	Point mouseCoord;
+	private Point mouseCoord;
 	private JTable table_panel2;
 	private JTable table_panel3;
 
@@ -385,7 +386,7 @@ public class nHentai {
 		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "status", "" });
 		table_panel1.setModel(model);
 
-		ButtonColumnPlanToRead buttonColumnTable_panel1 = new ButtonColumnPlanToRead(table_panel1, deleteTableArrRow, 7);
+		ButtonColumnAll buttonColumnTable_panel1 = new ButtonColumnAll(table_panel1, deleteTableArrRow, 7);
 		buttonColumnTable_panel1.setMnemonic(KeyEvent.VK_D);
 
 		table_panel1.getColumnModel().getColumn(0).setResizable(false);
@@ -467,15 +468,7 @@ public class nHentai {
 		settings_panel2_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
-				UIManager.put("OptionPane.minimumSize", new Dimension(550, 200));
-				JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-				int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null,
-						null);
-				if (result == JOptionPane.OK_OPTION) {
-					fileLocation = settings.getFileLocation();
-					SFW = settings.getSFW();
-				}
+				actionPerformedSetting();
 			}
 		});
 		panel_panel2.add(settings_panel2_bnt);
@@ -552,7 +545,7 @@ public class nHentai {
 		table_panel2.getTableHeader().setBackground(Color.RED);
 		table_panel2.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		
-		ButtonColumnPlanToRead buttonColumnTable_panel2 = new ButtonColumnPlanToRead(table_panel2, deleteTableArrReadingRow, 8);
+		ButtonColumnAll buttonColumnTable_panel2 = new ButtonColumnAll(table_panel2, deleteTableArrReadingRow, 8);
 		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
 		
 		table_panel2.getColumnModel().getColumn(0).setResizable(false);
@@ -595,28 +588,99 @@ public class nHentai {
 		completed_tab.add(panel_panel3);
 		
 		JButton newEntry_panel3_bnt = new JButton("new Entry");
+		newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
 		newEntry_panel3_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
 		newEntry_panel3_bnt.setForeground(Color.WHITE);
 		newEntry_panel3_bnt.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		newEntry_panel3_bnt.setBounds(10, 243, 210, 35);
+		newEntry_panel3_bnt.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
+			}
+		});
+		newEntry_panel3_bnt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				
+				actionPerformedNewEntry("completed");
+				
+			}
+		});
 		panel_panel3.add(newEntry_panel3_bnt);
 		
 		JButton settings_panel3_bnt = new JButton("settings");
+		settings_panel3_bnt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedSetting();
+			}
+		});
 		settings_panel3_bnt.setBounds(10, 586, 80, 35);
 		panel_panel3.add(settings_panel3_bnt);
 		
 		JButton saveTable_panel3_btn = new JButton("");
+		saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
 		saveTable_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		saveTable_panel3_btn.setForeground(Color.WHITE);
 		saveTable_panel3_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		saveTable_panel3_btn.setBounds(10, 552, 80, 25);
+		saveTable_panel3_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
+			}
+		});
 		panel_panel3.add(saveTable_panel3_btn);
 		
 		JButton loadTable__panel3_btn = new JButton("");
+		loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+		loadTable__panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		loadTable__panel3_btn.setForeground(Color.WHITE);
+		loadTable__panel3_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		loadTable__panel3_btn.setBounds(100, 552, 80, 25);
+		loadTable__panel3_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
+			}
+		});
 		panel_panel3.add(loadTable__panel3_btn);
 		
 		JScrollPane scrollPane_panel3 = new JScrollPane();
+		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
 		scrollPane_panel3.setBounds(250, 11, 666, 632);
 		completed_tab.add(scrollPane_panel3);
 		
@@ -624,7 +688,7 @@ public class nHentai {
 	        private static final long serialVersionUID = 1L;
 
 	        public boolean isCellEditable(int row, int column) { 
-	        	if(column == 8) {
+	        	if(column == 9) {
 	        		return true;
 	        	}else {
 	        		return false;               
@@ -634,15 +698,15 @@ public class nHentai {
 	    table_panel3.setForeground(Color.WHITE);
 	    table_panel3.setBackground(new Color(54, 57, 63));
 	    table_panel3.setRowSelectionAllowed(false);
-		modelReading = new DefaultTableModel(new Object[][] {
+		modelCompleted = new DefaultTableModel(new Object[][] {
 
 		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "rating", "times Read", "status", "" });
-		table_panel3.setModel(modelReading);
+		table_panel3.setModel(modelCompleted);
 		table_panel3.getTableHeader().setBackground(Color.RED);
 		table_panel3.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		
-		ButtonColumnPlanToRead buttonColumnTable_panel3 = new ButtonColumnPlanToRead(table_panel3, deleteTableArrReadingRow, 9);
-		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
+		ButtonColumnAll buttonColumnTable_panel3 = new ButtonColumnAll(table_panel3, deleteTableArrCompletedRow, 9);
+		buttonColumnTable_panel3.setMnemonic(KeyEvent.VK_D);
 		
 		table_panel3.getColumnModel().getColumn(0).setResizable(false);
 		table_panel3.getColumnModel().getColumn(1).setResizable(false);
@@ -747,7 +811,31 @@ public class nHentai {
 			tmp[j] = tableArrReading[tableArrReading.length - 2][j];
 		}
 		tmp[0] = String.valueOf(tableArrReading.length - 1);
-		Icon img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");
+		Icon img;
+		if(SFW == false) {
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+		}else {
+			int random = (int)(Math.random()*200);
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+		}
+		tmp[1] = img;
+		inputModel.addRow(tmp);
+		return inputModel;
+	}
+	
+	public DefaultTableModel expandTableCompleted(DefaultTableModel inputModel, String Id) {
+		Object[] tmp = new Object[tableArrCompleted[0].length];
+		for (int j = 0; j < tableArrCompleted[0].length; j++) {
+			tmp[j] = tableArrCompleted[tableArrCompleted.length - 2][j];
+		}
+		tmp[0] = String.valueOf(tableArrCompleted.length - 1);
+		Icon img;
+		if(SFW == false) {
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+		}else {
+			int random = (int)(Math.random()*200);
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+		}
 		tmp[1] = img;
 		inputModel.addRow(tmp);
 		return inputModel;
@@ -888,7 +976,6 @@ public class nHentai {
 				
 				if (newStatus.equals("reading")) {
 					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-					//table_panel1.getModel().setValueAt(null, (Integer.valueOf(row)), 7);
 					tableArr = rearangeArr(tableArr, modelRow);
 					tableArrReading[tableArrReading.length - 1][1] = URL;
 					tableArrReading[tableArrReading.length - 1][3] = title;
@@ -903,6 +990,22 @@ public class nHentai {
 					tableArrReading = expandArr(tableArrReading);
 					expandTableReading(modelReading, id);
 					
+				}
+				else if(newStatus.equals("completed")) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
+					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
+					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
+					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
+					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
+					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
+					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
+					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
+					tableArrCompleted[tableArrCompleted.length - 1][7] = timesRead;
+
+					tableArrCompleted = expandArr(tableArrCompleted);
+					expandTable(modelCompleted, id);
 				}
 			}
 	    }
@@ -967,10 +1070,105 @@ public class nHentai {
 					tableArr = expandArr(tableArr);
 					expandTable(model, id);
 				}
+				else if(newStatus.equals("completed")) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
+					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
+					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
+					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
+					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
+					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
+					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
+					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
+					tableArrCompleted[tableArrCompleted.length - 1][7] = timesRead;
+
+					tableArrCompleted = expandArr(tableArrCompleted);
+					expandTable(modelCompleted, id);
+				}
 			}
 	    }
 	};
-	private JTable table_1;
+	
+	Action deleteTableArrCompletedRow = new AbstractAction()
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+	        JTable table = (JTable)e.getSource();
+	        int modelRow = Integer.valueOf( e.getActionCommand() );
+	        
+	        String title = tableArrCompleted[modelRow][3];
+			String id = tableArrCompleted[modelRow][2];
+			String tags = tableArrCompleted[modelRow][9];
+			String artist = tableArrCompleted[modelRow][4];
+			String pages = tableArrCompleted[modelRow][5];
+			String rating = tableArrCompleted[modelRow][6];
+			String status = tableArrCompleted[modelRow][8];
+			String URL = tableArrCompleted[modelRow][1];
+			String timesRead = tableArrCompleted[modelRow][7];
+
+			String photoLocation;
+			if(SFW) {
+				int random = (int)(Math.random()*200);
+				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_medium.jpg";
+			}else {
+				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg";
+			}
+			
+			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
+					timesRead, status, tags,
+					photoLocation);
+			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
+					JOptionPane.OK_OPTION);
+			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
+					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			System.out.println("pressed" + e.getActionCommand());
+
+			if (result == JOptionPane.OK_OPTION) {
+				rating = moreInformation.getRating();
+				timesRead = moreInformation.getTimesRead();
+				tableArrCompleted[modelRow][6] = rating;
+				tableArrCompleted[modelRow][7] = timesRead;
+
+				String newStatus = moreInformation.getStatus();
+				
+				if (newStatus.equals("plan to read")) {
+					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+					tableArrCompleted = rearangeArr(tableArrReading, modelRow);
+					tableArr[tableArr.length - 1][1] = URL;
+					tableArr[tableArr.length - 1][3] = title;
+					tableArr[tableArr.length - 1][2] = id;
+					tableArr[tableArr.length - 1][9] = tags;
+					tableArr[tableArr.length - 1][4] = artist;
+					tableArr[tableArr.length - 1][5] = pages;
+					tableArr[tableArr.length - 1][6] = "plan to read";
+					tableArr[tableArr.length - 1][8] = rating;
+					tableArr[tableArr.length - 1][7] = timesRead;
+
+					tableArr = expandArr(tableArr);
+					expandTable(model, id);
+				}
+				else if (newStatus.equals("reading")) {
+					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+					tableArrCompleted = rearangeArr(tableArr, modelRow);
+					tableArrReading[tableArrReading.length - 1][1] = URL;
+					tableArrReading[tableArrReading.length - 1][3] = title;
+					tableArrReading[tableArrReading.length - 1][2] = id;
+					tableArrReading[tableArrReading.length - 1][9] = tags;
+					tableArrReading[tableArrReading.length - 1][4] = artist;
+					tableArrReading[tableArrReading.length - 1][5] = pages;
+					tableArrReading[tableArrReading.length - 1][8] = timesRead;
+					tableArrReading[tableArrReading.length - 1][6] = rating;
+					tableArrReading[tableArrReading.length - 1][7] = "reading";
+
+					tableArrReading = expandArr(tableArrReading);
+					expandTableReading(modelReading, id);
+					
+				}
+			}
+	    }
+	};
 	
 	public void actionPerformedNewEntry(String start) {
 		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
@@ -1045,6 +1243,36 @@ public class nHentai {
 								rawRating = rawRating.substring(0, rawRating.length() - 1);
 							tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
 							modelReading = expandTableReading(modelReading, rawCode);
+						}
+					}
+					break;
+				case "completed":
+					if (!code.equals("") || !URL.equals("")) {
+						tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+						modelCompleted = expandTableCompleted(modelCompleted, code);
+					}
+					if (selected == true) {
+						String[] TextAreaData = EntryGeneral.getDataInTextArea();
+						for (int i = 0; i < TextAreaData.length; i++) {
+							String rawData = TextAreaData[i];
+							String rawCode = "";
+							String rawRating = "";
+							boolean ratingTurn = false;
+							char[] rawDataChar = rawData.toCharArray();
+							for (int j = 0; j < rawDataChar.length; j++) {
+								if (ratingTurn == true) {
+									rawRating = rawRating + rawDataChar[j];
+								}
+								if (rawDataChar[j] == ' ') {
+									ratingTurn = true;
+								} else if (ratingTurn == false) {
+									rawCode = rawCode + rawDataChar[j];
+								}
+							}
+							if(!rawRating.equals(""))
+								rawRating = rawRating.substring(0, rawRating.length() - 1);
+							tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
+							modelCompleted = expandTableCompleted(modelCompleted, rawCode);
 						}
 					}
 					break;

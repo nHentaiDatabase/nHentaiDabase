@@ -27,7 +27,7 @@ public class statsPanel extends JPanel {
 		readDoujins_TField.setEditable(false);
 		
 		int readingDoujins = getReadDoujins(reading, 8);
-		int completedDoujins = getReadDoujins(completed, 8);
+		int completedDoujins = getReadDoujins(completed, 7);
 		
 		readDoujins_TField.setText(String.valueOf(completedDoujins + readingDoujins));
 		
@@ -45,7 +45,7 @@ public class statsPanel extends JPanel {
 		readPages_TField.setEditable(false);
 		
 		int readingPages = getReadPages(reading, 8);
-		int completedPages = getReadPages(completed, 8);
+		int completedPages = getReadPages(completed, 7);
 		
 		readPages_TField.setText(String.valueOf(readingPages + completedPages));
 		
@@ -124,29 +124,30 @@ public class statsPanel extends JPanel {
 		
 		String[][] together = new String[reading.length-1 + completed.length-1][3];
 		int[] points = new int[together.length];
-		for(int i=0;i<reading.length-1;i++) {
+		int i;
+		for(i=0;i<reading.length-1;i++) {
 			together[i][0] = reading[i][6];
 			together[i][1] = reading[i][8];
 			together[i][2] = reading[i][2];
 		}
-		for(int i=0;i<completed.length-1;i++) {
-			together[i][0] = completed[i][6];
-			together[i][1] = completed[i][8];
-			together[i][2] = completed[i][2];
+		for(int j=i;j<together.length;j++) {
+			together[j][0] = completed[j-i][6];
+			together[j][1] = completed[j-i][7];
+			together[j][2] = completed[j-i][2];
 		}
 		
-		for(int i=0;i<together.length;i++) {
-			int rating = Integer.valueOf(together[i][0]);
-			int timesReadthis = Integer.valueOf(together[i][1]);
-			points[i] = rating * timesReadthis;
+		for(int j=0;j<together.length;j++) {
+			int rating = Integer.valueOf(together[j][0]);
+			int timesReadthis = Integer.valueOf(together[j][1]);
+			points[j] = rating * timesReadthis;
 		}
 		
 		int best = 0;
 		
-		for(int i=0;i<points.length;i++) {
-			if(points[i] > best) {
-				best = points[i];
-				id = together[i][2];
+		for(int j=0;j<points.length;j++) {
+			if(points[j] > best) {
+				best = points[j];
+				id = together[j][2];
 			}
 		}
 		

@@ -81,6 +81,7 @@ public class settingsPanel extends JPanel {
 		JButton stats_btn = new JButton("stats");
 		stats_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
 				statsPanel stats = new statsPanel(planToRead, reading, completed);
 				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,

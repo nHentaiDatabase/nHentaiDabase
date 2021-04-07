@@ -1,4 +1,4 @@
-package settings;
+package outsourcedClasses;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,7 +21,7 @@ import moreInformation.moreInformationPanel;
  *  the model row number of the button that was clicked.
  *
  */
-public class ButtonColumnPlanToRead extends AbstractCellEditor
+public class ButtonColumnAll extends AbstractCellEditor
 	implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener
 {
 	private JTable table;
@@ -44,7 +44,7 @@ public class ButtonColumnPlanToRead extends AbstractCellEditor
 	 *  @param action the Action to be invoked when the button is invoked
 	 *  @param column the column to which the button renderer/editor is added
 	 */
-	public ButtonColumnPlanToRead(JTable table, Action action, int column)
+	public ButtonColumnAll(JTable table, Action action, int column)
 	{
 		this.table = table;
 		this.action = action;

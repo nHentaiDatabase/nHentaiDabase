@@ -111,6 +111,52 @@ public class nHentaiAPIRun {
 		return tableArrReading;
 	}
 	
+	public String[][] nHentaiAPIRunCompleted(String[][] tableArrCompleted, String location, String code, String URL, String rating, String status){
+		String coverImage = "";
+		String title = "";
+		String id = "";
+		String[] tags = new String[0];
+		String artist = "";
+		String pages = "";
+		
+		if(!code.equals("")) 
+			nHentaiAPI.initDocWithCode(code);
+		else if(!URL.equals("")) 
+			nHentaiAPI.initDocWithURL(URL);
+		
+		coverImage = nHentaiAPI.getCoverImage();
+		title = nHentaiAPI.getTitle();
+		id = nHentaiAPI.getId();
+		StringBuilder sb = new StringBuilder(id);
+		sb.deleteCharAt(0);
+		id = sb.toString();
+		tags = nHentaiAPI.getTags();
+		artist = nHentaiAPI.getArtist();
+		pages = nHentaiAPI.getPages();
+		
+		nHentaiAPI.saveImageAsFile(coverImage, location + "\\" + id + "_original.jpg");
+		scaleImage(location + "\\" + id, "_low.jpg", 50, 71);
+		scaleImage(location + "\\" + id, "_medium.jpg", 150, 212);
+		
+		tableArrCompleted[tableArrCompleted.length - 1][1] = coverImage;
+		tableArrCompleted[tableArrCompleted.length - 1][3] = title;
+		tableArrCompleted[tableArrCompleted.length - 1][2] = id;
+		for(int i=0;i<tags.length;i++){
+			if(i == 0)
+				tableArrCompleted[tableArrCompleted.length - 1][9] = tags[i] + ", ";
+			else
+				tableArrCompleted[tableArrCompleted.length - 1][9] = tableArrCompleted[tableArrCompleted.length - 1][9] + tags[i] + ", ";
+		}
+		tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
+		tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
+		tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
+		tableArrCompleted[tableArrCompleted.length - 1][7] = "1";
+		tableArrCompleted[tableArrCompleted.length - 1][8] = status;
+		
+		tableArrCompleted = expandArr(tableArrCompleted);
+		return tableArrCompleted;
+	}
+	
 	public void scaleImage(String location, String name, int x, int y){
         try{
             ImageIcon ii = new ImageIcon(location + "_original.jpg");
