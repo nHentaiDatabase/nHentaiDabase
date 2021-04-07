@@ -19,15 +19,20 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JCheckBox;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class settingsPanel extends JPanel {
 	private JTextField fileLocation_TField;
 	private JFileChooser myJFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 	private String fileLocation;
+	private boolean SFW;
 	/**
 	 * Create the panel.
 	 */
-	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed) {
+	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed, boolean sfw) {
+		SFW = sfw;
 		setForeground(Color.WHITE);
 		setBackground(new Color(34, 34, 34));
 		setLayout(null);
@@ -84,10 +89,33 @@ public class settingsPanel extends JPanel {
 		});
 		stats_btn.setBounds(10, 119, 89, 23);
 		add(stats_btn);
+		
+		JButton SFWMode_btn = new JButton("SFW Mode");
+		SFWMode_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SFW = !SFW;
+			}
+		});
+		SFWMode_btn.setBounds(109, 119, 89, 23);
+		add(SFWMode_btn);
+		
+		JCheckBox SFWMode_ChBox = new JCheckBox("SFW Mode");
+		SFWMode_ChBox.setSelected(sfw);
+		SFWMode_ChBox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				SFW = !SFW;
+			}
+		});
+		SFWMode_ChBox.setBounds(204, 119, 97, 23);
+		add(SFWMode_ChBox);
 
 	}
 	
 	public String getFileLocation() {
 		return fileLocation;
+	}
+	
+	public boolean getSFW() {
+		return SFW;
 	}
 }

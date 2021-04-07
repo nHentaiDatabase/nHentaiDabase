@@ -59,7 +59,7 @@ public class newEntryGeneral extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public newEntryGeneral() {
+	public newEntryGeneral(String start) {
 		setBackground(new Color(35, 35, 35));
 		setLayout(null);
 		
@@ -270,6 +270,7 @@ public class newEntryGeneral extends JPanel {
         status_CBox.setBackground(new Color(59, 59, 59));
         status_CBox.setForeground(Color.WHITE);
 		status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
+		status_CBox.setSelectedItem(start);
 		status_CBox.setBounds(195, 228, 84, 24);
 		add(status_CBox);
 		
