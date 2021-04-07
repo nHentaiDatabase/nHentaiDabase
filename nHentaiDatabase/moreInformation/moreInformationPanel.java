@@ -29,6 +29,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -71,6 +72,8 @@ public class moreInformationPanel extends JPanel {
 
 	JComboBox status_CBox;
 	JComboBox rating_CBox;
+	
+	boolean deleteEntry = false;
 	/**
 	 * Create the panel.
 	 */
@@ -308,7 +311,7 @@ public class moreInformationPanel extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        scrollBar.setUI(new BasicScrollBarUI() {
+        /*scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -326,7 +329,7 @@ public class moreInformationPanel extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
         tagsBody_SPane.setBounds(22, 667, 428, 80);
         add(tagsBody_SPane);
         
@@ -392,6 +395,22 @@ public class moreInformationPanel extends JPanel {
         status_CBox.setSelectedItem(status);
         status_CBox.setBounds(22, 587, 97, 24);
         add(status_CBox);
+        
+        JButton deleteEntry_btn = new JButton("delete entry");
+        deleteEntry_btn.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+        		confirmDeleteEntry confirm = new confirmDeleteEntry();
+        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if(result == JOptionPane.OK_OPTION) {
+					System.out.println("Entry gets deleted");
+					deleteEntry = true;
+				}
+        	}
+        });
+        deleteEntry_btn.setBounds(353, 587, 97, 23);
+        add(deleteEntry_btn);
 	}
 	
 	public String[] splitTagsUp(String tags) {
@@ -434,6 +453,10 @@ public class moreInformationPanel extends JPanel {
 	
 	public String getTimesRead() {
 		return timesRead_TField.getText();
+	}
+	
+	public boolean getDeleteEntry() {
+		return deleteEntry;
 	}
 	
 	protected JOptionPane getOptionPane(JComponent parent) {

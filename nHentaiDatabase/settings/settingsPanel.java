@@ -5,6 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 
+import moreInformation.confirmDeleteEntry;
 import moreInformation.moreInformationPanel;
 import stats.statsPanel;
 
@@ -104,8 +105,10 @@ public class settingsPanel extends JPanel {
 		JButton deleteAllData_btn = new JButton("delete all data");
 		deleteAllData_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UIManager.put("OptionPane.minimumSize", new Dimension(200, 200));
-				int result = JOptionPane.showConfirmDialog(null, "<html><font face='Tahoma' size='8' color='red'>\"do you realy want to delete all data?\"");
+				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+				confirmDeleteEverything confirm = new confirmDeleteEverything();
+        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if(result == JOptionPane.OK_OPTION) {
 					System.out.println("everything gets deleted");
 					delete = true;

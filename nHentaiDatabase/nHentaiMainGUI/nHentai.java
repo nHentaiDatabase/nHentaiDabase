@@ -21,7 +21,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -29,24 +28,15 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.LookAndFeel;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import settings.ButtonColumnPlanToRead;
@@ -56,8 +46,6 @@ import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntry;
 import newEntry.newEntryGeneral;
-import newEntry.newEntryPanelRead;
-import outsourcedClasses.CustomFileChooser;
 import outsourcedClasses.nHentaiAPIRun;
 
 import java.awt.Color;
@@ -65,7 +53,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.JScrollPane;
@@ -887,6 +874,13 @@ public class nHentai {
 			if (result == JOptionPane.OK_OPTION) {
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
+				boolean deleteEntry = moreInformation.getDeleteEntry();
+				
+				if(deleteEntry == true) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+					tableArr = rearangeArr(tableArr, modelRow);
+				}
+				
 				tableArr[modelRow][8] = rating;
 				tableArr[modelRow][7] = timesRead;
 
