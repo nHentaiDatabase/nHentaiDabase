@@ -297,23 +297,7 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				UIManager.put("OptionPane.background", new Color(244, 244, 244));
-				UIManager.put("Panel.background", new Color(244, 244, 244));
-
-				JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-
-				myJFileChooserSave.setDialogTitle("Chosse the save location");
-				myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            	int returnValue = myJFileChooserSave.showOpenDialog(null);
-            	String SaveFileLocation = "";
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = myJFileChooserSave.getSelectedFile();
-                    System.out.println(selectedFile.getAbsolutePath());
-                    SaveFileLocation = selectedFile.getAbsolutePath();
-                }
-                UIManager.put("OptionPane.background", new Color(35, 35, 35));
-        		UIManager.put("Panel.background", new Color(35, 35, 35));
-				dataManager.saveTable(tableArr, SaveFileLocation);
+				actionPerformedSafe(tableArr);
 			}
 		});
 		panel_panel1.add(saveTable_panel1_btn);
@@ -341,21 +325,7 @@ public class nHentai {
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				UIManager.put("OptionPane.background", new Color(244, 244, 244));
-				UIManager.put("Panel.background", new Color(244, 244, 244));
-				JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-				myJFileChooserLoad.setDialogTitle("Choose a file to load");
-				myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            	int returnValue = myJFileChooserLoad.showOpenDialog(null);
-            	String LoadFileLocation = "";
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = myJFileChooserLoad.getSelectedFile();
-                    System.out.println(selectedFile.getAbsolutePath());
-                    LoadFileLocation = selectedFile.getAbsolutePath();
-                }
-                UIManager.put("OptionPane.background", new Color(35, 35, 35));
-        		UIManager.put("Panel.background", new Color(35, 35, 35));
-				tableArr = dataManager.readTable(LoadFileLocation);
+				tableArr = actionPerformedLoad();
 				model = ArrToTable(model);
 			}
 		});
@@ -474,6 +444,11 @@ public class nHentai {
 		panel_panel2.add(settings_panel2_bnt);
 
 		JButton saveTable_panel2_btn = new JButton("");
+		saveTable_panel2_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedSafe(tableArrReading);
+			}
+		});
 		saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
 		saveTable_panel2_btn.setBounds(10, 552, 80, 25);
 		saveTable_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -497,6 +472,12 @@ public class nHentai {
 		panel_panel2.add(saveTable_panel2_btn);
 
 		JButton loadTable__panel2_btn = new JButton("");
+		loadTable__panel2_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tableArrReading = actionPerformedLoad();
+				modelReading = ArrToTable(modelReading);
+			}
+		});
 		loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
 		loadTable__panel2_btn.setBounds(100, 552, 80, 25);
 		loadTable__panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -630,6 +611,11 @@ public class nHentai {
 		panel_panel3.add(settings_panel3_bnt);
 		
 		JButton saveTable_panel3_btn = new JButton("");
+		saveTable_panel3_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedSafe(tableArrCompleted);
+			}
+		});
 		saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
 		saveTable_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		saveTable_panel3_btn.setForeground(Color.WHITE);
@@ -655,6 +641,12 @@ public class nHentai {
 		panel_panel3.add(saveTable_panel3_btn);
 		
 		JButton loadTable__panel3_btn = new JButton("");
+		loadTable__panel3_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tableArrCompleted = actionPerformedLoad();
+				modelCompleted = ArrToTable(modelCompleted);
+			}
+		});
 		loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
 		loadTable__panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		loadTable__panel3_btn.setForeground(Color.WHITE);
@@ -779,8 +771,13 @@ public class nHentai {
 			String Id = tableArr[i][2];
 			tmp[0] = String.valueOf(i + 1);
 			checkOneImage(Id, tableArr[i][1]);
-			Icon img = new ImageIcon(
-					appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");
+			Icon img;
+			if(SFW == false) {
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			}else {
+				int random = (int)(Math.random()*200);
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			}
 			tmp[1] = img;
 			inputModel.addRow(tmp);
 		}
@@ -805,6 +802,28 @@ public class nHentai {
 		return inputModel;
 	}
 
+	public DefaultTableModel ArrToTableReading(DefaultTableModel inputModel) {
+		for (int i = 0; i < tableArrReading.length - 1; i++) {
+			Object[] tmp = new Object[tableArrReading[0].length];
+			for (int j = 0; j < tableArrReading[0].length; j++) {
+				tmp[j] = tableArrReading[i][j];
+			}
+			String Id = tableArrReading[i][2];
+			tmp[0] = String.valueOf(i + 1);
+			checkOneImage(Id, tableArrReading[i][1]);
+			Icon img;
+			if(SFW == false) {
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			}else {
+				int random = (int)(Math.random()*200);
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			}
+			tmp[1] = img;
+			inputModel.addRow(tmp);
+		}
+		return inputModel;
+	}
+	
 	public DefaultTableModel expandTableReading(DefaultTableModel inputModel, String Id) {
 		Object[] tmp = new Object[tableArrReading[0].length];
 		for (int j = 0; j < tableArrReading[0].length; j++) {
@@ -820,6 +839,28 @@ public class nHentai {
 		}
 		tmp[1] = img;
 		inputModel.addRow(tmp);
+		return inputModel;
+	}
+	
+	public DefaultTableModel ArrToTableCompleted(DefaultTableModel inputModel) {
+		for (int i = 0; i < tableArrCompleted.length - 1; i++) {
+			Object[] tmp = new Object[tableArrCompleted[0].length];
+			for (int j = 0; j < tableArrCompleted[0].length; j++) {
+				tmp[j] = tableArrCompleted[i][j];
+			}
+			String Id = tableArrCompleted[i][2];
+			tmp[0] = String.valueOf(i + 1);
+			checkOneImage(Id, tableArrCompleted[i][1]);
+			Icon img;
+			if(SFW == false) {
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			}else {
+				int random = (int)(Math.random()*200);
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			}
+			tmp[1] = img;
+			inputModel.addRow(tmp);
+		}
 		return inputModel;
 	}
 	
@@ -1339,5 +1380,58 @@ public class nHentai {
 		    }
 		  }
 		  Files.delete(path);
-		}
+	}
+	
+	public void actionPerformedSafe(String[][] inputArr) {
+		UIManager.put("OptionPane.background", new Color(244, 244, 244));
+		UIManager.put("Panel.background", new Color(244, 244, 244));
+
+		JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+		myJFileChooserSave.setDialogTitle("Chosse the save location");
+		myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	int returnValue = myJFileChooserSave.showOpenDialog(null);
+    	String SaveFileLocation = "";
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = myJFileChooserSave.getSelectedFile();
+            System.out.println(selectedFile.getAbsolutePath());
+            SaveFileLocation = selectedFile.getAbsolutePath();
+            
+            char[] location = SaveFileLocation.toCharArray();
+            String end = "";
+            for(int i=location.length-1;i>location.length-5;i--) {
+            	end = end + location[i];
+            }
+            
+            String reversed = "";
+            for ( int j = end.length()-1; j >= 0; j-- ) {
+            	reversed += end.charAt(j);
+            }
+            	            
+            if(!end.equals(".txt")) {
+            	SaveFileLocation = SaveFileLocation + ".txt";
+            }
+            dataManager.saveTable(inputArr, SaveFileLocation);
+        }
+        UIManager.put("OptionPane.background", new Color(35, 35, 35));
+		UIManager.put("Panel.background", new Color(35, 35, 35));
+	}
+	
+	public String[][] actionPerformedLoad() {
+		UIManager.put("OptionPane.background", new Color(244, 244, 244));
+		UIManager.put("Panel.background", new Color(244, 244, 244));
+		JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+		myJFileChooserLoad.setDialogTitle("Choose a file to load");
+		myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	int returnValue = myJFileChooserLoad.showOpenDialog(null);
+    	String LoadFileLocation = "";
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = myJFileChooserLoad.getSelectedFile();
+            System.out.println(selectedFile.getAbsolutePath());
+            LoadFileLocation = selectedFile.getAbsolutePath();
+        }
+        UIManager.put("OptionPane.background", new Color(35, 35, 35));
+		UIManager.put("Panel.background", new Color(35, 35, 35));
+		return dataManager.readTable(LoadFileLocation);
+	}
 }
