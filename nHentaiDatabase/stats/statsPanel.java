@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import java.awt.Color;
 
 public class statsPanel extends JPanel {
 	private JTextField readDoujins_TField;
@@ -15,8 +16,10 @@ public class statsPanel extends JPanel {
 	 */
 	public statsPanel(String[][] planToRead, String[][] reading, String [][] completed) {
 		setLayout(null);
+		setBackground(new Color(35, 35, 35));
 		
 		JLabel lblNewLabel = new JLabel("read Doujins");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setBounds(10, 50, 80, 14);
 		add(lblNewLabel);
 		
@@ -33,6 +36,8 @@ public class statsPanel extends JPanel {
 		readDoujins_TField.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("read pages");
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setBackground(Color.WHITE);
 		lblNewLabel_1.setBounds(10, 100, 80, 14);
 		add(lblNewLabel_1);
 		
@@ -49,6 +54,7 @@ public class statsPanel extends JPanel {
 		readPages_TField.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("favorite doujin");
+		lblNewLabel_2.setForeground(Color.WHITE);
 		lblNewLabel_2.setBounds(211, 50, 80, 14);
 		add(lblNewLabel_2);
 		
@@ -61,6 +67,7 @@ public class statsPanel extends JPanel {
 		picture_panel.add(picture_lbl);
 		
 		JLabel lblNewLabel_3 = new JLabel("time spend reading");
+		lblNewLabel_3.setForeground(Color.WHITE);
 		lblNewLabel_3.setBounds(10, 150, 127, 14);
 		add(lblNewLabel_3);
 		

@@ -1,3 +1,4 @@
+package nHentaiMainGUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -16,6 +17,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -89,6 +95,7 @@ public class nHentai {
 
 	Point mouseCoord;
 	private JTable table_panel2;
+	private JTable table_panel3;
 
 	/**
 	 * Launch the application.
@@ -129,7 +136,6 @@ public class nHentai {
 		tableArrCompleted = new String[1][10];
 		appdataLocation = System.getenv("APPDATA");
 		setUpAppData(appdataLocation);
-		setUpRandomPhotos();
 		initialize();
 
 	}
@@ -272,15 +278,7 @@ public class nHentai {
 		settings_panel1_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
-				UIManager.put("OptionPane.minimumSize", new Dimension(550, 200));
-				JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-				int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null,
-						null);
-				if (result == JOptionPane.OK_OPTION) {
-					fileLocation = settings.getFileLocation();
-					SFW = settings.getSFW();
-				}
+				actionPerformedSetting();
 			}
 		});
 		panel_panel1.add(settings_panel1_bnt);
@@ -595,10 +593,97 @@ public class nHentai {
 		 * end panel 2
 		 */
 
+		
+		/*
+		 * start panel 3
+		 */
 		JPanel completed_tab = new JPanel();
 		tabbedPane.addTab("completed", null, completed_tab, null);
 		completed_tab.setLayout(null);
+		
+		JPanel panel_panel3 = new JPanel();
+		panel_panel3.setLayout(null);
+		panel_panel3.setBackground(new Color(0, 44, 88));
+		panel_panel3.setBounds(10, 11, 230, 632);
+		completed_tab.add(panel_panel3);
+		
+		JButton newEntry_panel3_bnt = new JButton("new Entry");
+		newEntry_panel3_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
+		newEntry_panel3_bnt.setForeground(Color.WHITE);
+		newEntry_panel3_bnt.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		newEntry_panel3_bnt.setBounds(10, 243, 210, 35);
+		panel_panel3.add(newEntry_panel3_bnt);
+		
+		JButton settings_panel3_bnt = new JButton("settings");
+		settings_panel3_bnt.setBounds(10, 586, 80, 35);
+		panel_panel3.add(settings_panel3_bnt);
+		
+		JButton saveTable_panel3_btn = new JButton("");
+		saveTable_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		saveTable_panel3_btn.setForeground(Color.WHITE);
+		saveTable_panel3_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		saveTable_panel3_btn.setBounds(10, 552, 80, 25);
+		panel_panel3.add(saveTable_panel3_btn);
+		
+		JButton loadTable__panel3_btn = new JButton("");
+		loadTable__panel3_btn.setBounds(100, 552, 80, 25);
+		panel_panel3.add(loadTable__panel3_btn);
+		
+		JScrollPane scrollPane_panel3 = new JScrollPane();
+		scrollPane_panel3.setBounds(250, 11, 666, 632);
+		completed_tab.add(scrollPane_panel3);
+		
+		table_panel3 = new JTable(){
+	        private static final long serialVersionUID = 1L;
 
+	        public boolean isCellEditable(int row, int column) { 
+	        	if(column == 8) {
+	        		return true;
+	        	}else {
+	        		return false;               
+	        	}
+	        };
+	    };
+	    table_panel3.setForeground(Color.WHITE);
+	    table_panel3.setBackground(new Color(54, 57, 63));
+	    table_panel3.setRowSelectionAllowed(false);
+		modelReading = new DefaultTableModel(new Object[][] {
+
+		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "rating", "times Read", "status", "" });
+		table_panel3.setModel(modelReading);
+		table_panel3.getTableHeader().setBackground(Color.RED);
+		table_panel3.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
+		
+		ButtonColumnPlanToRead buttonColumnTable_panel3 = new ButtonColumnPlanToRead(table_panel3, deleteTableArrReadingRow, 9);
+		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
+		
+		table_panel3.getColumnModel().getColumn(0).setResizable(false);
+		table_panel3.getColumnModel().getColumn(1).setResizable(false);
+		table_panel3.getColumnModel().getColumn(2).setResizable(false);
+		table_panel3.getColumnModel().getColumn(3).setResizable(false);
+		table_panel3.getColumnModel().getColumn(4).setResizable(false);
+		table_panel3.getColumnModel().getColumn(5).setResizable(false);
+		table_panel3.getColumnModel().getColumn(6).setResizable(false);
+		table_panel3.getColumnModel().getColumn(7).setResizable(false);
+		table_panel3.getColumnModel().getColumn(8).setResizable(false);
+		table_panel3.getColumnModel().getColumn(9).setResizable(false);
+		table_panel3.setRowHeight(71);
+		table_panel3.getColumnModel().getColumn(1).setCellRenderer(new TableCellRenderer() {
+
+			@Override
+			public Component getTableCellRendererComponent(JTable jtable, Object value, boolean bln, boolean bln1,
+					int i, int i1) {
+				JLabel lbl = new JLabel();
+				lbl.setIcon((ImageIcon) value);
+				return lbl;
+			}
+		});
+		scrollPane_panel3.setViewportView(table_panel3);
+
+		/*
+		 * end panel 3
+		 */
+		
 	}
 
 	
@@ -891,6 +976,7 @@ public class nHentai {
 			}
 	    }
 	};
+	private JTable table_1;
 	
 	public void actionPerformedNewEntry(String start) {
 		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
@@ -971,4 +1057,65 @@ public class nHentai {
 			}
 		}
 	}
+	
+	public void setVisible(boolean visible) {
+		frmNhentaidatabase.setVisible(visible);
+	}
+	
+	public void actionPerformedSetting() {
+		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
+		UIManager.put("OptionPane.minimumSize", new Dimension(550, 200));
+		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+		int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, null,
+				null);
+		if (result == JOptionPane.OK_OPTION) {
+			fileLocation = settings.getFileLocation();
+			SFW = settings.getSFW();
+			boolean delete = settings.getDelete();
+			if(delete == true) {
+				for(int i=0;i<tableArr.length-1;i++) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
+				}
+				for(int i=0;i<tableArrReading.length-1;i++) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(i);
+				}
+				tableArr = new String[1][10];
+				tableArrReading = new String[1][10];
+				File file = new File(appdataLocation + mainFolderLocation + photoFolderLocation);
+				Path fromFile = file.toPath();
+				try {
+					deleteDirectoryRecursion(fromFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				file = new File(appdataLocation + mainFolderLocation + userDataFolderLocation);
+				fromFile = file.toPath();
+				try {
+					deleteDirectoryRecursion(fromFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				file = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation);
+				fromFile = file.toPath();
+				try {
+					deleteDirectoryRecursion(fromFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void deleteDirectoryRecursion(Path path) throws IOException {
+		  if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+		    try (DirectoryStream<Path> entries = Files.newDirectoryStream(path)) {
+		      for (Path entry : entries) {
+		        deleteDirectoryRecursion(entry);
+		      }
+		    }
+		  }
+		  Files.delete(path);
+		}
 }

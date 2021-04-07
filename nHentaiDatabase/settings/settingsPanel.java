@@ -28,6 +28,7 @@ public class settingsPanel extends JPanel {
 	private JFileChooser myJFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 	private String fileLocation;
 	private boolean SFW;
+	private boolean delete = false;
 	/**
 	 * Create the panel.
 	 */
@@ -90,15 +91,6 @@ public class settingsPanel extends JPanel {
 		stats_btn.setBounds(10, 119, 89, 23);
 		add(stats_btn);
 		
-		JButton SFWMode_btn = new JButton("SFW Mode");
-		SFWMode_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				SFW = !SFW;
-			}
-		});
-		SFWMode_btn.setBounds(109, 119, 89, 23);
-		add(SFWMode_btn);
-		
 		JCheckBox SFWMode_ChBox = new JCheckBox("SFW Mode");
 		SFWMode_ChBox.setSelected(sfw);
 		SFWMode_ChBox.addChangeListener(new ChangeListener() {
@@ -106,8 +98,22 @@ public class settingsPanel extends JPanel {
 				SFW = !SFW;
 			}
 		});
-		SFWMode_ChBox.setBounds(204, 119, 97, 23);
+		SFWMode_ChBox.setBounds(105, 119, 97, 23);
 		add(SFWMode_ChBox);
+		
+		JButton deleteAllData_btn = new JButton("delete all data");
+		deleteAllData_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UIManager.put("OptionPane.minimumSize", new Dimension(200, 200));
+				int result = JOptionPane.showConfirmDialog(null, "<html><font face='Tahoma' size='8' color='red'>\"do you realy want to delete all data?\"");
+				if(result == JOptionPane.OK_OPTION) {
+					System.out.println("everything gets deleted");
+					delete = true;
+				}
+			}
+		});
+		deleteAllData_btn.setBounds(208, 119, 108, 23);
+		add(deleteAllData_btn);
 
 	}
 	
@@ -117,5 +123,9 @@ public class settingsPanel extends JPanel {
 	
 	public boolean getSFW() {
 		return SFW;
+	}
+	
+	public boolean getDelete() {
+		return delete;
 	}
 }
