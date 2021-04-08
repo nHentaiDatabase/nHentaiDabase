@@ -1348,6 +1348,17 @@ public class nHentai {
 		if (result == JOptionPane.OK_OPTION) {
 			fileLocation = settings.getFileLocation();
 			SFW = settings.getSFW();
+			
+				for(int i=0;i<tableArr.length-1;i++) {
+					reloadRowImage(i, "plan to read", tableArr[i][2]);
+				}
+				for(int i=0;i<tableArrReading.length-1;i++) {
+					reloadRowImage(i, "reading", tableArrReading[i][2]);
+				}
+				for(int i=0;i<tableArrCompleted.length-1;i++) {
+					reloadRowImage(i, "completed", tableArrCompleted[i][2]);
+				}
+				
 			boolean delete = settings.getDelete();
 			if(delete == true) {
 				for(int i=0;i<tableArr.length-1;i++) {
@@ -1467,4 +1478,56 @@ public class nHentai {
 		modelReading = ArrToTableReading(modelReading);
 		modelCompleted = ArrToTableCompleted(modelCompleted);
 	}
+	
+	public void reloadRowImage(int index, String table, String Id) {			
+		
+		Icon img;
+		if(SFW == false) {
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+		}else {
+			int random = (int)(Math.random()*200);
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+		}
+		
+		Object[] data;
+		
+		switch (table){
+		case "plan to read":
+			data = new Object[8];
+			for(int i=0;i<8;i++) {
+				data[i] = tableArr [index][i];
+			}
+			data[0] = index+1;
+			data[1] = img;
+			model = updateRow(model, index, data);
+			break;
+		case "reading":
+			data = new Object[9];
+			for(int i=0;i<9;i++) {
+				data[i] = tableArrReading [index][i];
+			}
+			data[0] = index+1;
+			data[1] = img;
+			modelReading = updateRow(modelReading, index, data);
+			break;
+		case "completed":
+			data = new Object[10];
+			for(int i=0;i<10;i++) {
+				data[i] = tableArrCompleted [index][i];
+			}
+			data[0] = index+1;
+			data[1] = img;
+			modelCompleted = updateRow(modelCompleted, index, data);
+			break;
+		}
+	}
+	
+	public DefaultTableModel updateRow(DefaultTableModel inputModel, int index,Object[] values)
+    {
+        for (int i = 0 ; i < values.length ; i++)
+        {
+        	inputModel.setValueAt(values[i],index,i);
+        }
+        return inputModel;
+    }
 }
