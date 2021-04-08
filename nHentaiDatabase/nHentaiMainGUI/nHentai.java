@@ -39,6 +39,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import settings.confirmDeleteEverything;
 import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
@@ -123,9 +124,8 @@ public class nHentai {
 		tableArrReading = new String[1][10];
 		tableArrCompleted = new String[1][10];
 		appdataLocation = System.getenv("APPDATA");
-		setUpAppData(appdataLocation);
 		initialize();
-
+		getSave();
 	}
 
 	/**
@@ -194,7 +194,21 @@ public class nHentai {
 		closeWindow_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				System.exit(0);
+				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+				exitConfirm confirm = new exitConfirm();
+        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+        		String[] options = new String[] {"save", "close", "cancel"};
+				int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options
+						, null);
+				if(result == JOptionPane.YES_OPTION) {
+					String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+					dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead");
+					dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading");
+					dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted");
+					System.exit(0);
+				}else if(result == JOptionPane.NO_OPTION) {
+					System.exit(0);
+				}
 			}
 		});
 		windowToolbar.add(closeWindow_btn);
@@ -475,7 +489,7 @@ public class nHentai {
 		loadTable__panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tableArrReading = actionPerformedLoad();
-				modelReading = ArrToTable(modelReading);
+				modelReading = ArrToTableReading(modelReading);
 			}
 		});
 		loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
@@ -644,7 +658,7 @@ public class nHentai {
 		loadTable__panel3_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tableArrCompleted = actionPerformedLoad();
-				modelCompleted = ArrToTable(modelCompleted);
+				modelCompleted = ArrToTableCompleted(modelCompleted);
 			}
 		});
 		loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
@@ -1399,7 +1413,7 @@ public class nHentai {
             
             char[] location = SaveFileLocation.toCharArray();
             String end = "";
-            for(int i=location.length-1;i>location.length-5;i--) {
+            for(int i=location.length-1;i>location.length-6;i--) {
             	end = end + location[i];
             }
             
@@ -1408,9 +1422,12 @@ public class nHentai {
             	reversed += end.charAt(j);
             }
             	            
-            if(!end.equals(".txt")) {
-            	SaveFileLocation = SaveFileLocation + ".txt";
+            if(!end.equals(".nhdb")) {
+            	SaveFileLocation = SaveFileLocation + ".nhdb";
             }
+            UIManager.put("OptionPane.background", new Color(35, 35, 35));
+            UIManager.put("Panel.background", new Color(35, 35, 35));
+
             dataManager.saveTable(inputArr, SaveFileLocation);
         }
         UIManager.put("OptionPane.background", new Color(35, 35, 35));
@@ -1429,9 +1446,25 @@ public class nHentai {
             File selectedFile = myJFileChooserLoad.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
             LoadFileLocation = selectedFile.getAbsolutePath();
+            UIManager.put("OptionPane.background", new Color(35, 35, 35));
+            UIManager.put("Panel.background", new Color(35, 35, 35));
+            return dataManager.readTable(LoadFileLocation);
         }
         UIManager.put("OptionPane.background", new Color(35, 35, 35));
-		UIManager.put("Panel.background", new Color(35, 35, 35));
-		return dataManager.readTable(LoadFileLocation);
+        UIManager.put("Panel.background", new Color(35, 35, 35));
+
+		return new String[1][10];
+	}
+	
+	public void getSave() {
+		String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+		
+		tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead");
+		tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading");
+		tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted");
+		
+		model = ArrToTable(model);
+		modelReading = ArrToTableReading(modelReading);
+		modelCompleted = ArrToTableCompleted(modelCompleted);
 	}
 }
