@@ -45,6 +45,9 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.metal.MetalScrollBarUI;
+
+import loadingScreen.loadingScreenApp;
+
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.BorderFactory;
@@ -400,7 +403,7 @@ public class moreInformationPanel extends JPanel {
         status_CBox.setBounds(22, 587, 97, 24);
         add(status_CBox);
         
-        JButton deleteEntry_btn = new JButton("delete entry");
+        JButton deleteEntry_btn = new JButton();
         deleteEntry_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
@@ -413,6 +416,24 @@ public class moreInformationPanel extends JPanel {
 				}
         	}
         });
+        deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/delete.png")));
+        deleteEntry_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/deleteHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/delete.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/deleteSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/deleteHover.png")));
+			}
+		});
         deleteEntry_btn.setBounds(353, 587, 97, 23);
         add(deleteEntry_btn);
 	}

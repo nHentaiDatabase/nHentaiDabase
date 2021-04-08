@@ -10,7 +10,7 @@ public class exitConfirm extends JPanel {
 	 */
 	public exitConfirm() {
 
-		JLabel info_lbl = new JLabel("<html><h1 style='font-family: Tahoma; font-size: 20pt; color: red'>Close without saving?");
+		JLabel info_lbl = new JLabel("<html><h1 style='font-family: Tahoma; font-size: 20pt; color: white'>Close without saving?");
 		add(info_lbl);
 		
 	}

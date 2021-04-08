@@ -1,5 +1,6 @@
 package nHentaiWebScaper;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,10 +11,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import settings.confirmDeleteEverything;
+
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 
 public class nHentaiWebBase {
@@ -29,16 +36,30 @@ public class nHentaiWebBase {
 		String newURL = baseURL + number + "/";
 		try {
 			doc = Jsoup.connect(newURL).timeout(1000).maxBodySize(0) .get();
-		} catch (Error | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
+			//JOptionPane pane = new JOptionPane();
+			//pane.showMessageDialog(null, "some error occurred please try again.", "", 0);
+			
+			UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+			Error errorPanel = new Error();
+    		JOptionPane error = new JOptionPane();
+			error.showMessageDialog(null, errorPanel, "error", 0);
 		}
 	}
 	
-	public void initDocWithURL(String URL){
+	public void initDocWithURL(String URL) {
 		try {
 			doc = Jsoup.connect(URL).timeout(1000).maxBodySize(0).get();
-		} catch (Error | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
+			//JOptionPane pane = new JOptionPane();
+			//pane.showMessageDialog(null, "some error occurred please try again.", "", 0);
+			
+			UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+			Error errorPanel = new Error();
+    		JOptionPane error = new JOptionPane();
+			error.showMessageDialog(null, errorPanel, "error", 0);
 		}
 	}
 	

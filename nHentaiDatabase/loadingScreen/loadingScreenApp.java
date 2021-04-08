@@ -11,12 +11,14 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.event.ChangeListener;
 
 import nHentaiWebScaper.nHentaiWebBase;
 import nHentaiMainGUI.nHentai;
@@ -24,13 +26,15 @@ import nHentaiMainGUI.nHentai;
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class loadingScreenApp {
 
 	private JFrame frame;
 
-	String mainFolderLocation = "\\nHentaiDatabse";
+	String mainFolderLocation = "\\nHentaiDatabase";
 	String photoFolderLocation = "\\savedPhotos";
 	String userDataFolderLocation = "\\userData";
 	String randomPhotoFolderLocation = "\\randomPhotos";
@@ -93,18 +97,22 @@ public class loadingScreenApp {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(35, 35, 35));
 		frame.setBounds(100, 100, 352, 125);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
 		
+		UIManager.put("ProgressBar.selectionBackground", Color.black);
 		progressBar = new JProgressBar();
+		//progressBar.setBackground(Color.DARK_GRAY);
 		progressBar.setForeground(Color.GREEN);
 		progressBar.setBounds(10, 55, 316, 20);
 		progressBar.setValue(0);
 		frame.getContentPane().add(progressBar);
 		
-		JButton btnNewButton = new JButton("start nHentaiDatabase");
+		JButton btnNewButton = new JButton("");
+		btnNewButton.setIcon(new ImageIcon(loadingScreenApp.class.getResource("/grafics/loadingScreen/startnHentaiDatabase.png")));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				task = new Task();
@@ -121,7 +129,24 @@ public class loadingScreenApp {
 		        task.execute();
 			}
 		});
-		btnNewButton.setBounds(83, 11, 168, 23);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				btnNewButton.setIcon(new ImageIcon(loadingScreenApp.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				btnNewButton.setIcon(new ImageIcon(loadingScreenApp.class.getResource("/grafics/loadingScreen/startnHentaiDatabase.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				btnNewButton.setIcon(new ImageIcon(loadingScreenApp.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				btnNewButton.setIcon(new ImageIcon(loadingScreenApp.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseHover.png")));
+			}
+		});
+		btnNewButton.setBounds(83, 11, 166, 21);
 		frame.getContentPane().add(btnNewButton);
 		
 		
@@ -201,7 +226,6 @@ public class loadingScreenApp {
     			}
     		});
         }
-    }
-	
-	
+    }	
 }
+

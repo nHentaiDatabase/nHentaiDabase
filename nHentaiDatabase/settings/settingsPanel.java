@@ -11,12 +11,15 @@ import stats.statsPanel;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,7 +28,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 public class settingsPanel extends JPanel {
-	private JTextField fileLocation_TField;
 	private JFileChooser myJFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 	private String fileLocation;
 	private boolean SFW;
@@ -39,46 +41,7 @@ public class settingsPanel extends JPanel {
 		setBackground(new Color(34, 34, 34));
 		setLayout(null);
 		
-		fileLocation_TField = new JTextField();
-		fileLocation_TField.setBounds(10, 41, 270, 20);
-		add(fileLocation_TField);
-		fileLocation_TField.setColumns(10);
-		
-		JLabel fileLocation_btn = new JLabel("file location:");
-		fileLocation_btn.setForeground(Color.WHITE);
-		fileLocation_btn.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		fileLocation_btn.setBounds(10, 18, 92, 19);
-		add(fileLocation_btn);
-		
-		JButton changeLocation_btn = new JButton("change");
-		changeLocation_btn.setBounds(290, 40, 80, 23);
-		changeLocation_btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-            	UIManager.put("OptionPane.background", new Color(244, 244, 244));
-            	UIManager.put("Panel.background", new Color(244, 244, 244));
-            	
-            	myJFileChooser.setDialogTitle("Choose a directory to save your file: ");
-        		myJFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            	int returnValue = myJFileChooser.showOpenDialog(null);
-            	
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = myJFileChooser.getSelectedFile();
-                    System.out.println(selectedFile.getAbsolutePath());
-                    fileLocation = selectedFile.getAbsolutePath();
-                    fileLocation_TField.setText(fileLocation);
-                }
-                UIManager.put("OptionPane.background", new Color(35, 35, 35));
-        		UIManager.put("Panel.background", new Color(35, 35, 35));
-            }
-        });
-		add(changeLocation_btn);
-		
-		JButton save_btn = new JButton("save");
-		save_btn.setBounds(380, 40, 60, 23);
-		add(save_btn);
-		
-		JButton stats_btn = new JButton("stats");
+		JButton stats_btn = new JButton();
 		stats_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
@@ -90,20 +53,40 @@ public class settingsPanel extends JPanel {
 						JOptionPane.PLAIN_MESSAGE, null, null, null);
 			}
 		});
-		stats_btn.setBounds(10, 119, 89, 23);
+		stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/stats.png")));
+		stats_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/statsHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/stats.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/statsSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/statsHover.png")));
+			}
+		});
+		stats_btn.setBounds(10, 11, 89, 23);
 		add(stats_btn);
 		
 		JCheckBox SFWMode_ChBox = new JCheckBox("SFW Mode");
+		SFWMode_ChBox.setForeground(Color.WHITE);
+		SFWMode_ChBox.setBackground(new Color(34, 34, 34));
 		SFWMode_ChBox.setSelected(sfw);
 		SFWMode_ChBox.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				SFW = !SFW;
 			}
 		});
-		SFWMode_ChBox.setBounds(105, 119, 97, 23);
+		SFWMode_ChBox.setBounds(10, 77, 97, 23);
 		add(SFWMode_ChBox);
 		
-		JButton deleteAllData_btn = new JButton("delete all data");
+		JButton deleteAllData_btn = new JButton("");
 		deleteAllData_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
@@ -116,7 +99,25 @@ public class settingsPanel extends JPanel {
 				}
 			}
 		});
-		deleteAllData_btn.setBounds(208, 119, 108, 23);
+		deleteAllData_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/deleteAllData.png")));
+		deleteAllData_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				deleteAllData_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/deleteAllDataHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				deleteAllData_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/deleteAllData.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				deleteAllData_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/deleteAllDataSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				deleteAllData_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/deleteAllDataHover.png")));
+			}
+		});
+		deleteAllData_btn.setBounds(10, 147, 150, 23);
 		add(deleteAllData_btn);
 
 	}
