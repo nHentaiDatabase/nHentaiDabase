@@ -25,6 +25,7 @@ import java.nio.file.Path;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -58,6 +59,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 
 public class nHentai {
@@ -480,6 +482,32 @@ public class nHentai {
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
 		scrollPane_panel1.getViewport().setBackground(new Color(54, 57, 63));
+		
+		JScrollBar scrollBar_panel1 = scrollPane_panel1.getVerticalScrollBar();
+        Dimension scrollBarDim_panel1 = new Dimension(15, scrollBar_panel1
+              .getPreferredSize().height);
+        scrollBar_panel1.setPreferredSize(scrollBarDim_panel1);
+        scrollBar_panel1.setUI(new BasicScrollBarUI() {
+           @Override 
+           protected void configureScrollBarColors(){
+               this.thumbColor = new Color(10, 10, 10);
+               this.thumbDarkShadowColor = new Color(10, 10, 10);
+               this.thumbLightShadowColor = new Color(10, 10, 10);
+               this.trackColor = new Color(59, 59, 59);
+               this.trackHighlightColor = new Color(59, 59, 59);
+           }
+          @Override
+         protected JButton createDecreaseButton(int orientation) {
+             return createZeroButton();
+         }
+
+         @Override
+         protected JButton createIncreaseButton(int orientation) {
+             return createZeroButton();
+         }
+       });
+		
+		
 		planToRead_tab.add(scrollPane_panel1);
 
 		table_panel1 = new JTable() {
@@ -667,6 +695,32 @@ public class nHentai {
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
 		scrollPane_panel2.getViewport().setBackground(new Color(54, 57, 63));
+		
+		JScrollBar scrollBar_panel2 = scrollPane_panel2.getVerticalScrollBar();
+        Dimension scrollBarDim_panel2 = new Dimension(15, scrollBar_panel2
+              .getPreferredSize().height);
+        scrollBar_panel2.setPreferredSize(scrollBarDim_panel2);
+        scrollBar_panel2.setUI(new BasicScrollBarUI() {
+           @Override 
+           protected void configureScrollBarColors(){
+               this.thumbColor = new Color(10, 10, 10);
+               this.thumbDarkShadowColor = new Color(10, 10, 10);
+               this.thumbLightShadowColor = new Color(10, 10, 10);
+               this.trackColor = new Color(59, 59, 59);
+               this.trackHighlightColor = new Color(59, 59, 59);
+           }
+          @Override
+         protected JButton createDecreaseButton(int orientation) {
+             return createZeroButton();
+         }
+
+         @Override
+         protected JButton createIncreaseButton(int orientation) {
+             return createZeroButton();
+         }
+       });
+        
+		
 		reading_tab.add(scrollPane_panel2);
 
 		table_panel2 = new JTable(){
@@ -857,6 +911,31 @@ public class nHentai {
 		JScrollPane scrollPane_panel3 = new JScrollPane();
 		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
 		scrollPane_panel3.setBounds(250, 11, 666, 632);
+		
+		JScrollBar scrollBar_panel3 = scrollPane_panel2.getVerticalScrollBar();
+        Dimension scrollBarDim_panel3 = new Dimension(15, scrollBar_panel3
+              .getPreferredSize().height);
+        scrollBar_panel3.setPreferredSize(scrollBarDim_panel3);
+        scrollBar_panel3.setUI(new BasicScrollBarUI() {
+           @Override 
+           protected void configureScrollBarColors(){
+               this.thumbColor = new Color(10, 10, 10);
+               this.thumbDarkShadowColor = new Color(10, 10, 10);
+               this.thumbLightShadowColor = new Color(10, 10, 10);
+               this.trackColor = new Color(59, 59, 59);
+               this.trackHighlightColor = new Color(59, 59, 59);
+           }
+          @Override
+         protected JButton createDecreaseButton(int orientation) {
+             return createZeroButton();
+         }
+
+         @Override
+         protected JButton createIncreaseButton(int orientation) {
+             return createZeroButton();
+         }
+       });
+		
 		completed_tab.add(scrollPane_panel3);
 		
 		table_panel3 = new JTable(){
@@ -1174,7 +1253,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation);
+					photoLocation, SFW);
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
@@ -1264,7 +1343,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation);
+					photoLocation, SFW);
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
@@ -1345,7 +1424,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation);
+					photoLocation, SFW);
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
@@ -1862,4 +1941,13 @@ public class nHentai {
         }
         return pane;
     }
+	
+	protected JButton createZeroButton() {
+	    JButton button = new JButton("zero button");
+	    Dimension zeroDim = new Dimension(0,0);
+	    button.setPreferredSize(zeroDim);
+	    button.setMinimumSize(zeroDim);
+	    button.setMaximumSize(zeroDim);
+	    return button;
+	}
 }

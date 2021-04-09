@@ -80,7 +80,7 @@ public class moreInformationPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation) {
+	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation, boolean SFW) {
 		setBackground(new Color(35, 35, 35));
 		
 		splitTagsUp(tags);
@@ -313,8 +313,11 @@ public class moreInformationPanel extends JPanel {
         container.add(panel_1);
         
         JScrollPane tagsBody_SPane = new JScrollPane(container, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        if(SFW == true) {
+        	tagsBody_SPane.setVisible(false);
+        }
         
-        JScrollBar scrollBar = tagsBody_SPane.getVerticalScrollBar();;
+        JScrollBar scrollBar = tagsBody_SPane.getVerticalScrollBar();
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
