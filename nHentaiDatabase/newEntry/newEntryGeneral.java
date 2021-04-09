@@ -3,25 +3,32 @@ package newEntry;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.FileChooserUI;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import moreInformation.moreInformationPanel;
 
+import javax.accessibility.AccessibleContext;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.HeadlessException;
+
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
@@ -37,9 +44,12 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JScrollPane;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
 
 public class newEntryGeneral extends JPanel {
@@ -180,7 +190,9 @@ public class newEntryGeneral extends JPanel {
 				UIManager.put("OptionPane.background", new Color(244, 244, 244));
 				UIManager.put("Panel.background", new Color(244, 244, 244));
 				
-				myJFileChooser.setDialogTitle("Choose a directory to save your file: ");
+				setFileChooserColors(myJFileChooser, Color.BLACK, new Color(244, 244, 244));
+				
+				myJFileChooser.setDialogTitle("Choose a directory to save your file");
         		myJFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             	int returnValue = myJFileChooser.showOpenDialog(null);
             	
@@ -376,7 +388,7 @@ public class newEntryGeneral extends JPanel {
 	         Dimension scrollBarDim = new Dimension(15, scrollBar
 	               .getPreferredSize().height);
 	         scrollBar.setPreferredSize(scrollBarDim);
-	         /*scrollBar.setUI(new BasicScrollBarUI() {
+	         scrollBar.setUI(new BasicScrollBarUI() {
 	            @Override 
 	            protected void configureScrollBarColors(){
 	                this.thumbColor = new Color(32, 34, 37);
@@ -394,7 +406,7 @@ public class newEntryGeneral extends JPanel {
 	          protected JButton createIncreaseButton(int orientation) {
 	              return createZeroButton();
 	          }
-	        });*/
+	        });
 	      }
 	}
 	
@@ -437,5 +449,44 @@ public class newEntryGeneral extends JPanel {
 			
 			return this;
 		}
-    }   
+    }  
+	
+	 public void setFileChooserColors(JFileChooser jfc, Color f, Color b){
+		 myJFileChooser.setForeground(f);
+		 myJFileChooser.setBackground(b);
+
+
+	    for (int index1 = 0; index1 < jfc.getAccessibleContext().getAccessibleChildrenCount(); index1++){
+	        jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	        jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	        for (int index2 = 0; index2 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChildrenCount(); index2++){
+	            jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	            jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	            for (int index3 = 0; index3 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChildrenCount(); index3++){
+	                jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	                for (int index4 = 0; index4 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChildrenCount(); index4++){
+	                    jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                    jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	                    for (int index5 = 0; index5 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChildrenCount(); index5++){
+	                        jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                        jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	                        for (int index6 = 0; index6 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChildrenCount(); index6++){                             
+	                            jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                            jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	                            for (int index7 = 0; index7 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChildrenCount(); index7++){
+	                                jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChild(index7).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                                jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChild(index7).getAccessibleContext().getAccessibleComponent().setForeground(f);
+	                                for (int index8 = 0; index8 < jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChild(index7).getAccessibleContext().getAccessibleChildrenCount(); index8++){
+	                                    jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChild(index7).getAccessibleContext().getAccessibleChild(index8).getAccessibleContext().getAccessibleComponent().setBackground(b);
+	                                    jfc.getAccessibleContext().getAccessibleChild(index1).getAccessibleContext().getAccessibleChild(index2).getAccessibleContext().getAccessibleChild(index3).getAccessibleContext().getAccessibleChild(index4).getAccessibleContext().getAccessibleChild(index5).getAccessibleContext().getAccessibleChild(index6).getAccessibleContext().getAccessibleChild(index7).getAccessibleContext().getAccessibleChild(index8).getAccessibleContext().getAccessibleComponent().setForeground(f);                                       
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
 }

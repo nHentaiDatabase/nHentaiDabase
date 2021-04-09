@@ -119,6 +119,12 @@ public class settingsPanel extends JPanel {
 		});
 		deleteAllData_btn.setBounds(10, 147, 150, 23);
 		add(deleteAllData_btn);
+		
+		JLabel copyright_lbl = new JLabel("<html>Copyright: Philipp Bleimund");
+		copyright_lbl.setForeground(Color.LIGHT_GRAY);
+		copyright_lbl.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		copyright_lbl.setBounds(10, 181, 201, 68);
+		add(copyright_lbl);
 
 	}
 	

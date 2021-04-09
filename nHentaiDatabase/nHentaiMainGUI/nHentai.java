@@ -1560,6 +1560,7 @@ public class nHentai {
 		Component[] buttonText = new Component[]{	OKButton, cancelButton};
 		
 		int result2 = pane2.showOptionDialog(null, EntryGeneral, "new Entry", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+		
 		if (result2 == JOptionPane.OK_OPTION) {
 			String code = EntryGeneral.getCode();
 			String URL = EntryGeneral.getURL();
@@ -1669,7 +1670,7 @@ public class nHentai {
 	
 	public void actionPerformedSetting() {
 		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
-		UIManager.put("OptionPane.minimumSize", new Dimension(500, 250));
+		UIManager.put("OptionPane.minimumSize", new Dimension(500, 300));
 		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 		
 		final JButton OKButton = new JButton();
