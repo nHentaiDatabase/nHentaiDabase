@@ -473,7 +473,7 @@ public class nHentai {
 		loadTable__panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				tableArr = actionPerformedLoad();
+				tableArr = actionPerformedLoad("plan to read");
 				model = ArrToTable(model);
 			}
 		});
@@ -666,7 +666,7 @@ public class nHentai {
 		JButton loadTable__panel2_btn = new JButton("");
 		loadTable__panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableArrReading = actionPerformedLoad();
+				tableArrReading = actionPerformedLoad("reading");
 				modelReading = ArrToTableReading(modelReading);
 			}
 		});
@@ -880,7 +880,8 @@ public class nHentai {
 		JButton loadTable__panel3_btn = new JButton("");
 		loadTable__panel3_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableArrCompleted = actionPerformedLoad();
+				
+				tableArrCompleted = actionPerformedLoad("completed");
 				modelCompleted = ArrToTableCompleted(modelCompleted);
 			}
 		});
@@ -1254,11 +1255,14 @@ public class nHentai {
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
 					photoLocation, SFW);
+			
+			Component[] buttonText = OKCancelButtonCreate();
+			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
 			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
+					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			System.out.println("pressed" + e.getActionCommand());
 			
 			
@@ -1267,20 +1271,28 @@ public class nHentai {
 				timesRead = moreInformation.getTimesRead();
 				boolean deleteEntry = moreInformation.getDeleteEntry();
 				
-				if(deleteEntry == true) {
-					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-					tableArr = rearangeArr(tableArr, modelRow);
-				}
 				
 				tableArr[modelRow][8] = rating;
 				tableArr[modelRow][7] = timesRead;
 
 				String newStatus = moreInformation.getStatus();
 				
-				if (newStatus.equals("reading")) {
+				if(deleteEntry == true) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+					tableArr = rearangeArr(tableArr, modelRow);
+					tableArr = newArrIndex(tableArr);
+					for(int i=0;i<tableArr.length-1;i++) {
+						table_panel1.setValueAt(tableArr[i][0], i, 0);
+					}
+				}
+				else if (newStatus.equals("reading")) {
 					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
 					tableArr = rearangeArr(tableArr, modelRow);
+					tableArr = newArrIndex(tableArr);
+					for(int i=0;i<tableArr.length-1;i++) {
+						table_panel1.setValueAt(tableArr[i][0], i, 0);
+					}
 					tableArrReading[tableArrReading.length - 1][1] = URL;
 					tableArrReading[tableArrReading.length - 1][3] = title;
 					tableArrReading[tableArrReading.length - 1][2] = id;
@@ -1297,8 +1309,12 @@ public class nHentai {
 				}
 				else if(newStatus.equals("completed")) {
 					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+					tableArr = rearangeArr(tableArr, modelRow);
+					tableArr = newArrIndex(tableArr);
+					for(int i=0;i<tableArr.length-1;i++) {
+						table_panel1.setValueAt(tableArr[i][0], i, 0);
+					}
 					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
 					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
 					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
@@ -1307,10 +1323,10 @@ public class nHentai {
 					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
 					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
 					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
-					tableArrCompleted[tableArrCompleted.length - 1][7] = timesRead;
+					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
 
 					tableArrCompleted = expandArr(tableArrCompleted);
-					expandTable(modelCompleted, id);
+					expandTableCompleted(modelCompleted, id);
 				}
 			}
 	    }
@@ -1344,25 +1360,43 @@ public class nHentai {
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
 					photoLocation, SFW);
+			
+			Component[] buttonText = OKCancelButtonCreate();
+			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
 			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
+					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			System.out.println("pressed" + e.getActionCommand());
 
 			if (result == JOptionPane.OK_OPTION) {
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
+				boolean deleteEntry = moreInformation.getDeleteEntry();
+				
+				
 				tableArrReading[modelRow][6] = rating;
 				tableArrReading[modelRow][8] = timesRead;
 
 				String newStatus = moreInformation.getStatus();
 				
-				if (newStatus.equals("plan to read")) {
+				if(deleteEntry == true) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArrReading = newArrIndex(tableArrReading);
+					for(int i=0;i<tableArr.length-1;i++) {
+						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+					}
+				}
+				else if (newStatus.equals("plan to read")) {
 					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
 					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArrReading = newArrIndex(tableArrReading);
+					for(int i=0;i<tableArrReading.length-1;i++) {
+						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+					}
 					tableArr[tableArr.length - 1][1] = URL;
 					tableArr[tableArr.length - 1][3] = title;
 					tableArr[tableArr.length - 1][2] = id;
@@ -1380,6 +1414,10 @@ public class nHentai {
 					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
 					tableArrReading = rearangeArr(tableArrReading, modelRow);
+					tableArrReading = newArrIndex(tableArrReading);
+					for(int i=0;i<tableArrReading.length-1;i++) {
+						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+					}
 					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
 					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
 					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
@@ -1388,10 +1426,10 @@ public class nHentai {
 					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
 					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
 					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
-					tableArrCompleted[tableArrCompleted.length - 1][7] = timesRead;
+					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
 
 					tableArrCompleted = expandArr(tableArrCompleted);
-					expandTable(modelCompleted, id);
+					expandTableCompleted(modelCompleted, id);
 				}
 			}
 	    }
@@ -1425,25 +1463,44 @@ public class nHentai {
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
 					photoLocation, SFW);
+			
+			Component[] buttonText = OKCancelButtonCreate();
+			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
+					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			System.out.println("pressed" + e.getActionCommand());
 
 			if (result == JOptionPane.OK_OPTION) {
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
+				boolean deleteEntry = moreInformation.getDeleteEntry();
+				
+				
 				tableArrCompleted[modelRow][6] = rating;
 				tableArrCompleted[modelRow][7] = timesRead;
 
 				String newStatus = moreInformation.getStatus();
 				
-				if (newStatus.equals("plan to read")) {
+				if(deleteEntry == true) {
+					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
+					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
+					tableArrCompleted = newArrIndex(tableArrCompleted);
+					for(int i=0;i<tableArrCompleted.length-1;i++) {
+						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+					}
+				}
+				else if (newStatus.equals("plan to read")) {
 					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
 					tableArrCompleted = rearangeArr(tableArrReading, modelRow);
+					tableArrCompleted = newArrIndex(tableArrCompleted);
+					for(int i=0;i<tableArrCompleted.length-1;i++) {
+						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+					}
 					tableArr[tableArr.length - 1][1] = URL;
 					tableArr[tableArr.length - 1][3] = title;
 					tableArr[tableArr.length - 1][2] = id;
@@ -1460,7 +1517,11 @@ public class nHentai {
 				else if (newStatus.equals("reading")) {
 					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-					tableArrCompleted = rearangeArr(tableArr, modelRow);
+					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
+					tableArrCompleted = newArrIndex(tableArrCompleted);
+					for(int i=0;i<tableArr.length-1;i++) {
+						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+					}
 					tableArrReading[tableArrReading.length - 1][1] = URL;
 					tableArrReading[tableArrReading.length - 1][3] = title;
 					tableArrReading[tableArrReading.length - 1][2] = id;
@@ -1485,79 +1546,8 @@ public class nHentai {
 		JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION);
 		
-		final JButton OKButton = new JButton();
-		OKButton.setPreferredSize(new Dimension(75,25));
-		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		OKButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(OKButton);
-				Window w = SwingUtilities.getWindowAncestor(OKButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		OKButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-		});
 		
-		final JButton cancelButton = new JButton();
-		cancelButton.setPreferredSize(new Dimension(58,25));
-		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(cancelButton);
-				Window w = SwingUtilities.getWindowAncestor(cancelButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		cancelButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-		});
-		
-		Component[] buttonText = new Component[]{	OKButton, cancelButton};
+		Component[] buttonText = OKCancelButtonCreate();
 		
 		int result2 = pane2.showOptionDialog(null, EntryGeneral, "new Entry", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 		
@@ -1673,79 +1663,9 @@ public class nHentai {
 		UIManager.put("OptionPane.minimumSize", new Dimension(500, 300));
 		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 		
-		final JButton OKButton = new JButton();
-		OKButton.setPreferredSize(new Dimension(75,25));
-		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		OKButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(OKButton);
-				Window w = SwingUtilities.getWindowAncestor(OKButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		OKButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-		});
 		
-		final JButton cancelButton = new JButton();
-		cancelButton.setPreferredSize(new Dimension(58,25));
-		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(cancelButton);
-				Window w = SwingUtilities.getWindowAncestor(cancelButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		cancelButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-		});
 		
-		Component[] buttonText = new Component[]{	OKButton, cancelButton};
+		Component[] buttonText = OKCancelButtonCreate();
 		
 		int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 		if (result == JOptionPane.OK_OPTION) {
@@ -1769,8 +1689,12 @@ public class nHentai {
 				for(int i=0;i<tableArrReading.length-1;i++) {
 					((DefaultTableModel) table_panel2.getModel()).removeRow(i);
 				}
+				for(int i=0;i<tableArrCompleted.length-1;i++) {
+					((DefaultTableModel) table_panel3.getModel()).removeRow(i);
+				}
 				tableArr = new String[1][10];
 				tableArrReading = new String[1][10];
+				tableArrCompleted = new String[1][10];
 				File file = new File(appdataLocation + mainFolderLocation + photoFolderLocation);
 				Path fromFile = file.toPath();
 				try {
@@ -1847,7 +1771,7 @@ public class nHentai {
 		UIManager.put("Panel.background", new Color(35, 35, 35));
 	}
 	
-	public String[][] actionPerformedLoad() {
+	public String[][] actionPerformedLoad(String table) {
 		UIManager.put("OptionPane.background", new Color(244, 244, 244));
 		UIManager.put("Panel.background", new Color(244, 244, 244));
 		JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -1861,6 +1785,23 @@ public class nHentai {
             LoadFileLocation = selectedFile.getAbsolutePath();
             UIManager.put("OptionPane.background", new Color(35, 35, 35));
             UIManager.put("Panel.background", new Color(35, 35, 35));
+            switch (table) {
+            case "plan to read":
+            	for(int i=0;i<tableArr.length-1;i++) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
+				}
+            	break;
+            case "reading":
+            	for(int i=0;i<tableArrReading.length-1;i++) {
+					((DefaultTableModel) table_panel2.getModel()).removeRow(i);
+				}
+            	break;
+            case "completed":
+            	for(int i=0;i<tableArrCompleted.length-1;i++) {
+					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
+				}
+            	break;
+            }
             return dataManager.readTable(LoadFileLocation);
         }
         UIManager.put("OptionPane.background", new Color(35, 35, 35));
@@ -1950,5 +1891,89 @@ public class nHentai {
 	    button.setMinimumSize(zeroDim);
 	    button.setMaximumSize(zeroDim);
 	    return button;
+	}
+	
+	public String[][] newArrIndex(String[][] inputArr){
+		for(int i=0;i<inputArr.length-1;i++) {
+			inputArr[i][0] = String.valueOf(i+1);
+		}
+		return inputArr;
+	}
+	
+	public Component[] OKCancelButtonCreate() {
+		final JButton OKButton = new JButton();
+		OKButton.setPreferredSize(new Dimension(75,25));
+		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		OKButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(OKButton);
+				Window w = SwingUtilities.getWindowAncestor(OKButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		OKButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+		});
+		
+		final JButton cancelButton = new JButton();
+		cancelButton.setPreferredSize(new Dimension(58,25));
+		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(cancelButton);
+				Window w = SwingUtilities.getWindowAncestor(cancelButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		cancelButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+		});
+		
+		Component[] buttonText = new Component[]{	OKButton, cancelButton};
+		return buttonText;
 	}
 }

@@ -412,7 +412,10 @@ public class moreInformationPanel extends JPanel {
         		UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
         		confirmDeleteEntry confirm = new confirmDeleteEntry();
         		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        		
+        		Component[] buttonText = OKCancelButtonCreate();
+        		
+				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 				if(result == JOptionPane.OK_OPTION) {
 					System.out.println("Entry gets deleted");
 					deleteEntry = true;
@@ -569,5 +572,82 @@ public class moreInformationPanel extends JPanel {
 	          }
 	        });
 	      }
+	}
+	
+	public Component[] OKCancelButtonCreate() {
+		final JButton OKButton = new JButton();
+		OKButton.setPreferredSize(new Dimension(75,25));
+		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		OKButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(OKButton);
+				Window w = SwingUtilities.getWindowAncestor(OKButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		OKButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+		});
+		
+		final JButton cancelButton = new JButton();
+		cancelButton.setPreferredSize(new Dimension(58,25));
+		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(cancelButton);
+				Window w = SwingUtilities.getWindowAncestor(cancelButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		cancelButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+		});
+		
+		Component[] buttonText = new Component[]{	OKButton, cancelButton};
+		return buttonText;
 	}
 }
