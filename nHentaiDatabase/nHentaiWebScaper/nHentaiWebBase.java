@@ -31,36 +31,15 @@ public class nHentaiWebBase {
 		
 	}
 	
-	public void initDocWithCode(String number){
+	public void initDocWithCode(String number) throws IOException{
 		String baseURL = "https://nhentai.net/g/";
 		String newURL = baseURL + number + "/";
-		try {
-			doc = Jsoup.connect(newURL).timeout(1000).maxBodySize(0) .get();
-		} catch (IOException e) {
-			e.printStackTrace();
-			//JOptionPane pane = new JOptionPane();
-			//pane.showMessageDialog(null, "some error occurred please try again.", "", 0);
-			
-			UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-			Error errorPanel = new Error();
-    		JOptionPane error = new JOptionPane();
-			error.showMessageDialog(null, errorPanel, "error", 0);
-		}
+		
+		doc = Jsoup.connect(newURL).timeout(1000).maxBodySize(0) .get();
 	}
 	
-	public void initDocWithURL(String URL) {
-		try {
-			doc = Jsoup.connect(URL).timeout(1000).maxBodySize(0).get();
-		} catch (IOException e) {
-			e.printStackTrace();
-			//JOptionPane pane = new JOptionPane();
-			//pane.showMessageDialog(null, "some error occurred please try again.", "", 0);
-			
-			UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-			Error errorPanel = new Error();
-    		JOptionPane error = new JOptionPane();
-			error.showMessageDialog(null, errorPanel, "error", 0);
-		}
+	public void initDocWithURL(String URL) throws IOException{
+		doc = Jsoup.connect(URL).timeout(1000).maxBodySize(0).get();
 	}
 	
 	public String getCoverImage() {

@@ -1,36 +1,23 @@
 package moreInformation;
 
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 
-import java.awt.CardLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
-
-import net.miginfocom.swing.MigLayout;
-import newEntry.newEntryGeneral;
-import newEntry.newEntryPanelRead;
 
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
-import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Panel;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
@@ -39,14 +26,10 @@ import java.awt.datatransfer.StringSelection;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
-import javax.swing.plaf.metal.MetalScrollBarUI;
-
-import loadingScreen.loadingScreenApp;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;

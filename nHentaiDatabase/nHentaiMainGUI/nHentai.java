@@ -16,15 +16,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -37,8 +41,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -51,6 +58,8 @@ import newEntry.newEntry;
 import newEntry.newEntryGeneral;
 import outsourcedClasses.ButtonColumnAll;
 import outsourcedClasses.nHentaiAPIRun;
+import nHentaiWebScaper.Error;
+import search.searchEngine;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -61,6 +70,7 @@ import java.awt.Graphics2D;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 public class nHentai {
 
@@ -74,10 +84,17 @@ public class nHentai {
 	private newEntry addNewEntry;
 	private nHentaiWebBase nHentaiAPI;
 	private nHentaiAPIRun nHentaiAPIRun;
+	private searchEngine searchEngine;
 
 	private String[][] tableArr;
+	private String[][] tableArrSave;
+	private boolean inSearchViewPlanToRead = false;
 	private String[][] tableArrReading;
+	private String[][] tableArrReadingSave;
+	private boolean inSearchViewReading = false;
 	private String[][] tableArrCompleted;
+	private String[][] tableArrCompletedSave;
+	private boolean inSearchViewCompleted = false;
 	private String appdataLocation;
 	private boolean SFW = false;
 	private String mainFolderLocation = "\\nHentaiDatabase";
@@ -88,6 +105,8 @@ public class nHentai {
 	private Point mouseCoord;
 	private JTable table_panel2;
 	private JTable table_panel3;
+	
+	private loadingScreenMainGUI loadingScreen;
 
 	/**
 	 * Launch the application.
@@ -108,6 +127,7 @@ public class nHentai {
 				try {
 					nHentai window = new nHentai();
 					window.frmNhentaidatabase.setVisible(true);
+					window.setVisible2(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -123,12 +143,17 @@ public class nHentai {
 		addNewEntry = new newEntry();
 		nHentaiAPI = new nHentaiWebBase();
 		nHentaiAPIRun = new nHentaiAPIRun();
+		searchEngine = new searchEngine();
 		tableArr = new String[1][10];
+		tableArrSave = new String[1][10];
 		tableArrReading = new String[1][10];
+		tableArrReadingSave = new String[1][10];
 		tableArrCompleted = new String[1][10];
+		tableArrCompletedSave = new String[1][10];
 		appdataLocation = System.getenv("APPDATA");
 		initialize();
-		getSave();
+		loadingScreen = new loadingScreenMainGUI();
+		//getSave();
 	}
 
 	/**
@@ -314,8 +339,7 @@ public class nHentai {
 				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
 				
         		String[] options = new String[] {"save", "close", "cancel"};
-				int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText
-						, null);
+				int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 				if(result == JOptionPane.YES_OPTION) {
 					String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 					dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
@@ -474,10 +498,60 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				tableArr = actionPerformedLoad("plan to read");
-				model = ArrToTable(model);
+				model = ArrToTable(model, tableArr);
 			}
 		});
 		panel_panel1.add(loadTable__panel1_btn);
+		
+		search_panel1_TField = new JTextField();
+		search_panel1_TField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+					actionPerformedSearch();
+			}
+		});
+		search_panel1_TField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				actionPerformedSearch();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				actionPerformedSearch();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				actionPerformedSearch();
+			}
+			
+		});
+		search_panel1_TField.setBounds(10, 11, 175, 20);
+		panel_panel1.add(search_panel1_TField);
+		search_panel1_TField.setColumns(10);
+		
+		JButton searchClean_panel1_btn = new JButton("X");
+		searchClean_panel1_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(inSearchViewPlanToRead == false) {
+					actionPerformedSearch();
+				}else {
+					for(int i=0;i<tableArr.length-1;i++) {
+						model.removeRow(0);
+					}
+					tableArr = tableArrSave;
+					ArrToTable(model, tableArr);
+					inSearchViewPlanToRead = false;
+				}
+			}
+		});
+		searchClean_panel1_btn.setBounds(187, 10, 33, 23);
+		panel_panel1.add(searchClean_panel1_btn);
 
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
@@ -487,7 +561,7 @@ public class nHentai {
         Dimension scrollBarDim_panel1 = new Dimension(15, scrollBar_panel1
               .getPreferredSize().height);
         scrollBar_panel1.setPreferredSize(scrollBarDim_panel1);
-        scrollBar_panel1.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel1.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -505,7 +579,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		
 		
 		planToRead_tab.add(scrollPane_panel1);
@@ -691,6 +765,35 @@ public class nHentai {
 			}
 		});
 		panel_panel2.add(loadTable__panel2_btn);
+		
+		search_panel2_TField = new JTextField();
+		search_panel2_TField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+					actionPerformedSearchReading();
+			}
+		});
+		search_panel2_TField.setColumns(10);
+		search_panel2_TField.setBounds(10, 12, 175, 20);
+		panel_panel2.add(search_panel2_TField);
+		
+		JButton searchClean_panel2_btn = new JButton("X");
+		searchClean_panel2_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(inSearchViewReading == false) {
+					actionPerformedSearchReading();
+				}else {
+					for(int i=0;i<tableArrReading.length-1;i++) {
+						modelReading.removeRow(0);
+					}
+					tableArrReading = tableArrReadingSave;
+					modelReading = ArrToTable(modelReading, tableArrReading);
+					inSearchViewReading = false;
+				}
+			}
+		});
+		searchClean_panel2_btn.setBounds(187, 11, 33, 23);
+		panel_panel2.add(searchClean_panel2_btn);
 
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
@@ -700,7 +803,7 @@ public class nHentai {
         Dimension scrollBarDim_panel2 = new Dimension(15, scrollBar_panel2
               .getPreferredSize().height);
         scrollBar_panel2.setPreferredSize(scrollBarDim_panel2);
-        scrollBar_panel2.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel2.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -718,7 +821,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
         
 		
 		reading_tab.add(scrollPane_panel2);
@@ -909,15 +1012,44 @@ public class nHentai {
 		});
 		panel_panel3.add(loadTable__panel3_btn);
 		
+		search_panel3_TField = new JTextField();
+		search_panel3_TField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+					actionPerformedSearchReading();
+			}
+		});
+		search_panel3_TField.setColumns(10);
+		search_panel3_TField.setBounds(10, 12, 175, 20);
+		panel_panel3.add(search_panel3_TField);
+		
+		JButton searchClean_panel3_btn = new JButton("X");
+		searchClean_panel3_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(inSearchViewCompleted == false) {
+					actionPerformedSearchReading();
+				}else {
+					for(int i=0;i<tableArrCompleted.length-1;i++) {
+						modelCompleted.removeRow(0);
+					}
+					tableArrCompleted = tableArrCompletedSave;
+					modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+					inSearchViewCompleted = false;
+				}
+			}
+		});
+		searchClean_panel3_btn.setBounds(187, 11, 33, 23);
+		panel_panel3.add(searchClean_panel3_btn);
+		
 		JScrollPane scrollPane_panel3 = new JScrollPane();
 		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
 		scrollPane_panel3.setBounds(250, 11, 666, 632);
 		
-		JScrollBar scrollBar_panel3 = scrollPane_panel2.getVerticalScrollBar();
+		JScrollBar scrollBar_panel3 = scrollPane_panel3.getVerticalScrollBar();
         Dimension scrollBarDim_panel3 = new Dimension(15, scrollBar_panel3
               .getPreferredSize().height);
         scrollBar_panel3.setPreferredSize(scrollBarDim_panel3);
-        scrollBar_panel3.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel3.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -935,7 +1067,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		
 		completed_tab.add(scrollPane_panel3);
 		
@@ -1025,15 +1157,15 @@ public class nHentai {
 		return tmp;
 	}
 
-	public DefaultTableModel ArrToTable(DefaultTableModel inputModel) {
-		for (int i = 0; i < tableArr.length - 1; i++) {
-			Object[] tmp = new Object[tableArr[0].length];
-			for (int j = 0; j < tableArr[0].length; j++) {
-				tmp[j] = tableArr[i][j];
+	public DefaultTableModel ArrToTable(DefaultTableModel inputModel, String[][] inputArr) {
+		for (int i = 0; i < inputArr.length - 1; i++) {
+			Object[] tmp = new Object[inputArr[0].length];
+			for (int j = 0; j < inputArr[0].length; j++) {
+				tmp[j] = inputArr[i][j];
 			}
-			String Id = tableArr[i][2];
+			String Id = inputArr[i][2];
 			tmp[0] = String.valueOf(i + 1);
-			checkOneImage(Id, tableArr[i][1]);
+			checkOneImage(Id, inputArr[i][1]);
 			Icon img;
 			if(SFW == false) {
 				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
@@ -1487,7 +1619,6 @@ public class nHentai {
 				if(deleteEntry == true) {
 					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
 					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
-					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
 					tableArrCompleted = newArrIndex(tableArrCompleted);
 					for(int i=0;i<tableArrCompleted.length-1;i++) {
 						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
@@ -1539,6 +1670,9 @@ public class nHentai {
 			}
 	    }
 	};
+	private JTextField search_panel1_TField;
+	private JTextField search_panel2_TField;
+	private JTextField search_panel3_TField;
 	
 	public void actionPerformedNewEntry(String start) {
 		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
@@ -1561,7 +1695,15 @@ public class nHentai {
 			switch (status){
 				case "plan to read":
 					if (!code.equals("") || !URL.equals("")) {
-						tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+						try {
+							tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+						} catch (IOException e) {
+							UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+							Error errorPanel = new Error(code);
+							JOptionPane error = new JOptionPane();
+							error.showMessageDialog(null, errorPanel, "error", 0);
+							e.printStackTrace();
+						}
 						model = expandTable(model, code);
 					}
 					if (selected == true) {
@@ -1584,7 +1726,15 @@ public class nHentai {
 							}
 							if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
 								rawRating = rawRating.substring(0, rawRating.length() - 1);
-							tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+							try {
+								tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+							} catch (IOException e) {
+								UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+								Error errorPanel = new Error(code);
+								JOptionPane error = new JOptionPane();
+								error.showMessageDialog(null, errorPanel, "error", 0);
+								e.printStackTrace();
+							}
 							model = expandTable(model, rawCode);
 						}
 					}
@@ -1592,8 +1742,16 @@ public class nHentai {
 					
 				case "reading":
 					if (!code.equals("") || !URL.equals("")) {
-						tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
-						modelReading = expandTableReading(modelReading, code);
+						try {
+							tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+							modelReading = expandTableReading(modelReading, code);
+						} catch (IOException e) {
+							UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+							Error errorPanel = new Error(code);
+							JOptionPane error = new JOptionPane();
+							error.showMessageDialog(null, errorPanel, "error", 0);
+							e.printStackTrace();
+						}
 					}
 					if (selected == true) {
 						String[] TextAreaData = EntryGeneral.getDataInTextArea();
@@ -1615,15 +1773,31 @@ public class nHentai {
 							}
 							if(!rawRating.equals(""))
 								rawRating = rawRating.substring(0, rawRating.length() - 1);
-							tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
-							modelReading = expandTableReading(modelReading, rawCode);
+							try {
+								tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
+								modelReading = expandTableReading(modelReading, rawCode);
+							} catch (IOException e) {
+								UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+								Error errorPanel = new Error(code);
+								JOptionPane error = new JOptionPane();
+								error.showMessageDialog(null, errorPanel, "error", 0);
+								e.printStackTrace();
+							}
 						}
 					}
 					break;
 				case "completed":
 					if (!code.equals("") || !URL.equals("")) {
-						tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
-						modelCompleted = expandTableCompleted(modelCompleted, code);
+						try {
+							tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+							modelCompleted = expandTableCompleted(modelCompleted, code);
+						} catch (IOException e) {
+							UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+							Error errorPanel = new Error(code);
+							JOptionPane error = new JOptionPane();
+							error.showMessageDialog(null, errorPanel, "error", 0);
+							e.printStackTrace();
+						}
 					}
 					if (selected == true) {
 						String[] TextAreaData = EntryGeneral.getDataInTextArea();
@@ -1645,8 +1819,16 @@ public class nHentai {
 							}
 							if(!rawRating.equals(""))
 								rawRating = rawRating.substring(0, rawRating.length() - 1);
-							tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
-							modelCompleted = expandTableCompleted(modelCompleted, rawCode);
+							try {
+								tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
+								modelCompleted = expandTableCompleted(modelCompleted, rawCode);
+							} catch (IOException e) {
+								UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+								Error errorPanel = new Error(code);
+								JOptionPane error = new JOptionPane();
+								error.showMessageDialog(null, errorPanel, "error", 0);
+								e.printStackTrace();
+							}
 						}
 					}
 					break;
@@ -1654,7 +1836,7 @@ public class nHentai {
 		}
 	}
 	
-	public void setVisible(boolean visible) {
+	public void setVisible2(boolean visible) {
 		frmNhentaidatabase.setVisible(visible);
 	}
 	
@@ -1810,16 +1992,30 @@ public class nHentai {
 		return new String[1][10];
 	}
 	
+	public void startApplication() {
+		loadingScreenMainGUI loadindScreen = new loadingScreenMainGUI();
+	}
+	
+	
+	
 	public void getSave() {
 		String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 		
-		tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
-		tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
-		tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
-		
-		model = ArrToTable(model);
-		modelReading = ArrToTableReading(modelReading);
-		modelCompleted = ArrToTableCompleted(modelCompleted);
+		File f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+		if(f.exists()) {
+			tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+			model = ArrToTable(model, tableArr);
+		}
+		f = new File(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+		if(f.exists()) {
+			tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+			modelReading = ArrToTableReading(modelReading);
+		}
+		f = new File(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+		if(f.exists()) {
+			tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+			modelCompleted = ArrToTableCompleted(modelCompleted);
+		}
 	}
 	
 	public void reloadRowImage(int index, String table, String Id) {			
@@ -1975,5 +2171,408 @@ public class nHentai {
 		
 		Component[] buttonText = new Component[]{	OKButton, cancelButton};
 		return buttonText;
+	}
+	
+	public class loadingScreenMainGUI {
+
+		private JFrame frame;
+
+		String mainFolderLocation = "\\nHentaiDatabase";
+		String photoFolderLocation = "\\savedPhotos";
+		String userDataFolderLocation = "\\userData";
+		String randomPhotoFolderLocation = "\\randomPhotos";
+		String appdataLocation;
+		
+		private Task task;
+		private Task2 task2;
+		
+		JProgressBar progressBar;
+		
+		nHentaiWebBase nHentaiAPI;
+
+		/**
+		 * Create the application.
+		 */
+		public loadingScreenMainGUI() {
+			nHentaiAPI = new nHentaiWebBase();
+			appdataLocation = System.getenv("APPDATA");
+			setUpAppData(appdataLocation);
+			initialize();
+		}
+
+		/**
+		 * Initialize the contents of the frame.
+		 */
+		private void initialize() {
+			frame = new JFrame();
+			frame.getContentPane().setBackground(new Color(35, 35, 35));
+			frame.setBounds(100, 100, 352, 125);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().setLayout(null);
+			frame.setVisible(true);
+			
+			UIManager.put("ProgressBar.selectionForeground", Color.black);
+			UIManager.put("ProgressBar.selectionBackground", Color.black);
+			progressBar = new JProgressBar();
+			progressBar.setBackground(Color.DARK_GRAY);
+			progressBar.setForeground(Color.GREEN);
+			progressBar.setBounds(10, 55, 316, 20);
+			progressBar.setValue(0);
+			progressBar.setStringPainted(true);
+			frame.getContentPane().add(progressBar);
+			
+			JButton btnNewButton = new JButton("");
+			btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabase.png")));
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					task = new Task();
+			        task.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+			                if ("progress" == evt.getPropertyName()) {
+			                    int progress = (Integer) evt.getNewValue();
+			                    progressBar.setValue(progress);
+			                    progressBar.setString("download Photos :" + progress + "%");
+			                } 
+			            }
+			        });
+			        task.execute();
+			        task2 = new Task2();
+			        task2.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+			                if ("progress" == evt.getPropertyName()) {
+			                    int progress = (Integer) evt.getNewValue();
+			                    progressBar.setValue(progress);
+			                    progressBar.setString("load Data :" + progress + "%");
+			                } 
+			            }
+			        });
+			        task2.execute();
+				}
+			});
+			btnNewButton.addMouseListener(new MouseAdapter() {
+				public void mouseEntered(MouseEvent evt) {
+					btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseHover.png")));
+				}
+
+				public void mouseExited(MouseEvent evt) {
+					btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabase.png")));
+				}
+
+				public void mousePressed(MouseEvent evt) {
+					btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseSelected.png")));
+				}
+
+				public void mouseReleased(MouseEvent evt) {
+					btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseHover.png")));
+				}
+			});
+			btnNewButton.setBounds(83, 11, 166, 21);
+			frame.getContentPane().add(btnNewButton);
+			
+			
+			
+			
+		}
+		
+		public void setUpAppData(String appData) {
+			new File(appData + mainFolderLocation).mkdirs();
+			new File(appData + mainFolderLocation + photoFolderLocation).mkdirs();
+			new File(appData + mainFolderLocation + userDataFolderLocation).mkdirs();
+			new File(appData + mainFolderLocation + randomPhotoFolderLocation).mkdirs();
+		}
+		
+		public void scaleImage(String locationOriginal, String locationNew, String name, int x, int y) {
+			try {
+				ImageIcon ii = new ImageIcon(locationOriginal);
+				BufferedImage bi = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
+				Graphics2D g2d = (Graphics2D) bi.createGraphics();
+				g2d.addRenderingHints(
+						new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+				boolean b = g2d.drawImage(ii.getImage(), 0, 0, x, y, null);
+				System.out.println(b);
+				ImageIO.write(bi, "jpg", new File(locationNew + name));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		class Task extends SwingWorker<Void, Void> {
+	        /*
+	         * Main task. Executed in background thread.
+	         */
+	        @Override
+	        public Void doInBackground() {
+	        	int progress = 0;
+	        	int second = 0;
+	        	setProgress(0);
+	        	
+	        	//setUp random Photos
+	        	for(int i=0;i<200;i++) {
+	    			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
+	    			if(!f.exists()) {
+	    				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
+	    				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i, "_low.jpg", 50, 71);
+	    			}
+	    			second++;
+	    			if(second == 2) {
+	    				second = 0;
+	    				progress++;
+	    				setProgress(progress);
+	    			}
+	        	}
+	            return null;
+	        }
+	 
+	        /*
+	         * Executed in event dispatching thread
+	         */
+	        @Override
+	        public void done() {
+	        	try {
+					get();
+				} catch (InterruptedException | ExecutionException e1) {
+					e1.printStackTrace();
+				}
+	            System.out.println("finish");
+	        }
+	    }	
+		class Task2 extends SwingWorker<Void, Void> {
+	        /*
+	         * Main task. Executed in background thread.
+	         */
+	        @Override
+	        public Void doInBackground() {
+	        	int progress = 0;
+	        	double secondEnd = 0;
+	        	double second = 0;
+	        	setProgress(0);
+	        	
+	        	String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+	    		
+	    		File f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	    		if(f.exists()) {
+	    			tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	    			double length = tableArrCompleted.length;
+	    			secondEnd = length / 100;
+	    			progress = 0;
+	    			setProgress(progress);
+	    			for (int i = 0; i < tableArr.length - 1; i++) {
+	    				Object[] tmp = new Object[tableArr[0].length];
+	    				for (int j = 0; j < tableArr[0].length; j++) {
+	    					tmp[j] = tableArr[i][j];
+	    				}
+	    				String Id = tableArr[i][2];
+	    				tmp[0] = String.valueOf(i + 1);
+	    				checkOneImage(Id, tableArr[i][1]);
+	    				Icon img;
+	    				if(SFW == false) {
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    				}else {
+	    					int random = (int)(Math.random()*200);
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    				}
+	    				tmp[1] = img;
+	    				model.addRow(tmp);
+	    				second++;
+	    				if(second > secondEnd) {
+	    					if(secondEnd < 1) {
+	    						progress = progress + (int)(1 / secondEnd);
+	    					}else
+	    						progress++;
+	    					setProgress(progress);
+	    					second = 0;
+	    				}
+	    			}
+	    		}
+	    		
+	    		f = new File(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+	    		if(f.exists()) {
+	    			tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+	    			double length = tableArrCompleted.length;
+	    			secondEnd = length / 100;
+	    			progress = 0;
+	    			setProgress(progress);
+	    			for (int i = 0; i < tableArrReading.length - 1; i++) {
+	    				Object[] tmp = new Object[tableArrReading[0].length];
+	    				for (int j = 0; j < tableArrReading[0].length; j++) {
+	    					tmp[j] = tableArrReading[i][j];
+	    				}
+	    				String Id = tableArrReading[i][2];
+	    				tmp[0] = String.valueOf(i + 1);
+	    				checkOneImage(Id, tableArrReading[i][1]);
+	    				Icon img;
+	    				if(SFW == false) {
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    				}else {
+	    					int random = (int)(Math.random()*200);
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    				}
+	    				tmp[1] = img;
+	    				modelReading.addRow(tmp);
+	    			
+	    				second++;
+	    				if(second > secondEnd) {
+	    					if(secondEnd < 1) {
+	    						progress = progress + (int)(1 / secondEnd);
+	    					}else
+	    						progress++;
+	    					setProgress(progress);
+	    					second = 0;
+	    				}
+	    			}
+	    		}
+	    		
+	    		f = new File(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+	    		if(f.exists()) {
+	    			tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+	    			double length = tableArrCompleted.length;
+	    			secondEnd = length / 100;
+	    			progress = 0;
+	    			setProgress(progress);
+	    			for (int i = 0; i < tableArrCompleted.length - 1; i++) {
+	    				Object[] tmp = new Object[tableArrCompleted[0].length];
+	    				for (int j = 0; j < tableArrCompleted[0].length; j++) {
+	    					tmp[j] = tableArrCompleted[i][j];
+	    				}
+	    				String Id = tableArrCompleted[i][2];
+	    				tmp[0] = String.valueOf(i + 1);
+	    				checkOneImage(Id, tableArrCompleted[i][1]);
+	    				Icon img;
+	    				if(SFW == false) {
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    				}else {
+	    					int random = (int)(Math.random()*200);
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    				}
+	    				tmp[1] = img;
+	    				modelCompleted.addRow(tmp);
+	    				
+	    				if(progress == 99) {
+	    					System.out.println("99");
+	    				}
+	    				second++;
+	    				if(second > secondEnd) {
+	    					if(secondEnd < 1) {
+	    						progress = progress + (int)(1 / secondEnd);
+	    					}else
+	    						progress++;
+	    					setProgress(progress);
+	    					second = 0;
+	    				}
+	    			}
+	    		}
+	        	
+	            return null;
+	        }
+	 
+	        /*
+	         * Executed in event dispatching thread
+	         */
+	        @Override
+	        public void done() {
+	        	try {
+					get();
+				} catch (InterruptedException | ExecutionException e1) {
+					e1.printStackTrace();
+				}
+	            System.out.println("finish");
+	            frame.setVisible(false);
+	            frmNhentaidatabase.setVisible(true);
+	        }
+	    }	
+	}
+	
+	public void actionPerformedSearch() {
+		String searchInput = search_panel1_TField.getText();
+		String[] filteredTable;
+		filteredTable = searchEngine.search(tableArr, searchInput);
+		
+		String[][] resultArr = new String[filteredTable.length+1][10];
+		int k = 0;
+		for(int i=0;i<tableArr.length-1;i++) {
+			if(filteredTable[k] != null && tableArr[i][2].equals(filteredTable[k])) {
+				for(int j=0;j<tableArr[0].length;j++) {
+					resultArr[k][j] = tableArr[i][j];
+				}
+				k++;
+				if(k == filteredTable.length) {
+					i = tableArr.length;
+				}
+			}
+		}
+		
+		if(inSearchViewPlanToRead == false)
+			tableArrSave = tableArr;
+		
+		for(int i=0;i<tableArr.length-1;i++) {
+			model.removeRow(0);
+		}
+		tableArr = resultArr;
+		model = ArrToTable(model, tableArr);
+		inSearchViewPlanToRead = true;
+	}
+	
+	public void actionPerformedSearchReading() {
+		String searchInput = search_panel2_TField.getText();
+		String[] filteredTable;
+		filteredTable = searchEngine.search(tableArrReading, searchInput);
+		
+		String[][] resultArr = new String[filteredTable.length+1][10];
+		int k = 0;
+		for(int i=0;i<tableArrReading.length-1;i++) {
+			if(filteredTable[k] != null && tableArrReading[i][2].equals(filteredTable[k])) {
+				for(int j=0;j<tableArrReading[0].length;j++) {
+					resultArr[k][j] = tableArrReading[i][j];
+				}
+				k++;
+				if(k == filteredTable.length) {
+					i = tableArrReading.length;
+				}
+			}
+		}
+		
+		if(inSearchViewReading == false)
+			tableArrReadingSave = tableArrReading;
+		
+		for(int i=0;i<tableArrReading.length-1;i++) {
+			modelReading.removeRow(0);
+		}
+		tableArrReading = resultArr;
+		modelReading = ArrToTable(modelReading, tableArrReading);
+		inSearchViewReading = true;
+	}
+	
+	public void actionPerformedSearchCompleted() {
+		String searchInput = search_panel3_TField.getText();
+		String[] filteredTable;
+		filteredTable = searchEngine.search(tableArrCompleted, searchInput);
+		
+		String[][] resultArr = new String[filteredTable.length+1][10];
+		int k = 0;
+		for(int i=0;i<tableArrCompleted.length-1;i++) {
+			if(filteredTable[k] != null && tableArrCompleted[i][2].equals(filteredTable[k])) {
+				for(int j=0;j<tableArrCompleted[0].length;j++) {
+					resultArr[k][j] = tableArrCompleted[i][j];
+				}
+				k++;
+				if(k == filteredTable.length) {
+					i = tableArrCompleted.length;
+				}
+			}
+		}
+		
+		if(inSearchViewCompleted == false)
+			tableArrCompletedSave = tableArrCompleted;
+		
+		for(int i=0;i<tableArrCompleted.length-1;i++) {
+			modelCompleted.removeRow(0);
+		}
+		tableArrCompleted = resultArr;
+		modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+		inSearchViewCompleted = true;
 	}
 }

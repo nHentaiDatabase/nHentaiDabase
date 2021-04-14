@@ -89,6 +89,11 @@ public class newEntryGeneral extends JPanel {
 		code_TField.setBackground(new Color(59, 59, 59));
 		code_TField.setBounds(10, 103, 130, 20);
 		code_TField.setBorder(null);
+		code_TField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		add(code_TField);
 		code_TField.setColumns(10);
 		

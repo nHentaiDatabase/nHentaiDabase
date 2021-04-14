@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,7 +20,7 @@ public class nHentaiAPIRun {
 		nHentaiAPI = new nHentaiWebBase();
 	}
 	
-	public String[][] nHentaiAPIRun(String[][] tableArr, String location, String code, String URL, String rating, String status){
+	public String[][] nHentaiAPIRun(String[][] tableArr, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
 		String id = "";
@@ -65,7 +66,7 @@ public class nHentaiAPIRun {
 		return tableArr;
 	}
 	
-	public String[][] nHentaiAPIRunReading(String[][] tableArrReading, String location, String code, String URL, String rating, String status){
+	public String[][] nHentaiAPIRunReading(String[][] tableArrReading, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
 		String id = "";
@@ -111,7 +112,7 @@ public class nHentaiAPIRun {
 		return tableArrReading;
 	}
 	
-	public String[][] nHentaiAPIRunCompleted(String[][] tableArrCompleted, String location, String code, String URL, String rating, String status){
+	public String[][] nHentaiAPIRunCompleted(String[][] tableArrCompleted, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
 		String id = "";

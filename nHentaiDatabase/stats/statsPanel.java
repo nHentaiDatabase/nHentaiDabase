@@ -85,8 +85,9 @@ public class statsPanel extends JPanel {
 	public int getReadDoujins(String[][] data, int positionTimes) {
 		int counter = 0;
 		for(int i=0;i<data.length;i++) {
-			if(!(data[i][positionTimes] == null) && !data[i][positionTimes].equals(""))
+			if((data[i][positionTimes] != null) && !(data[i][positionTimes].equals("")) && !(data[i][positionTimes].equals("null"))) {
 				counter = counter + Integer.valueOf(data[i][positionTimes]);
+			}
 		}
 		return counter;
 	}
@@ -94,7 +95,7 @@ public class statsPanel extends JPanel {
 	public int getReadPages(String[][] data, int positionTimes) {
 		int pages = 0;
 		for(int i=0;i<data.length;i++) {
-			if(!(data[i][positionTimes] == null) && !data[i][positionTimes].equals(""))
+			if(!(data[i][positionTimes] == null) && !data[i][positionTimes].equals("") && !(data[i][positionTimes].equals("null")))
 				pages = pages + (Integer.valueOf(data[i][positionTimes]) * Integer.valueOf(data[i][5]));
 		}
 		return pages;
@@ -153,7 +154,7 @@ public class statsPanel extends JPanel {
 		
 		String appData = System.getenv("APPDATA");
 		
-		return appData + "\\nHentaiDatabse\\savedPhotos\\" + id + "_medium.jpg";
+		return appData + "\\nHentaiDatabase\\savedPhotos\\" + id + "_medium.jpg";
 		
 	}
 }
