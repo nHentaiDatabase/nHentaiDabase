@@ -51,6 +51,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import javax.swing.JProgressBar;
 
 public class newEntryGeneral extends JPanel {
 
@@ -150,7 +151,7 @@ public class newEntryGeneral extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        scrollBar.setUI(new BasicScrollBarUI() {
+        /*scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -168,7 +169,7 @@ public class newEntryGeneral extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);
