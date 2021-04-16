@@ -31,6 +31,19 @@ public class dataManager {
 		outputStream.close();
 	}
 	
+	public void saveSettings(String[] settings, String location) {
+		try {
+            outputStream = new PrintWriter(location);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+		for(int i=0;i<settings.length;i++) {
+			outputStream.println(settings[i]);
+		}
+		outputStream.close();
+	}
+	
 	public String[][] readTable(String location) {
 		String[][] tmp = new String[][] {{""},{""}};
 		try {
@@ -47,6 +60,24 @@ public class dataManager {
 		    	fileData[i] = myReader.nextLine();
 		    }
 		    tmp = splitData(fileData);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return tmp;
+	}
+	
+	public String[] readSettings(String location) {
+		String[] tmp = new String[1];
+		try {
+			File myObj = new File(location);
+			Scanner myReader;
+			myReader = new Scanner(myObj);
+			int index = 0;
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				tmp[index] = data;
+				index++;
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

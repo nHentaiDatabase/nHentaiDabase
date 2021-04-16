@@ -79,7 +79,6 @@ public class nHentai {
 	private DefaultTableModel modelCompleted;
 
 	private dataManager dataManager;
-	private newEntry addNewEntry;
 	private nHentaiWebBase nHentaiAPI;
 	private nHentaiAPIRun nHentaiAPIRun;
 	private searchEngine searchEngine;
@@ -94,7 +93,10 @@ public class nHentai {
 	private String[][] tableArrCompletedSave;
 	private boolean inSearchViewCompleted = false;
 	private String appdataLocation;
+	
 	private boolean SFW = false;
+	private boolean safed = true;
+	
 	private String mainFolderLocation = "\\nHentaiDatabase";
 	private String photoFolderLocation = "\\savedPhotos";
 	private String userDataFolderLocation = "\\userData";
@@ -105,6 +107,8 @@ public class nHentai {
 	private JTable table_panel3;
 	
 	private JProgressBar EntryLoader_panel1_PBar;
+	private JProgressBar EntryLoader_panel2_PBar;
+	private JProgressBar EntryLoader_panel3_PBar;
 	
 	private loadingScreenMainGUI loadingScreen;
 
@@ -140,7 +144,6 @@ public class nHentai {
 	 */
 	public nHentai() {
 		dataManager = new dataManager();
-		addNewEntry = new newEntry();
 		nHentaiAPI = new nHentaiWebBase();
 		nHentaiAPIRun = new nHentaiAPIRun();
 		searchEngine = new searchEngine();
@@ -223,135 +226,161 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
-				exitConfirm confirm = new exitConfirm();
-        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+				if(safed == false) {
 				
-				final JButton saveButton = new JButton();
-				saveButton.setPreferredSize(new Dimension(47,25));
-				saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/save.png")));
-				saveButton.setHorizontalTextPosition(SwingConstants.CENTER);
-				saveButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-						paneAP.setValue(saveButton);
-						Window w = SwingUtilities.getWindowAncestor(saveButton);
-
-					    if (w != null) {
-					      w.setVisible(false);
-					    }
-					}
+					exitConfirm confirm = new exitConfirm();
+	        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
 					
-				});
-				saveButton.addMouseListener(new MouseAdapter() {
-					public void mouseEntered(MouseEvent evt) {
-						saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveHover.png")));
-					}
-
-					public void mouseExited(MouseEvent evt) {
-						saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/save.png")));
-					}
-
-					public void mousePressed(MouseEvent evt) {
-						saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveSelected.png")));
-					}
-
-					public void mouseReleased(MouseEvent evt) {
-						saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveHover.png")));
-					}
-				});
-				
-				final JButton closeButton = new JButton();
-				closeButton.setPreferredSize(new Dimension(51,25));
-				closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/close.png")));
-				closeButton.setHorizontalTextPosition(SwingConstants.CENTER);
-				closeButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-						paneAP.setValue(closeButton);
-						Window w = SwingUtilities.getWindowAncestor(closeButton);
-
-					    if (w != null) {
-					      w.setVisible(false);
-					    }
-					}
+					final JButton saveButton = new JButton();
+					saveButton.setPreferredSize(new Dimension(47,25));
+					saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/save.png")));
+					saveButton.setHorizontalTextPosition(SwingConstants.CENTER);
+					saveButton.addActionListener(new ActionListener() {
+	
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							paneAP.setValue(saveButton);
+							Window w = SwingUtilities.getWindowAncestor(saveButton);
+	
+						    if (w != null) {
+						      w.setVisible(false);
+						    }
+						}
+						
+					});
+					saveButton.addMouseListener(new MouseAdapter() {
+						public void mouseEntered(MouseEvent evt) {
+							saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveHover.png")));
+						}
+	
+						public void mouseExited(MouseEvent evt) {
+							saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/save.png")));
+						}
+	
+						public void mousePressed(MouseEvent evt) {
+							saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveSelected.png")));
+						}
+	
+						public void mouseReleased(MouseEvent evt) {
+							saveButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/saveHover.png")));
+						}
+					});
 					
-				});
-				closeButton.addMouseListener(new MouseAdapter() {
-					public void mouseEntered(MouseEvent evt) {
-						closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeHover.png")));
-					}
-
-					public void mouseExited(MouseEvent evt) {
-						closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/close.png")));
-					}
-
-					public void mousePressed(MouseEvent evt) {
-						closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeSelected.png")));
-					}
-
-					public void mouseReleased(MouseEvent evt) {
-						closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeHover.png")));
-					}
-				});
-				
-				final JButton cancelButton = new JButton();
-				cancelButton.setPreferredSize(new Dimension(58,25));
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-				cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
-				cancelButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-						paneAP.setValue(cancelButton);
-						Window w = SwingUtilities.getWindowAncestor(cancelButton);
-
-					    if (w != null) {
-					      w.setVisible(false);
-					    }
-					}
+					final JButton closeButton = new JButton();
+					closeButton.setPreferredSize(new Dimension(51,25));
+					closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/close.png")));
+					closeButton.setHorizontalTextPosition(SwingConstants.CENTER);
+					closeButton.addActionListener(new ActionListener() {
+	
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							paneAP.setValue(closeButton);
+							Window w = SwingUtilities.getWindowAncestor(closeButton);
+	
+						    if (w != null) {
+						      w.setVisible(false);
+						    }
+						}
+						
+					});
+					closeButton.addMouseListener(new MouseAdapter() {
+						public void mouseEntered(MouseEvent evt) {
+							closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeHover.png")));
+						}
+	
+						public void mouseExited(MouseEvent evt) {
+							closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/close.png")));
+						}
+	
+						public void mousePressed(MouseEvent evt) {
+							closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeSelected.png")));
+						}
+	
+						public void mouseReleased(MouseEvent evt) {
+							closeButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/closeHover.png")));
+						}
+					});
 					
-				});
-				cancelButton.addMouseListener(new MouseAdapter() {
-					public void mouseEntered(MouseEvent evt) {
-						cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+					final JButton cancelButton = new JButton();
+					cancelButton.setPreferredSize(new Dimension(58,25));
+					cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+					cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
+					cancelButton.addActionListener(new ActionListener() {
+	
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							paneAP.setValue(cancelButton);
+							Window w = SwingUtilities.getWindowAncestor(cancelButton);
+	
+						    if (w != null) {
+						      w.setVisible(false);
+						    }
+						}
+						
+					});
+					cancelButton.addMouseListener(new MouseAdapter() {
+						public void mouseEntered(MouseEvent evt) {
+							cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+						}
+	
+						public void mouseExited(MouseEvent evt) {
+							cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+						}
+	
+						public void mousePressed(MouseEvent evt) {
+							cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
+						}
+	
+						public void mouseReleased(MouseEvent evt) {
+							cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+						}
+					});
+					
+					Component[] buttonText = new Component[]{	saveButton, closeButton, cancelButton};
+					
+					UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+					
+	        		String[] options = new String[] {"save", "close", "cancel"};
+					int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+					if(result == JOptionPane.YES_OPTION) {
+						String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+						dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+						dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+						dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+						String[] settings = new String[1];
+		    			settings[0] = "SFW: " + String.valueOf(SFW);
+		    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+						System.exit(0);
+					}else if(result == JOptionPane.NO_OPTION) {
+						System.exit(0);
 					}
-
-					public void mouseExited(MouseEvent evt) {
-						cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-					}
-
-					public void mousePressed(MouseEvent evt) {
-						cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
-					}
-
-					public void mouseReleased(MouseEvent evt) {
-						cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-					}
-				});
-				
-				Component[] buttonText = new Component[]{	saveButton, closeButton, cancelButton};
-				
-				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-				
-        		String[] options = new String[] {"save", "close", "cancel"};
-				int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
-				if(result == JOptionPane.YES_OPTION) {
-					String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
-					dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
-					dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
-					dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
-					System.exit(0);
-				}else if(result == JOptionPane.NO_OPTION) {
+				}else {
 					System.exit(0);
 				}
 			}
 		});
 		windowToolbar.add(closeWindow_btn);
+		
+		JButton safeWindow_btn = new JButton();
+		safeWindow_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				safed = true;
+				
+				String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+				dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+				dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+				dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+				String[] settings = new String[1];
+    			settings[0] = "SFW: " + String.valueOf(SFW);
+    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+			}
+		});
+		safeWindow_btn.setBounds(0, 1, 25, 25);
+		windowToolbar.add(safeWindow_btn);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(null);
@@ -873,6 +902,12 @@ public class nHentai {
 			}
 		});
 		scrollPane_panel2.setViewportView(table_panel2);
+		
+		EntryLoader_panel2_PBar = new JProgressBar();
+		EntryLoader_panel2_PBar.setForeground(Color.DARK_GRAY);
+		EntryLoader_panel2_PBar.setBackground(Color.WHITE);
+		EntryLoader_panel2_PBar.setBounds(826, 645, 90, 14);
+		reading_tab.add(EntryLoader_panel2_PBar);
 		/*
 		 * end panel 2
 		 */
@@ -1127,6 +1162,12 @@ public class nHentai {
 			}
 		});
 		scrollPane_panel3.setViewportView(table_panel3);
+		
+		EntryLoader_panel3_PBar = new JProgressBar();
+		EntryLoader_panel3_PBar.setForeground(Color.DARK_GRAY);
+		EntryLoader_panel3_PBar.setBackground(Color.WHITE);
+		EntryLoader_panel3_PBar.setBounds(826, 645, 90, 14);
+		completed_tab.add(EntryLoader_panel3_PBar);
 
 		/*
 		 * end panel 3
@@ -1409,6 +1450,9 @@ public class nHentai {
 			
 			
 			if (result == JOptionPane.OK_OPTION) {
+				
+				safed = false;
+				
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
 				boolean deleteEntry = moreInformation.getDeleteEntry();
@@ -1513,6 +1557,9 @@ public class nHentai {
 			System.out.println("pressed" + e.getActionCommand());
 
 			if (result == JOptionPane.OK_OPTION) {
+				
+				safed = false;
+				
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
 				boolean deleteEntry = moreInformation.getDeleteEntry();
@@ -1616,6 +1663,9 @@ public class nHentai {
 			System.out.println("pressed" + e.getActionCommand());
 
 			if (result == JOptionPane.OK_OPTION) {
+				
+				safed = false;
+				
 				rating = moreInformation.getRating();
 				timesRead = moreInformation.getTimesRead();
 				boolean deleteEntry = moreInformation.getDeleteEntry();
@@ -1701,7 +1751,9 @@ public class nHentai {
 			String rating = EntryGeneral.getRating();
 			String status = EntryGeneral.getStatus();
 			boolean selected = EntryGeneral.getSelected();
-			//TODO outsource following
+			
+			safed = false;
+			
 			switch (status){
 				case "plan to read":
 					
@@ -1773,113 +1825,126 @@ public class nHentai {
 					break;
 					
 				case "reading":
-					if (!code.equals("") || !URL.equals("")) {
-						try {
-							EntryLoader_panel1_PBar.setIndeterminate(true);
-							EntryLoader_panel1_PBar.setVisible(true);
-							tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
-							modelReading = expandTableReading(modelReading, code);
-							EntryLoader_panel1_PBar.setVisible(false);
-							EntryLoader_panel1_PBar.setIndeterminate(false);
-						} catch (IOException e) {
-							UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-							Error errorPanel = new Error(code);
-							JOptionPane error = new JOptionPane();
-							error.showMessageDialog(null, errorPanel, "error", 0);
-							e.printStackTrace();
-						}
-					}
-					if (selected == true) {
-						EntryLoader_panel1_PBar.setIndeterminate(true);
-						EntryLoader_panel1_PBar.setVisible(true);
-						String[] TextAreaData = EntryGeneral.getDataInTextArea();
-						for (int i = 0; i < TextAreaData.length; i++) {
-							String rawData = TextAreaData[i];
-							String rawCode = "";
-							String rawRating = "";
-							boolean ratingTurn = false;
-							char[] rawDataChar = rawData.toCharArray();
-							for (int j = 0; j < rawDataChar.length; j++) {
-								if (ratingTurn == true) {
-									rawRating = rawRating + rawDataChar[j];
-								}
-								if (rawDataChar[j] == ' ') {
-									ratingTurn = true;
-								} else if (ratingTurn == false) {
-									rawCode = rawCode + rawDataChar[j];
+					class Task2 extends SwingWorker<Void, Void> {
+						@Override
+						protected Void doInBackground() throws Exception {
+							if (!code.equals("") || !URL.equals("")) {
+								try {
+									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+									modelReading = expandTableReading(modelReading, code);
+								} catch (IOException e) {
+									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+									Error errorPanel = new Error(code);
+									JOptionPane error = new JOptionPane();
+									error.showMessageDialog(null, errorPanel, "error", 0);
+									e.printStackTrace();
 								}
 							}
-							if(!rawRating.equals(""))
-								rawRating = rawRating.substring(0, rawRating.length() - 1);
-							try {
-								tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
-								modelReading = expandTableReading(modelReading, rawCode);
-							} catch (IOException e) {
-								UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-								Error errorPanel = new Error(code);
-								JOptionPane error = new JOptionPane();
-								error.showMessageDialog(null, errorPanel, "error", 0);
-								e.printStackTrace();
+							if (selected == true) {
+								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+								for (int i = 0; i < TextAreaData.length; i++) {
+									String rawData = TextAreaData[i];
+									String rawCode = "";
+									String rawRating = "";
+									boolean ratingTurn = false;
+									char[] rawDataChar = rawData.toCharArray();
+									for (int j = 0; j < rawDataChar.length; j++) {
+										if (ratingTurn == true) {
+											rawRating = rawRating + rawDataChar[j];
+										}
+										if (rawDataChar[j] == ' ') {
+											ratingTurn = true;
+										} else if (ratingTurn == false) {
+											rawCode = rawCode + rawDataChar[j];
+										}
+									}
+									if(!rawRating.equals(""))
+										rawRating = rawRating.substring(0, rawRating.length() - 1);
+									try {
+										tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
+										modelReading = expandTableReading(modelReading, rawCode);
+									} catch (IOException e) {
+										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+										Error errorPanel = new Error(code);
+										JOptionPane error = new JOptionPane();
+										error.showMessageDialog(null, errorPanel, "error", 0);
+										e.printStackTrace();
+									}
+								}
 							}
+							return null;
 						}
-						EntryLoader_panel1_PBar.setVisible(false);
-						EntryLoader_panel1_PBar.setIndeterminate(false);
+						
+						protected void done() {
+							EntryLoader_panel2_PBar.setVisible(false);
+							EntryLoader_panel2_PBar.setIndeterminate(false);
+						}
 					}
+					EntryLoader_panel2_PBar.setVisible(true);
+					EntryLoader_panel2_PBar.setIndeterminate(true);
+					Task2 task2 = new Task2();
+					task2.execute();
 					tableArrReadingSave = tableArrReading;
 					break;
 				case "completed":
-					if (!code.equals("") || !URL.equals("")) {
-						try {
-							EntryLoader_panel1_PBar.setIndeterminate(true);
-							EntryLoader_panel1_PBar.setVisible(true);
-							tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
-							modelCompleted = expandTableCompleted(modelCompleted, code);
+					class Task3 extends SwingWorker<Void, Void> {
+						@Override
+						protected Void doInBackground() throws Exception {
+							if (!code.equals("") || !URL.equals("")) {
+								try {
+									tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+									modelCompleted = expandTableCompleted(modelCompleted, code);
+								} catch (IOException e) {
+									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+									Error errorPanel = new Error(code);
+									JOptionPane error = new JOptionPane();
+									error.showMessageDialog(null, errorPanel, "error", 0);
+									e.printStackTrace();
+								}
+							}
+							if (selected == true) {
+								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+								for (int i = 0; i < TextAreaData.length; i++) {
+									String rawData = TextAreaData[i];
+									String rawCode = "";
+									String rawRating = "";
+									boolean ratingTurn = false;
+									char[] rawDataChar = rawData.toCharArray();
+									for (int j = 0; j < rawDataChar.length; j++) {
+										if (ratingTurn == true) {
+											rawRating = rawRating + rawDataChar[j];
+										}
+										if (rawDataChar[j] == ' ') {
+											ratingTurn = true;
+										} else if (ratingTurn == false) {
+											rawCode = rawCode + rawDataChar[j];
+										}
+									}
+									if(!rawRating.equals(""))
+										rawRating = rawRating.substring(0, rawRating.length() - 1);
+									try {
+										tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
+										modelCompleted = expandTableCompleted(modelCompleted, rawCode);
+									} catch (IOException e) {
+										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+										Error errorPanel = new Error(code);
+										JOptionPane error = new JOptionPane();
+										error.showMessageDialog(null, errorPanel, "error", 0);
+										e.printStackTrace();
+									}
+								}
+							}
+							return null;
+						}
+						protected void done() {
 							EntryLoader_panel1_PBar.setVisible(false);
 							EntryLoader_panel1_PBar.setIndeterminate(false);
-						} catch (IOException e) {
-							UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-							Error errorPanel = new Error(code);
-							JOptionPane error = new JOptionPane();
-							error.showMessageDialog(null, errorPanel, "error", 0);
-							e.printStackTrace();
 						}
 					}
-					if (selected == true) {
-						EntryLoader_panel1_PBar.setIndeterminate(true);
-						EntryLoader_panel1_PBar.setVisible(true);
-						String[] TextAreaData = EntryGeneral.getDataInTextArea();
-						for (int i = 0; i < TextAreaData.length; i++) {
-							String rawData = TextAreaData[i];
-							String rawCode = "";
-							String rawRating = "";
-							boolean ratingTurn = false;
-							char[] rawDataChar = rawData.toCharArray();
-							for (int j = 0; j < rawDataChar.length; j++) {
-								if (ratingTurn == true) {
-									rawRating = rawRating + rawDataChar[j];
-								}
-								if (rawDataChar[j] == ' ') {
-									ratingTurn = true;
-								} else if (ratingTurn == false) {
-									rawCode = rawCode + rawDataChar[j];
-								}
-							}
-							if(!rawRating.equals(""))
-								rawRating = rawRating.substring(0, rawRating.length() - 1);
-							try {
-								tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
-								modelCompleted = expandTableCompleted(modelCompleted, rawCode);
-							} catch (IOException e) {
-								UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-								Error errorPanel = new Error(code);
-								JOptionPane error = new JOptionPane();
-								error.showMessageDialog(null, errorPanel, "error", 0);
-								e.printStackTrace();
-							}
-						}
-						EntryLoader_panel1_PBar.setVisible(false);
-						EntryLoader_panel1_PBar.setIndeterminate(false);
-					}
+					EntryLoader_panel1_PBar.setIndeterminate(true);
+					EntryLoader_panel1_PBar.setVisible(true);
+					Task3 task3 = new Task3();
+					task3.execute();
 					tableArrCompletedSave = tableArrCompleted;
 					break;
 			}
@@ -1902,6 +1967,7 @@ public class nHentai {
 		int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 		if (result == JOptionPane.OK_OPTION) {
 			SFW = settings.getSFW();
+			safed = false;
 			
 				for(int i=0;i<tableArr.length-1;i++) {
 					reloadRowImage(i, "plan to read", tableArr[i][2]);
@@ -2004,6 +2070,9 @@ public class nHentai {
 	}
 	
 	public String[][] actionPerformedLoad(String table) {
+		
+		safed = false;
+		
 		UIManager.put("OptionPane.background", new Color(244, 244, 244));
 		UIManager.put("Panel.background", new Color(244, 244, 244));
 		JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -2403,7 +2472,22 @@ public class nHentai {
 	        	
 	        	String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 	    		
-	    		File f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	        	File f = new File(SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	    		if(f.exists()) {
+	    			String[] settings = new String[1];
+	    			settings = dataManager.readSettings(SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	    			if(settings[0].indexOf("true") >= 0) {
+	    				SFW = true;
+	    			}else if(settings[0].indexOf("false") >= 0) {
+	    				SFW = false;
+	    			}
+	    		}else {
+	    			String[] settings = new String[1];
+	    			settings[0] = "SFW: " + String.valueOf(SFW);
+	    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	    		}
+	        	
+	    		f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
 	    		if(f.exists()) {
 	    			tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
 	    			double length = tableArr.length;
