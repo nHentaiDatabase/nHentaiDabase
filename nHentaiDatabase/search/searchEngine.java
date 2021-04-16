@@ -14,17 +14,53 @@ public class searchEngine {
 		}*/
 	}
 	
-	public String[] search(String[][] table, String search) {
+	public String[] search(String[][] table, String search, boolean[] config) {
 		search = search.toLowerCase();
 		String[] searchObj = getSearchObj(search);
+		
+		/*	config[0] == id
+		*	config[1] == title
+		*	config[2] == author
+		*	config[3] == tags
+		*/
+		
+		boolean safeHook = true;
+		for(int i =0;i<config.length;i++) {
+			if(config[i] == true)
+				safeHook = false;
+		}
+		
+		if(safeHook == true) {
+			String[] hook = new String[table.length-1];
+			for(int i=0;i<hook.length;i++) {
+				hook[i] = table[i][2];
+			}
+			return hook;
+		}
 		
 		//get the relevant Info from table
 		String[][] relevant = new String[table.length-1][4];
 		for(int i=0;i<relevant.length;i++) {
-			relevant[i][0] = table[i][2];
-			relevant[i][1] = table[i][3];
-			relevant[i][2] = table[i][4];
-			relevant[i][3] = table[i][9];
+			if(config[0] == true) {
+				relevant[i][0] = table[i][2];
+			}else {
+				relevant[i][0] = "";
+			}
+			if(config[1] == true) {
+				relevant[i][1] = table[i][3];
+			}else {
+				relevant[i][1] = "";
+			}
+			if(config[2] == true) {
+				relevant[i][2] = table[i][4];
+			}else {
+				relevant[i][2] = "";
+			}
+			if(config[3] == true) {
+				relevant[i][3] = table[i][9];
+			}else {
+				relevant[i][3] = "";
+			}
 		}
 		
 		int[][][] res = new int[relevant.length][searchObj.length][4];

@@ -10,6 +10,8 @@ import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,6 +22,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -44,6 +48,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.Border;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -63,12 +68,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
 
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JCheckBox;
 
 public class nHentai {
 
@@ -112,6 +121,13 @@ public class nHentai {
 	
 	private loadingScreenMainGUI loadingScreen;
 
+	private JCheckBox searchId_panel1_CBox;
+	private JCheckBox searchTitle_panel1_CBox;
+	private JCheckBox searchAuthor_panel1_CBox;
+	private JCheckBox searchTags_panel1_CBox;
+	
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -532,12 +548,21 @@ public class nHentai {
 		});
 		panel_panel1.add(loadTable__panel1_btn);
 		
-		search_panel1_TField = new JTextField();
+		IconTextField search_panel1_TField = new IconTextField();
+		search_panel1_TField.setToolTipText("");
 		search_panel1_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					if(!search_panel1_TField.getText().equals("")) {
-						actionPerformedSearch();
+						String text = search_panel1_TField.getText();
+						search_panel1_TField.setToolTipText("");
+						search_panel1_TField.setIcon(new ImageIcon());
+						actionPerformedSearch(text);
+					}else if(search_panel1_TField.getText().equals("")){
+						search_panel1_TField.setToolTipText("cant search emty String");
+						search_panel1_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 					}else {
+						search_panel1_TField.setToolTipText("");
+						search_panel1_TField.setIcon(new ImageIcon());
 						for(int i=0;i<tableArr.length-1;i++) {
 							model.removeRow(0);
 						}
@@ -548,15 +573,24 @@ public class nHentai {
 			}
 		});
 		search_panel1_TField.setBounds(10, 11, 175, 20);
+		search_panel1_TField.setIcon(new ImageIcon());
 		panel_panel1.add(search_panel1_TField);
 		search_panel1_TField.setColumns(10);
 		
 		JButton searchClean_panel1_btn = new JButton("X");
 		searchClean_panel1_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewPlanToRead == false) {
-					actionPerformedSearch();
+				if(!search_panel1_TField.getText().equals("")) {
+					String text = search_panel1_TField.getText();
+					search_panel1_TField.setToolTipText("");
+					search_panel1_TField.setIcon(new ImageIcon());
+					actionPerformedSearch(text);
+				}else if(search_panel1_TField.getText().equals("")){
+					search_panel1_TField.setToolTipText("cant search emty String");
+					search_panel1_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
+					search_panel1_TField.setToolTipText("");
+					search_panel1_TField.setIcon(new ImageIcon());
 					for(int i=0;i<tableArr.length-1;i++) {
 						model.removeRow(0);
 					}
@@ -568,7 +602,62 @@ public class nHentai {
 		});
 		searchClean_panel1_btn.setBounds(187, 10, 33, 23);
 		panel_panel1.add(searchClean_panel1_btn);
+		
+		
+		searchId_panel1_CBox = new JCheckBox("id");
+		searchId_panel1_CBox.setForeground(Color.WHITE);
+		searchId_panel1_CBox.setBackground(new Color(0, 44, 88));
+		searchId_panel1_CBox.setBounds(10, 64, 52, 23);
+		searchId_panel1_CBox.setVisible(false);
+		searchId_panel1_CBox.setSelected(true);
+		panel_panel1.add(searchId_panel1_CBox);
+		
+		searchTitle_panel1_CBox = new JCheckBox("title");
+		searchTitle_panel1_CBox.setBackground(new Color(0, 44, 88));
+		searchTitle_panel1_CBox.setForeground(Color.WHITE);
+		searchTitle_panel1_CBox.setBounds(10, 90, 52, 23);
+		searchTitle_panel1_CBox.setVisible(false);
+		searchTitle_panel1_CBox.setSelected(true);
+		panel_panel1.add(searchTitle_panel1_CBox);
+		
+		searchAuthor_panel1_CBox = new JCheckBox("author");
+		searchAuthor_panel1_CBox.setBackground(new Color(0, 44, 88));
+		searchAuthor_panel1_CBox.setForeground(Color.WHITE);
+		searchAuthor_panel1_CBox.setBounds(83, 64, 68, 23);
+		searchAuthor_panel1_CBox.setVisible(false);
+		searchAuthor_panel1_CBox.setSelected(true);
+		panel_panel1.add(searchAuthor_panel1_CBox);
+		
+		searchTags_panel1_CBox = new JCheckBox("tags");
+		searchTags_panel1_CBox.setBackground(new Color(0, 44, 88));
+		searchTags_panel1_CBox.setForeground(Color.WHITE);
+		searchTags_panel1_CBox.setBounds(83, 90, 68, 23);
+		searchTags_panel1_CBox.setVisible(false);
+		searchTags_panel1_CBox.setSelected(true);
+		panel_panel1.add(searchTags_panel1_CBox);
 
+		JCheckBox showMore_panel1_CBox = new JCheckBox("show more");
+		showMore_panel1_CBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+					searchId_panel1_CBox.setVisible(true);
+					searchTitle_panel1_CBox.setVisible(true);
+					searchAuthor_panel1_CBox.setVisible(true);
+					searchTags_panel1_CBox.setVisible(true);
+				} else {//checkbox has been deselected
+					searchId_panel1_CBox.setVisible(false);
+					searchTitle_panel1_CBox.setVisible(false);
+					searchAuthor_panel1_CBox.setVisible(false);
+					searchTags_panel1_CBox.setVisible(false);
+				};
+			}
+		});
+		showMore_panel1_CBox.setForeground(Color.WHITE);
+		showMore_panel1_CBox.setBackground(new Color(0, 44, 88));
+		showMore_panel1_CBox.setBounds(10, 38, 80, 23);
+		panel_panel1.add(showMore_panel1_CBox);
+		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
 		scrollPane_panel1.getViewport().setBackground(new Color(54, 57, 63));
@@ -646,7 +735,7 @@ public class nHentai {
 		EntryLoader_panel1_PBar = new JProgressBar();
 		EntryLoader_panel1_PBar.setBackground(Color.WHITE);
 		EntryLoader_panel1_PBar.setForeground(Color.DARK_GRAY);
-		//EntryLoader_panel1_PBar.setVisible(false);
+		EntryLoader_panel1_PBar.setVisible(false);
 		EntryLoader_panel1_PBar.setBounds(826, 646, 90, 14);
 		planToRead_tab.add(EntryLoader_panel1_PBar);
 		/*
@@ -789,12 +878,20 @@ public class nHentai {
 		});
 		panel_panel2.add(loadTable__panel2_btn);
 		
-		search_panel2_TField = new JTextField();
+		IconTextField search_panel2_TField = new IconTextField();
 		search_panel2_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!search_panel2_TField.getText().equals("")) {
-					actionPerformedSearchReading();
+				if(inSearchViewReading == false) {
+					search_panel2_TField.setToolTipText("");
+					search_panel2_TField.setIcon(new ImageIcon());
+					String text = search_panel2_TField.getText();
+					actionPerformedSearchReading(text);
+				}else if(search_panel2_TField.getText().equals("")){
+					search_panel2_TField.setToolTipText("cant search emty String");
+					search_panel2_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
+					search_panel2_TField.setToolTipText("");
+					search_panel2_TField.setIcon(new ImageIcon());
 					for(int i=0;i<tableArrReading.length-1;i++) {
 						modelReading.removeRow(0);
 					}
@@ -812,8 +909,16 @@ public class nHentai {
 		searchClean_panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(inSearchViewReading == false) {
-					actionPerformedSearchReading();
+					search_panel2_TField.setToolTipText("");
+					search_panel2_TField.setIcon(new ImageIcon());
+					String text = search_panel2_TField.getText();
+					actionPerformedSearchReading(text);
+				}else if(search_panel2_TField.getText().equals("")){
+					search_panel2_TField.setToolTipText("cant search emty String");
+					search_panel2_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
+					search_panel2_TField.setToolTipText("");
+					search_panel2_TField.setIcon(new ImageIcon());
 					for(int i=0;i<tableArrReading.length-1;i++) {
 						modelReading.removeRow(0);
 					}
@@ -907,6 +1012,7 @@ public class nHentai {
 		EntryLoader_panel2_PBar.setForeground(Color.DARK_GRAY);
 		EntryLoader_panel2_PBar.setBackground(Color.WHITE);
 		EntryLoader_panel2_PBar.setBounds(826, 645, 90, 14);
+		EntryLoader_panel2_PBar.setVisible(false);
 		reading_tab.add(EntryLoader_panel2_PBar);
 		/*
 		 * end panel 2
@@ -1049,11 +1155,17 @@ public class nHentai {
 		});
 		panel_panel3.add(loadTable__panel3_btn);
 		
-		search_panel3_TField = new JTextField();
+		IconTextField search_panel3_TField = new IconTextField();
 		search_panel3_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!search_panel3_TField.getText().equals("")) {
-					actionPerformedSearchCompleted();
+					search_panel3_TField.setToolTipText("");
+					search_panel3_TField.setIcon(new ImageIcon());
+					String text = search_panel3_TField.getText();
+					actionPerformedSearchCompleted(text);
+				}else if(search_panel3_TField.getText().equals("")){
+					search_panel3_TField.setToolTipText("cant search emty String");
+					search_panel3_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
 					for(int i=0;i<tableArrCompleted.length-1;i++) {
 						modelCompleted.removeRow(0);
@@ -1071,8 +1183,14 @@ public class nHentai {
 		JButton searchClean_panel3_btn = new JButton("X");
 		searchClean_panel3_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewCompleted == false) {
-					actionPerformedSearchCompleted();
+				if(!search_panel3_TField.getText().equals("")) {
+					search_panel3_TField.setToolTipText("");
+					search_panel3_TField.setIcon(new ImageIcon());
+					String text = search_panel3_TField.getText();
+					actionPerformedSearchCompleted(text);
+				}else if(search_panel3_TField.getText().equals("")){
+					search_panel3_TField.setToolTipText("cant search emty String");
+					search_panel3_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
 					for(int i=0;i<tableArrCompleted.length-1;i++) {
 						modelCompleted.removeRow(0);
@@ -1167,6 +1285,7 @@ public class nHentai {
 		EntryLoader_panel3_PBar.setForeground(Color.DARK_GRAY);
 		EntryLoader_panel3_PBar.setBackground(Color.WHITE);
 		EntryLoader_panel3_PBar.setBounds(826, 645, 90, 14);
+		EntryLoader_panel3_PBar.setVisible(false);
 		completed_tab.add(EntryLoader_panel3_PBar);
 
 		/*
@@ -2629,10 +2748,10 @@ public class nHentai {
 	    }	
 	}
 	
-	public void actionPerformedSearch() {
-		String searchInput = search_panel1_TField.getText();
+	public void actionPerformedSearch(String input) {
+		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrSave, searchInput);
+		filteredTable = searchEngine.search(tableArrSave, searchInput, getSearchConfig("plan to read"));
 		
 		if(inSearchViewPlanToRead == false)
 			tableArrSave = tableArr;
@@ -2660,10 +2779,10 @@ public class nHentai {
 		inSearchViewPlanToRead = true;
 	}
 	
-	public void actionPerformedSearchReading() {
-		String searchInput = search_panel2_TField.getText();
+	public void actionPerformedSearchReading(String input) {
+		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrReading, searchInput);
+		filteredTable = searchEngine.search(tableArrReading, searchInput, getSearchConfig("reading"));
 		
 		if(inSearchViewReading == false)
 			tableArrReadingSave = tableArrReading;
@@ -2691,10 +2810,10 @@ public class nHentai {
 		inSearchViewReading = true;
 	}
 	
-	public void actionPerformedSearchCompleted() {
-		String searchInput = search_panel3_TField.getText();
+	public void actionPerformedSearchCompleted(String input) {
+		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrCompletedSave, searchInput);
+		filteredTable = searchEngine.search(tableArrCompletedSave, searchInput, getSearchConfig("completed"));
 		
 		if(inSearchViewCompleted == false)
 			tableArrCompletedSave = tableArrCompleted;
@@ -2721,4 +2840,78 @@ public class nHentai {
 		modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
 		inSearchViewCompleted = true;
 	}
+	
+	public boolean[] getSearchConfig(String panel) {
+		boolean[] config = new boolean[4];
+		switch (panel) {
+		case "plan to read":
+			config[0] = searchId_panel1_CBox.isSelected();
+			config[1] = searchTitle_panel1_CBox.isSelected();
+			config[2] = searchAuthor_panel1_CBox.isSelected();
+			config[3] = searchTags_panel1_CBox.isSelected();
+		case "reading":
+			config[0] = searchId_panel1_CBox.isSelected();
+			config[1] = searchTitle_panel1_CBox.isSelected();
+			config[2] = searchAuthor_panel1_CBox.isSelected();
+			config[3] = searchTags_panel1_CBox.isSelected();
+		case "completed":
+			config[0] = searchId_panel1_CBox.isSelected();
+			config[1] = searchTitle_panel1_CBox.isSelected();
+			config[2] = searchAuthor_panel1_CBox.isSelected();
+			config[3] = searchTags_panel1_CBox.isSelected();
+		}
+		return config;
+	}
+	
+	public class IconTextField extends JTextField 
+	{
+	    private static final int ICON_SPACING = 4;
+	    private Border mBorder;
+	    private Icon mIcon;
+
+	    @Override
+	    public void setBorder(Border border)
+	    {
+	        mBorder = border;
+
+	        if (mIcon == null)
+	        {
+	            super.setBorder(border);
+	        } 
+
+	        else 
+	        {
+	            Border margin = BorderFactory.createEmptyBorder(0, 0, 0, mIcon.getIconWidth() + ICON_SPACING);
+	            Border compoud = BorderFactory.createCompoundBorder(border, margin);
+	            super.setBorder(compoud);
+	        }
+	    }
+
+	    @Override
+	    protected void paintComponent(Graphics graphics) 
+	    {
+	        super.paintComponent(graphics);
+
+	        if (mIcon != null)
+	        {
+	            Insets iconInsets = mBorder.getBorderInsets(this);
+	            mIcon.paintIcon(this, graphics, 150, iconInsets.top);
+	        }
+	    }
+
+	    public void setIcon(Icon icon) 
+	    {
+	        mIcon = icon;
+	        resetBorder();
+	    }
+
+	    private void resetBorder() 
+	    {
+	        setBorder(mBorder);
+	    }
+	    
+	    public String getInputText() {
+	    	return this.getText();
+	    }
+	} 
 }
