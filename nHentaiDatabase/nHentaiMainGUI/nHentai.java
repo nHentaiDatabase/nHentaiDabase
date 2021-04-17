@@ -21,7 +21,9 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -363,6 +365,9 @@ public class nHentai {
 					int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 					if(result == JOptionPane.YES_OPTION) {
 						String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+						
+						
+						
 						dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
 						dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
 						dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
@@ -381,21 +386,111 @@ public class nHentai {
 		windowToolbar.add(closeWindow_btn);
 		
 		JButton safeWindow_btn = new JButton();
+		safeWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveIcon.png")));
 		safeWindow_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				safed = true;
 				
 				String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
-				dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
-				dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
-				dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+				
+				
+				class Task extends SwingWorker<Void, Void> {
+					String[][] table;
+					String location;
+					PrintWriter outputStream;
+					public Task(String[][] table, String location) {
+						this.table = table;
+						this.location = location;
+					}
+					
+				    @Override
+				    public Void doInBackground() {
+				    	int progress = 0;
+				    	setProgress(0);
+				    	
+				    	double secondEnd;
+				    	double second = 0;
+				    	
+				    	double length = table.length;
+						secondEnd = length / 100;
+				    	
+				    	try {
+				            outputStream = new PrintWriter(location);
+				        }
+				        catch (FileNotFoundException e) {
+				            e.printStackTrace();
+				        }
+						for(int i=0;i<table.length;i++) {
+							for(int j=0;j<table[0].length;j++) {
+								outputStream.println(table[i][j]);
+							}
+							outputStream.println("*-*");
+							second++;
+							if(second > secondEnd) {
+								if(secondEnd < 1) {
+									progress = progress + (int)(1 / secondEnd);
+								}else
+									progress++;
+								setProgress(progress);
+								second = 0;
+							}
+						}
+						outputStream.close();
+						return null;
+				    }
+				    
+				    @Override
+				    public void done() {
+				    	EntryLoader_panel1_PBar.setVisible(false);
+				    	EntryLoader_panel1_PBar.setValue(0);
+						EntryLoader_panel2_PBar.setVisible(false);
+						EntryLoader_panel2_PBar.setValue(0);
+						EntryLoader_panel3_PBar.setVisible(false);
+						EntryLoader_panel3_PBar.setValue(0);
+				    }
+				    
+				}
+				
+				EntryLoader_panel1_PBar.setVisible(true);
+				EntryLoader_panel2_PBar.setVisible(true);
+				EntryLoader_panel3_PBar.setVisible(true);
+				Task task = new Task(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+				task.addPropertyChangeListener(new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+		                if ("progress" == evt.getPropertyName()) {
+		                    int progress = (Integer) evt.getNewValue();
+		                    EntryLoader_panel1_PBar.setValue(progress);
+		                    EntryLoader_panel2_PBar.setValue(progress);
+		                    EntryLoader_panel3_PBar.setValue(progress);
+		                } 
+		            }
+		        });
+				task.execute();
+				
+				EntryLoader_panel1_PBar.setVisible(true);
+				EntryLoader_panel2_PBar.setVisible(true);
+				EntryLoader_panel3_PBar.setVisible(true);
+				task = new Task(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+				task.execute();
+				
+				EntryLoader_panel1_PBar.setVisible(true);
+				EntryLoader_panel2_PBar.setVisible(true);
+				EntryLoader_panel3_PBar.setVisible(true);
+				task = new Task(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+				task.execute();
+				
+				//dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+				//dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+				//dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
 				String[] settings = new String[1];
     			settings[0] = "SFW: " + String.valueOf(SFW);
     			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
 			}
 		});
-		safeWindow_btn.setBounds(0, 1, 25, 25);
+		safeWindow_btn.setBounds(3, 3, 22, 22);
 		windowToolbar.add(safeWindow_btn);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
