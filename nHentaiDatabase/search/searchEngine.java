@@ -93,7 +93,7 @@ public class searchEngine {
 			for(int j=0;j<res[0].length;j++) {
 				for(int k=0;k<res[0][0].length;k++) {
 					if(res[i][j][k] >= 0) {
-						resId[l] = relevant[i][0];
+						resId[l] = table[i][2];
 						l++;
 						k = res[0][0].length;
 						j = res[0].length;

@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -59,7 +57,6 @@ import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
-import newEntry.newEntry;
 import newEntry.newEntryGeneral;
 import outsourcedClasses.ButtonColumnAll;
 import outsourcedClasses.nHentaiAPIRun;
@@ -72,11 +69,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
 
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
@@ -127,6 +122,15 @@ public class nHentai {
 	private JCheckBox searchTitle_panel1_CBox;
 	private JCheckBox searchAuthor_panel1_CBox;
 	private JCheckBox searchTags_panel1_CBox;
+	private JCheckBox searchId_panel2_CBox;
+	private JCheckBox searchTitle_panel2_CBox;
+	private JCheckBox searchAuthor_panel2_CBox;
+	private JCheckBox searchTags_panel2_CBox;
+	private JCheckBox searchId_panel3_CBox;
+	private JCheckBox searchTitle_panel3_CBox;
+	private JCheckBox searchAuthor_panel3_CBox;
+	private JCheckBox searchTags_panel3_CBox;
+	
 	
 	
 	
@@ -492,6 +496,16 @@ public class nHentai {
 		});
 		safeWindow_btn.setBounds(3, 3, 22, 22);
 		windowToolbar.add(safeWindow_btn);
+		
+		JButton minimizeWindow_btn = new JButton("");
+		minimizeWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/minimize.png")));
+		minimizeWindow_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frmNhentaidatabase.setState(frmNhentaidatabase.ICONIFIED);
+			}
+		});
+		minimizeWindow_btn.setBounds(888, 1, 24, 23);
+		windowToolbar.add(minimizeWindow_btn);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(null);
@@ -643,61 +657,101 @@ public class nHentai {
 		});
 		panel_panel1.add(loadTable__panel1_btn);
 		
-		IconTextField search_panel1_TField = new IconTextField();
+		JTextField search_panel1_TField = new JTextField();
 		search_panel1_TField.setToolTipText("");
 		search_panel1_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					if(!search_panel1_TField.getText().equals("")) {
 						String text = search_panel1_TField.getText();
-						search_panel1_TField.setToolTipText("");
-						search_panel1_TField.setIcon(new ImageIcon());
 						actionPerformedSearch(text);
-					}else if(search_panel1_TField.getText().equals("")){
-						search_panel1_TField.setToolTipText("cant search emty String");
-						search_panel1_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 					}else {
-						search_panel1_TField.setToolTipText("");
-						search_panel1_TField.setIcon(new ImageIcon());
 						for(int i=0;i<tableArr.length-1;i++) {
 							model.removeRow(0);
 						}
 						tableArr = tableArrSave;
 						ArrToTable(model, tableArr);
 						inSearchViewPlanToRead = false;
+						search_panel1_TField.setText("");
 					}
 			}
 		});
-		search_panel1_TField.setBounds(10, 11, 175, 20);
-		search_panel1_TField.setIcon(new ImageIcon());
+		search_panel1_TField.setBounds(10, 11, 157, 23);
 		panel_panel1.add(search_panel1_TField);
 		search_panel1_TField.setColumns(10);
 		
-		JButton searchClean_panel1_btn = new JButton("X");
-		searchClean_panel1_btn.addActionListener(new ActionListener() {
+		JButton search_panel1_btn = new JButton();
+		search_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+		search_panel1_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!search_panel1_TField.getText().equals("")) {
 					String text = search_panel1_TField.getText();
-					search_panel1_TField.setToolTipText("");
-					search_panel1_TField.setIcon(new ImageIcon());
 					actionPerformedSearch(text);
-				}else if(search_panel1_TField.getText().equals("")){
-					search_panel1_TField.setToolTipText("cant search emty String");
-					search_panel1_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
-					search_panel1_TField.setToolTipText("");
-					search_panel1_TField.setIcon(new ImageIcon());
 					for(int i=0;i<tableArr.length-1;i++) {
 						model.removeRow(0);
 					}
 					tableArr = tableArrSave;
 					ArrToTable(model, tableArr);
 					inSearchViewPlanToRead = false;
+					search_panel1_TField.setText("");
 				}
 			}
 		});
-		searchClean_panel1_btn.setBounds(187, 10, 33, 23);
-		panel_panel1.add(searchClean_panel1_btn);
+		search_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
+		});
+		search_panel1_btn.setBounds(197, 11, 22, 23);
+		panel_panel1.add(search_panel1_btn);
 		
+		
+		JButton clear_panel1_btn = new JButton();
+		clear_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+		clear_panel1_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i=0;i<tableArr.length-1;i++) {
+					model.removeRow(0);
+				}
+				tableArr = tableArrSave;
+				ArrToTable(model, tableArr);
+				inSearchViewPlanToRead = false;
+				search_panel1_TField.setText("");
+			}
+		});
+		clear_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+		});
+		clear_panel1_btn.setBounds(169, 11, 22, 23);
+		panel_panel1.add(clear_panel1_btn);
 		
 		searchId_panel1_CBox = new JCheckBox("id");
 		searchId_panel1_CBox.setForeground(Color.WHITE);
@@ -752,6 +806,7 @@ public class nHentai {
 		showMore_panel1_CBox.setBackground(new Color(0, 44, 88));
 		showMore_panel1_CBox.setBounds(10, 38, 80, 23);
 		panel_panel1.add(showMore_panel1_CBox);
+		
 		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
@@ -972,60 +1027,157 @@ public class nHentai {
 			}
 		});
 		panel_panel2.add(loadTable__panel2_btn);
-		
-		IconTextField search_panel2_TField = new IconTextField();
+
+		JTextField search_panel2_TField = new JTextField();
+		search_panel2_TField.setToolTipText("");
 		search_panel2_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewReading == false) {
-					search_panel2_TField.setToolTipText("");
-					search_panel2_TField.setIcon(new ImageIcon());
-					String text = search_panel2_TField.getText();
-					actionPerformedSearchReading(text);
-				}else if(search_panel2_TField.getText().equals("")){
-					search_panel2_TField.setToolTipText("cant search emty String");
-					search_panel2_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
-				}else {
-					search_panel2_TField.setToolTipText("");
-					search_panel2_TField.setIcon(new ImageIcon());
-					for(int i=0;i<tableArrReading.length-1;i++) {
-						modelReading.removeRow(0);
+					if(!search_panel2_TField.getText().equals("")) {
+						String text = search_panel2_TField.getText();
+						actionPerformedSearchReading(text);
+					}else {
+						for(int i=0;i<tableArrReading.length-1;i++) {
+							modelReading.removeRow(0);
+						}
+						tableArrReading = tableArrReadingSave;
+						modelReading = ArrToTable(modelReading, tableArrReading);
+						inSearchViewReading = false;
+						search_panel2_TField.setText("");
 					}
-					tableArrReading = tableArrReadingSave;
-					modelReading = ArrToTable(modelReading, tableArrReading);
-					inSearchViewReading = false;
-				}
-		}
-	});
-		search_panel2_TField.setColumns(10);
-		search_panel2_TField.setBounds(10, 12, 175, 20);
+			}
+		});
+		search_panel2_TField.setBounds(10, 11, 157, 23);
 		panel_panel2.add(search_panel2_TField);
+		search_panel2_TField.setColumns(10);
 		
-		JButton searchClean_panel2_btn = new JButton("X");
-		searchClean_panel2_btn.addActionListener(new ActionListener() {
+		JButton search_panel2_btn = new JButton();
+		search_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+		search_panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewReading == false) {
-					search_panel2_TField.setToolTipText("");
-					search_panel2_TField.setIcon(new ImageIcon());
+				if(!search_panel2_TField.getText().equals("")) {
 					String text = search_panel2_TField.getText();
 					actionPerformedSearchReading(text);
-				}else if(search_panel2_TField.getText().equals("")){
-					search_panel2_TField.setToolTipText("cant search emty String");
-					search_panel2_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
-					search_panel2_TField.setToolTipText("");
-					search_panel2_TField.setIcon(new ImageIcon());
 					for(int i=0;i<tableArrReading.length-1;i++) {
 						modelReading.removeRow(0);
 					}
 					tableArrReading = tableArrReadingSave;
 					modelReading = ArrToTable(modelReading, tableArrReading);
 					inSearchViewReading = false;
+					search_panel2_TField.setText("");
 				}
 			}
 		});
-		searchClean_panel2_btn.setBounds(187, 11, 33, 23);
-		panel_panel2.add(searchClean_panel2_btn);
+		search_panel2_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
 
+			public void mouseExited(MouseEvent evt) {
+					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
+		});
+		search_panel2_btn.setBounds(197, 11, 22, 23);
+		panel_panel2.add(search_panel2_btn);
+		
+		
+		JButton clear_panel2_btn = new JButton();
+		clear_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+		clear_panel2_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i=0;i<tableArr.length-1;i++) {
+					model.removeRow(0);
+				}
+				tableArr = tableArrSave;
+				ArrToTable(model, tableArr);
+				inSearchViewPlanToRead = false;
+				search_panel2_TField.setText("");
+			}
+		});
+		clear_panel2_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+		});
+		clear_panel2_btn.setBounds(169, 11, 22, 23);
+		panel_panel2.add(clear_panel2_btn);
+		
+		searchId_panel2_CBox = new JCheckBox("id");
+		searchId_panel2_CBox.setForeground(Color.WHITE);
+		searchId_panel2_CBox.setBackground(new Color(0, 44, 88));
+		searchId_panel2_CBox.setBounds(10, 64, 52, 23);
+		searchId_panel2_CBox.setVisible(false);
+		searchId_panel2_CBox.setSelected(true);
+		panel_panel2.add(searchId_panel2_CBox);
+		
+		searchTitle_panel2_CBox = new JCheckBox("title");
+		searchTitle_panel2_CBox.setBackground(new Color(0, 44, 88));
+		searchTitle_panel2_CBox.setForeground(Color.WHITE);
+		searchTitle_panel2_CBox.setBounds(10, 90, 52, 23);
+		searchTitle_panel2_CBox.setVisible(false);
+		searchTitle_panel2_CBox.setSelected(true);
+		panel_panel2.add(searchTitle_panel2_CBox);
+		
+		searchAuthor_panel2_CBox = new JCheckBox("author");
+		searchAuthor_panel2_CBox.setBackground(new Color(0, 44, 88));
+		searchAuthor_panel2_CBox.setForeground(Color.WHITE);
+		searchAuthor_panel2_CBox.setBounds(83, 64, 68, 23);
+		searchAuthor_panel2_CBox.setVisible(false);
+		searchAuthor_panel2_CBox.setSelected(true);
+		panel_panel2.add(searchAuthor_panel2_CBox);
+		
+		searchTags_panel2_CBox = new JCheckBox("tags");
+		searchTags_panel2_CBox.setBackground(new Color(0, 44, 88));
+		searchTags_panel2_CBox.setForeground(Color.WHITE);
+		searchTags_panel2_CBox.setBounds(83, 90, 68, 23);
+		searchTags_panel2_CBox.setVisible(false);
+		searchTags_panel2_CBox.setSelected(true);
+		panel_panel2.add(searchTags_panel2_CBox);
+
+		JCheckBox showMore_panel2_CBox = new JCheckBox("show more");
+		showMore_panel2_CBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+					searchId_panel2_CBox.setVisible(true);
+					searchTitle_panel2_CBox.setVisible(true);
+					searchAuthor_panel2_CBox.setVisible(true);
+					searchTags_panel2_CBox.setVisible(true);
+				} else {//checkbox has been deselected
+					searchId_panel2_CBox.setVisible(false);
+					searchTitle_panel2_CBox.setVisible(false);
+					searchAuthor_panel2_CBox.setVisible(false);
+					searchTags_panel2_CBox.setVisible(false);
+				};
+			}
+		});
+		showMore_panel2_CBox.setForeground(Color.WHITE);
+		showMore_panel2_CBox.setBackground(new Color(0, 44, 88));
+		showMore_panel2_CBox.setBounds(10, 38, 80, 23);
+		panel_panel2.add(showMore_panel2_CBox);
+		
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
 		scrollPane_panel2.getViewport().setBackground(new Color(54, 57, 63));
@@ -1106,7 +1258,7 @@ public class nHentai {
 		EntryLoader_panel2_PBar = new JProgressBar();
 		EntryLoader_panel2_PBar.setForeground(Color.DARK_GRAY);
 		EntryLoader_panel2_PBar.setBackground(Color.WHITE);
-		EntryLoader_panel2_PBar.setBounds(826, 645, 90, 14);
+		EntryLoader_panel2_PBar.setBounds(826, 646, 90, 14);
 		EntryLoader_panel2_PBar.setVisible(false);
 		reading_tab.add(EntryLoader_panel2_PBar);
 		/*
@@ -1250,42 +1402,36 @@ public class nHentai {
 		});
 		panel_panel3.add(loadTable__panel3_btn);
 		
-		IconTextField search_panel3_TField = new IconTextField();
+		JTextField search_panel3_TField = new JTextField();
+		search_panel3_TField.setToolTipText("");
 		search_panel3_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!search_panel3_TField.getText().equals("")) {
-					search_panel3_TField.setToolTipText("");
-					search_panel3_TField.setIcon(new ImageIcon());
-					String text = search_panel3_TField.getText();
-					actionPerformedSearchCompleted(text);
-				}else if(search_panel3_TField.getText().equals("")){
-					search_panel3_TField.setToolTipText("cant search emty String");
-					search_panel3_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
-				}else {
-					for(int i=0;i<tableArrCompleted.length-1;i++) {
-						modelCompleted.removeRow(0);
+					if(!search_panel3_TField.getText().equals("")) {
+						String text = search_panel3_TField.getText();
+						actionPerformedSearchCompleted(text);
+					}else {
+						for(int i=0;i<tableArrCompleted.length-1;i++) {
+							modelCompleted.removeRow(0);
+						}
+						tableArrCompleted = tableArrCompletedSave;
+						modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+						inSearchViewCompleted = false;
+						search_panel3_TField.setText("");
 					}
-					tableArrCompleted = tableArrCompletedSave;
-					modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
-					inSearchViewCompleted = false;
-				}
-		}
-	});
-		search_panel3_TField.setColumns(10);
-		search_panel3_TField.setBounds(10, 12, 175, 20);
+			}
+		});
+		search_panel3_TField.setBounds(10, 11, 157, 23);
 		panel_panel3.add(search_panel3_TField);
+		search_panel3_TField.setColumns(10);
 		
-		JButton searchClean_panel3_btn = new JButton("X");
-		searchClean_panel3_btn.addActionListener(new ActionListener() {
+		JButton search_panel3_btn = new JButton();
+		search_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+		search_panel3_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!search_panel3_TField.getText().equals("")) {
-					search_panel3_TField.setToolTipText("");
-					search_panel3_TField.setIcon(new ImageIcon());
 					String text = search_panel3_TField.getText();
 					actionPerformedSearchCompleted(text);
-				}else if(search_panel3_TField.getText().equals("")){
-					search_panel3_TField.setToolTipText("cant search emty String");
-					search_panel3_TField.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Alert.png")));
 				}else {
 					for(int i=0;i<tableArrCompleted.length-1;i++) {
 						modelCompleted.removeRow(0);
@@ -1293,11 +1439,118 @@ public class nHentai {
 					tableArrCompleted = tableArrCompletedSave;
 					modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
 					inSearchViewCompleted = false;
+					search_panel3_TField.setText("");
 				}
 			}
 		});
-		searchClean_panel3_btn.setBounds(187, 11, 33, 23);
-		panel_panel3.add(searchClean_panel3_btn);
+		search_panel3_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
+			}
+		});
+		search_panel3_btn.setBounds(197, 11, 22, 23);
+		panel_panel3.add(search_panel3_btn);
+		
+		
+		JButton clear_panel3_btn = new JButton();
+		clear_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+		clear_panel3_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i=0;i<tableArrCompleted.length-1;i++) {
+					modelCompleted.removeRow(0);
+				}
+				tableArrCompleted = tableArrCompletedSave;
+				modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+				inSearchViewCompleted = false;
+				search_panel3_TField.setText("");
+			}
+		});
+		clear_panel3_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
+			}
+		});
+		clear_panel3_btn.setBounds(169, 11, 22, 23);
+		panel_panel3.add(clear_panel3_btn);
+		
+		searchId_panel3_CBox = new JCheckBox("id");
+		searchId_panel3_CBox.setForeground(Color.WHITE);
+		searchId_panel3_CBox.setBackground(new Color(0, 44, 88));
+		searchId_panel3_CBox.setBounds(10, 64, 52, 23);
+		searchId_panel3_CBox.setVisible(false);
+		searchId_panel3_CBox.setSelected(true);
+		panel_panel3.add(searchId_panel3_CBox);
+		
+		searchTitle_panel3_CBox = new JCheckBox("title");
+		searchTitle_panel3_CBox.setBackground(new Color(0, 44, 88));
+		searchTitle_panel3_CBox.setForeground(Color.WHITE);
+		searchTitle_panel3_CBox.setBounds(10, 90, 52, 23);
+		searchTitle_panel3_CBox.setVisible(false);
+		searchTitle_panel3_CBox.setSelected(true);
+		panel_panel3.add(searchTitle_panel3_CBox);
+		
+		searchAuthor_panel3_CBox = new JCheckBox("author");
+		searchAuthor_panel3_CBox.setBackground(new Color(0, 44, 88));
+		searchAuthor_panel3_CBox.setForeground(Color.WHITE);
+		searchAuthor_panel3_CBox.setBounds(83, 64, 68, 23);
+		searchAuthor_panel3_CBox.setVisible(false);
+		searchAuthor_panel3_CBox.setSelected(true);
+		panel_panel3.add(searchAuthor_panel3_CBox);
+		
+		searchTags_panel3_CBox = new JCheckBox("tags");
+		searchTags_panel3_CBox.setBackground(new Color(0, 44, 88));
+		searchTags_panel3_CBox.setForeground(Color.WHITE);
+		searchTags_panel3_CBox.setBounds(83, 90, 68, 23);
+		searchTags_panel3_CBox.setVisible(false);
+		searchTags_panel3_CBox.setSelected(true);
+		panel_panel3.add(searchTags_panel3_CBox);
+
+		JCheckBox showMore_panel3_CBox = new JCheckBox("show more");
+		showMore_panel3_CBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+					searchId_panel3_CBox.setVisible(true);
+					searchTitle_panel3_CBox.setVisible(true);
+					searchAuthor_panel3_CBox.setVisible(true);
+					searchTags_panel3_CBox.setVisible(true);
+				} else {//checkbox has been deselected
+					searchId_panel3_CBox.setVisible(false);
+					searchTitle_panel3_CBox.setVisible(false);
+					searchAuthor_panel3_CBox.setVisible(false);
+					searchTags_panel3_CBox.setVisible(false);
+				};
+			}
+		});
+		showMore_panel3_CBox.setForeground(Color.WHITE);
+		showMore_panel3_CBox.setBackground(new Color(0, 44, 88));
+		showMore_panel3_CBox.setBounds(10, 38, 80, 23);
+		panel_panel3.add(showMore_panel3_CBox);
 		
 		JScrollPane scrollPane_panel3 = new JScrollPane();
 		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
@@ -1379,7 +1632,7 @@ public class nHentai {
 		EntryLoader_panel3_PBar = new JProgressBar();
 		EntryLoader_panel3_PBar.setForeground(Color.DARK_GRAY);
 		EntryLoader_panel3_PBar.setBackground(Color.WHITE);
-		EntryLoader_panel3_PBar.setBounds(826, 645, 90, 14);
+		EntryLoader_panel3_PBar.setBounds(826, 646, 90, 14);
 		EntryLoader_panel3_PBar.setVisible(false);
 		completed_tab.add(EntryLoader_panel3_PBar);
 
@@ -2944,69 +3197,20 @@ public class nHentai {
 			config[1] = searchTitle_panel1_CBox.isSelected();
 			config[2] = searchAuthor_panel1_CBox.isSelected();
 			config[3] = searchTags_panel1_CBox.isSelected();
+			break;
 		case "reading":
-			config[0] = searchId_panel1_CBox.isSelected();
-			config[1] = searchTitle_panel1_CBox.isSelected();
-			config[2] = searchAuthor_panel1_CBox.isSelected();
-			config[3] = searchTags_panel1_CBox.isSelected();
+			config[0] = searchId_panel2_CBox.isSelected();
+			config[1] = searchTitle_panel2_CBox.isSelected();
+			config[2] = searchAuthor_panel2_CBox.isSelected();
+			config[3] = searchTags_panel2_CBox.isSelected();
+			break;
 		case "completed":
-			config[0] = searchId_panel1_CBox.isSelected();
-			config[1] = searchTitle_panel1_CBox.isSelected();
-			config[2] = searchAuthor_panel1_CBox.isSelected();
-			config[3] = searchTags_panel1_CBox.isSelected();
+			config[0] = searchId_panel3_CBox.isSelected();
+			config[1] = searchTitle_panel3_CBox.isSelected();
+			config[2] = searchAuthor_panel3_CBox.isSelected();
+			config[3] = searchTags_panel3_CBox.isSelected();
+			break;
 		}
 		return config;
 	}
-	
-	public class IconTextField extends JTextField 
-	{
-	    private static final int ICON_SPACING = 4;
-	    private Border mBorder;
-	    private Icon mIcon;
-
-	    @Override
-	    public void setBorder(Border border)
-	    {
-	        mBorder = border;
-
-	        if (mIcon == null)
-	        {
-	            super.setBorder(border);
-	        } 
-
-	        else 
-	        {
-	            Border margin = BorderFactory.createEmptyBorder(0, 0, 0, mIcon.getIconWidth() + ICON_SPACING);
-	            Border compoud = BorderFactory.createCompoundBorder(border, margin);
-	            super.setBorder(compoud);
-	        }
-	    }
-
-	    @Override
-	    protected void paintComponent(Graphics graphics) 
-	    {
-	        super.paintComponent(graphics);
-
-	        if (mIcon != null)
-	        {
-	            Insets iconInsets = mBorder.getBorderInsets(this);
-	            mIcon.paintIcon(this, graphics, 150, iconInsets.top);
-	        }
-	    }
-
-	    public void setIcon(Icon icon) 
-	    {
-	        mIcon = icon;
-	        resetBorder();
-	    }
-
-	    private void resetBorder() 
-	    {
-	        setBorder(mBorder);
-	    }
-	    
-	    public String getInputText() {
-	    	return this.getText();
-	    }
-	} 
 }
