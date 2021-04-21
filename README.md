@@ -87,7 +87,7 @@ They help you to keep your doujins organised.
 ![newEntry](https://user-images.githubusercontent.com/77382879/115597134-3bcfa900-a2d9-11eb-9ca9-2190f2efabd3.png)
 
 You can enter a new entry with the id or with the URL. You can also direcly choose the rating and the status.
-For all users of big .txt files I made a option to import multiple id's at once. You simply choose your textfile after enabaling the `import miltiple codes` option.
+For all users of big .txt files I made a option to import multiple id's at once. You simply choose your textfile after enabaling the `import multiple codes` option.
 
 #### safe and load
 
