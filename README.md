@@ -36,7 +36,7 @@ Linux:
   ```terminal
   User@HostName:~$ java -jar "nHentaiDatabase v1.4.6.jar"
   ```
-  note: never use `sudo` then all the data will be stored in `\root`. You can use it but then you habe to always use it.
+  note: never use `sudo` then all the data will be stored in `\root`. You can use it but then you have to always use it.
   
   <!--
 add hyperlink to download
