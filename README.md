@@ -101,3 +101,16 @@ Load one file in the current table. note: all contends in the table are overrite
 
 #### settings
 
+##### stats
+
+#### inspect
+
+![oneEntry](https://user-images.githubusercontent.com/77382879/115598730-0461fc00-a2db-11eb-861b-f38c6833a4ac.png)
+
+After creating a new Entry you can see the inspect Button.  
+When clicking on it a new window will be prompted.
+
+![inspect](https://user-images.githubusercontent.com/77382879/115599209-9cf87c00-a2db-11eb-889f-6e710a1fd4bc.png)
+
+Here you can see all data about the entry.  
+By clicking on the picture you can open nHentai in your Browser.
