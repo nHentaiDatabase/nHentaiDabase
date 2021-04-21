@@ -93,10 +93,11 @@ For all users of big .txt files I made a option to import multiple id's at once.
 
 ![saveLoad](https://user-images.githubusercontent.com/77382879/115597902-168f6a80-a2da-11eb-8902-50bfe7deb325.png)
 
-safe:
+safe:  
 you can export the current table.
 
-load:
+load:  
 Load one file in the current table. note: all contends in the table are overriten.
 
 #### settings
+
