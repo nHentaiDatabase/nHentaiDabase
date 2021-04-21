@@ -3,15 +3,7 @@ package search;
 public class searchEngine {
 	
 	public searchEngine() {
-		/*String[][] test = new String[][]{{"177013", "Methaphorsis", "Shindol", "loli, breast"},
-										 {"123", "test", "author", "joink, jee, loli"},
-										 {"1234", "test", "author", "joink, jee, loli"}};
-										 
-		String search = "test, loli, jee, 123, 177013";
-		String[] Arr = search(test, search);
-		for(int i=0;i<Arr.length;i++) {
-			System.out.println(Arr[i]);
-		}*/
+		
 	}
 	
 	public String[] search(String[][] table, String search, boolean[] config) {

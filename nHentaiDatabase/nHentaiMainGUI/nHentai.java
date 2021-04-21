@@ -48,7 +48,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.Border;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -67,9 +66,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.JScrollPane;
@@ -103,10 +100,11 @@ public class nHentai {
 	private boolean SFW = false;
 	private boolean safed = true;
 	
-	private String mainFolderLocation = "\\nHentaiDatabase";
-	private String photoFolderLocation = "\\savedPhotos";
-	private String userDataFolderLocation = "\\userData";
-	private String randomPhotoFolderLocation = "\\randomPhotos";
+	private String mainFolderLocation;
+	private String photoFolderLocation;
+	private String userDataFolderLocation;
+	private String randomPhotoFolderLocation;
+	private String Slash;
 
 	private Point mouseCoord;
 	private JTable table_panel2;
@@ -175,9 +173,36 @@ public class nHentai {
 		tableArrReadingSave = new String[1][10];
 		tableArrCompleted = new String[1][10];
 		tableArrCompletedSave = new String[1][10];
-		appdataLocation = System.getenv("APPDATA");
+		String OS = System.getProperty("os.name");
+		System.out.println(OS);
+		if(OS.equals("Linux")) {
+			appdataLocation = System.getProperty("user.home");
+			if(appdataLocation.equals("/root")) {
+				appdataLocation = System.getProperty("user.dir");
+			}
+			mainFolderLocation = "/nHentaiDatabase";
+			photoFolderLocation = "/savedPhotos";
+			userDataFolderLocation = "/userData";
+			randomPhotoFolderLocation = "/randomPhotos";
+			Slash = "/";
+		}else {
+			appdataLocation = System.getenv("APPDATA");
+			mainFolderLocation = "\\nHentaiDatabase";
+			photoFolderLocation = "\\savedPhotos";
+			userDataFolderLocation = "\\userData";
+			randomPhotoFolderLocation = "\\randomPhotos";
+			Slash = "\\";
+		}
+		
+			System.out.println(appdataLocation);
+			System.out.println(mainFolderLocation);
+			System.out.println(photoFolderLocation);
+			System.out.println(userDataFolderLocation);
+			System.out.println(randomPhotoFolderLocation);
+			
+//		appdataLocation = System.getenv("APPDATA");
 		initialize();
-		loadingScreen = new loadingScreenMainGUI();
+		loadingScreen = new loadingScreenMainGUI(appdataLocation);
 		//getSave();
 	}
 
@@ -372,12 +397,12 @@ public class nHentai {
 						
 						
 						
-						dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
-						dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
-						dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+						dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+						dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+						dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
 						String[] settings = new String[1];
 		    			settings[0] = "SFW: " + String.valueOf(SFW);
-		    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+		    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 						System.exit(0);
 					}else if(result == JOptionPane.NO_OPTION) {
 						System.exit(0);
@@ -459,7 +484,7 @@ public class nHentai {
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				Task task = new Task(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+				Task task = new Task(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 				task.addPropertyChangeListener(new PropertyChangeListener() {
 
 					@Override
@@ -477,13 +502,13 @@ public class nHentai {
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				task = new Task(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+				task = new Task(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 				task.execute();
 				
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				task = new Task(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+				task = new Task(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 				task.execute();
 				
 				//dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
@@ -491,7 +516,7 @@ public class nHentai {
 				//dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
 				String[] settings = new String[1];
     			settings[0] = "SFW: " + String.valueOf(SFW);
-    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 			}
 		});
 		safeWindow_btn.setBounds(3, 3, 22, 22);
@@ -658,6 +683,7 @@ public class nHentai {
 		panel_panel1.add(loadTable__panel1_btn);
 		
 		JTextField search_panel1_TField = new JTextField();
+		search_panel1_TField.setBackground(Color.WHITE);
 		search_panel1_TField.setToolTipText("");
 		search_panel1_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1029,6 +1055,7 @@ public class nHentai {
 		panel_panel2.add(loadTable__panel2_btn);
 
 		JTextField search_panel2_TField = new JTextField();
+		search_panel2_TField.setBackground(Color.WHITE);
 		search_panel2_TField.setToolTipText("");
 		search_panel2_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1403,6 +1430,7 @@ public class nHentai {
 		panel_panel3.add(loadTable__panel3_btn);
 		
 		JTextField search_panel3_TField = new JTextField();
+		search_panel3_TField.setBackground(Color.WHITE);
 		search_panel3_TField.setToolTipText("");
 		search_panel3_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1686,10 +1714,10 @@ public class nHentai {
 			checkOneImage(Id, inputArr[i][1]);
 			Icon img;
 			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 			}else {
 				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 			}
 			tmp[1] = img;
 			inputModel.addRow(tmp);
@@ -1705,10 +1733,10 @@ public class nHentai {
 		tmp[0] = String.valueOf(tableArr.length - 1);
 		Icon img;
 		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 		}else {
 			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 		}
 		tmp[1] = img;
 		inputModel.addRow(tmp);
@@ -1726,10 +1754,10 @@ public class nHentai {
 			checkOneImage(Id, tableArrReading[i][1]);
 			Icon img;
 			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 			}else {
 				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 			}
 			tmp[1] = img;
 			inputModel.addRow(tmp);
@@ -1745,10 +1773,10 @@ public class nHentai {
 		tmp[0] = String.valueOf(tableArrReading.length - 1);
 		Icon img;
 		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 		}else {
 			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 		}
 		tmp[1] = img;
 		inputModel.addRow(tmp);
@@ -1766,10 +1794,10 @@ public class nHentai {
 			checkOneImage(Id, tableArrCompleted[i][1]);
 			Icon img;
 			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 			}else {
 				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 			}
 			tmp[1] = img;
 			inputModel.addRow(tmp);
@@ -1785,10 +1813,10 @@ public class nHentai {
 		tmp[0] = String.valueOf(tableArrCompleted.length - 1);
 		Icon img;
 		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 		}else {
 			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 		}
 		tmp[1] = img;
 		inputModel.addRow(tmp);
@@ -1797,10 +1825,10 @@ public class nHentai {
 
 	public void setUpRandomPhotos() {
 		for(int i=0;i<200;i++) {
-			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
+			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
 			if(!f.exists()) {
-				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
-				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i, "_low.jpg", 50, 71);
+				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
+				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i, "_low.jpg", 50, 71);
 			}
 		}
 	}
@@ -1844,7 +1872,7 @@ public class nHentai {
 			IDs[i] = inputArr[i][2];
 		}
 		for(int i=0;i<URLs.length;i++) {
-			String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation +"\\" + IDs[i];
+			String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + IDs[i];
 			File f = new File(MainLocation + "_original.jpg");
 			if(!f.exists()) {
 				nHentaiAPI.saveImageAsFile(URLs[i], MainLocation + "_original.jpg");
@@ -1861,7 +1889,7 @@ public class nHentai {
 	}
 	
 	public void checkOneImage(String Id, String URL) {
-		String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation +"\\" + Id ;
+		String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id ;
 		File f = new File(MainLocation + "_original.jpg");
 		if(!f.exists()) {
 			nHentaiAPI.saveImageAsFile(URL, MainLocation + "_original.jpg");
@@ -1896,9 +1924,9 @@ public class nHentai {
 			String photoLocation;
 			if(SFW) {
 				int random = (int)(Math.random()*200);
-				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_medium.jpg";
 			}else {
-				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + id + "_medium.jpg";
 			}
 			
 			
@@ -2005,9 +2033,9 @@ public class nHentai {
 			String photoLocation;
 			if(SFW) {
 				int random = (int)(Math.random()*200);
-				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_medium.jpg";
 			}else {
-				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + id + "_medium.jpg";
 			}
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
@@ -2111,9 +2139,9 @@ public class nHentai {
 			String photoLocation;
 			if(SFW) {
 				int random = (int)(Math.random()*200);
-				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_medium.jpg";
 			}else {
-				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + id + "_medium.jpg";
+				photoLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + id + "_medium.jpg";
 			}
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
@@ -2566,7 +2594,7 @@ public class nHentai {
             	break;
             case "completed":
             	for(int i=0;i<tableArrCompleted.length-1;i++) {
-					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
+					((DefaultTableModel) table_panel3.getModel()).removeRow(i);
 				}
             	break;
             }
@@ -2576,30 +2604,24 @@ public class nHentai {
         UIManager.put("Panel.background", new Color(35, 35, 35));
 
 		return new String[1][10];
-	}
-	
-	public void startApplication() {
-		loadingScreenMainGUI loadindScreen = new loadingScreenMainGUI();
-	}
-	
-	
+	}	
 	
 	public void getSave() {
 		String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 		
-		File f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+		File f = new File(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 		if(f.exists()) {
-			tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+			tableArr = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 			model = ArrToTable(model, tableArr);
 		}
-		f = new File(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 		if(f.exists()) {
-			tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+			tableArrReading = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 			modelReading = ArrToTableReading(modelReading);
 		}
-		f = new File(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 		if(f.exists()) {
-			tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+			tableArrCompleted = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 			modelCompleted = ArrToTableCompleted(modelCompleted);
 		}
 	}
@@ -2608,10 +2630,10 @@ public class nHentai {
 		
 		Icon img;
 		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 		}else {
 			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 		}
 		
 		Object[] data;
@@ -2763,10 +2785,10 @@ public class nHentai {
 
 		private JFrame frame;
 
-		String mainFolderLocation = "\\nHentaiDatabase";
-		String photoFolderLocation = "\\savedPhotos";
-		String userDataFolderLocation = "\\userData";
-		String randomPhotoFolderLocation = "\\randomPhotos";
+		String mainFolderLocation = "/nHentaiDatabase";
+		String photoFolderLocation = "/savedPhotos";
+		String userDataFolderLocation = "/userData";
+		String randomPhotoFolderLocation = "/randomPhotos";
 		String appdataLocation;
 		
 		private Task task;
@@ -2779,9 +2801,9 @@ public class nHentai {
 		/**
 		 * Create the application.
 		 */
-		public loadingScreenMainGUI() {
+		public loadingScreenMainGUI(String appdata) {
 			nHentaiAPI = new nHentaiWebBase();
-			appdataLocation = System.getenv("APPDATA");
+			appdataLocation = appdata;
 			setUpAppData(appdataLocation);
 			initialize();
 		}
@@ -2898,10 +2920,10 @@ public class nHentai {
 	        	
 	        	//setUp random Photos
 	        	for(int i=0;i<200;i++) {
-	    			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
+	    			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
 	    			if(!f.exists()) {
-	    				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg");
-	    				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + i, "_low.jpg", 50, 71);
+	    				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
+	    				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i, "_low.jpg", 50, 71);
 	    			}
 	    			second++;
 	    			if(second == 2) {
@@ -2939,10 +2961,10 @@ public class nHentai {
 	        	
 	        	String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 	    		
-	        	File f = new File(SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	        	File f = new File(SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 	    		if(f.exists()) {
 	    			String[] settings = new String[1];
-	    			settings = dataManager.readSettings(SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	    			settings = dataManager.readSettings(SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 	    			if(settings[0].indexOf("true") >= 0) {
 	    				SFW = true;
 	    			}else if(settings[0].indexOf("false") >= 0) {
@@ -2951,12 +2973,12 @@ public class nHentai {
 	    		}else {
 	    			String[] settings = new String[1];
 	    			settings[0] = "SFW: " + String.valueOf(SFW);
-	    			dataManager.saveSettings(settings, SaveFileLocation + "\\nHentaiDatabaseSettings.nhdb");
+	    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 	    		}
 	        	
-	    		f = new File(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	    		f = new File(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 	    		if(f.exists()) {
-	    			tableArr = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	    			tableArr = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 	    			double length = tableArr.length;
 	    			secondEnd = length / 100;
 	    			progress = 0;
@@ -2971,10 +2993,10 @@ public class nHentai {
 	    				checkOneImage(Id, tableArr[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 	    				}else {
 	    					int random = (int)(Math.random()*200);
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 	    				}
 	    				tmp[1] = img;
 	    				model.addRow(tmp);
@@ -2990,12 +3012,12 @@ public class nHentai {
 	    			}
 	    			tableArrSave = tableArr;
 	    		}else {
-	    			dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
+	    			dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 	    		}
 	    		
-	    		f = new File(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+	    		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 	    		if(f.exists()) {
-	    			tableArrReading = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+	    			tableArrReading = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 	    			double length = tableArrReading.length;
 	    			secondEnd = length / 100;
 	    			progress = 0;
@@ -3010,10 +3032,10 @@ public class nHentai {
 	    				checkOneImage(Id, tableArrReading[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 	    				}else {
 	    					int random = (int)(Math.random()*200);
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 	    				}
 	    				tmp[1] = img;
 	    				modelReading.addRow(tmp);
@@ -3030,12 +3052,12 @@ public class nHentai {
 	    			}
 	    			tableArrReadingSave = tableArrReading;
 	    		}else {
-	    			dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
+	    			dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 	    		}
 	    		
-	    		f = new File(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+	    		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 	    		if(f.exists()) {
-	    			tableArrCompleted = dataManager.readTable(SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+	    			tableArrCompleted = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 	    			double length = tableArrCompleted.length;
 	    			secondEnd = length / 100;
 	    			progress = 0;
@@ -3050,10 +3072,10 @@ public class nHentai {
 	    				checkOneImage(Id, tableArrCompleted[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + "\\" + Id + "_low.jpg");			
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
 	    				}else {
 	    					int random = (int)(Math.random()*200);
-	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + "\\" + random + "_low.jpg");
+	    					img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
 	    				}
 	    				tmp[1] = img;
 	    				modelCompleted.addRow(tmp);
@@ -3073,7 +3095,7 @@ public class nHentai {
 	    			}
 	    			tableArrCompletedSave = tableArrCompleted;
 	    		}else {
-	    			dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+	    			dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 	    		}
 	        	
 	            return null;
