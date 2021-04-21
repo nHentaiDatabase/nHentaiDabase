@@ -19,7 +19,7 @@ On Windows/Linux:
 
 ### How to run
 
-presupposes that java 11 or higher is installed or the java package was downloadet.
+presupposes that java 11 or higher is installed or the java package was downloaded.
 
 Windows:
 
@@ -68,7 +68,7 @@ When you start nHentaiDatabase the folowing window will be prompted.
 
 ![Start](https://user-images.githubusercontent.com/77382879/115596335-48073680-a2d8-11eb-9491-abd21c20c770.png)
 
-By clicking on `start nHentaiDatabase` all contends are getting loaded and the main GUI will be printed.
+By clicking on `start nHentaiDatabase` all contents are getting loaded and the main GUI will be printed.
 
 #### Main GUI
 
