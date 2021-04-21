@@ -89,7 +89,7 @@ They help you to keep your doujins organised.
 You can enter a new entry with the id or with the URL. You can also direcly choose the rating and the status.
 For all users of big .txt files I made an option to import multiple id's at once. You simply choose your textfile after enabaling the `import multiple codes` option.
 
-#### save and load
+#### Save and Load
 
 ![saveLoad](https://user-images.githubusercontent.com/77382879/115597902-168f6a80-a2da-11eb-8902-50bfe7deb325.png)
 
