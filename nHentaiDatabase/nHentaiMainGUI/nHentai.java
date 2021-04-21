@@ -1898,7 +1898,7 @@ public class nHentai {
 		if(!f.exists()) {
 			scaleImage(MainLocation + "_original.jpg", MainLocation,  "_medium.jpg", 150, 212);
 		}
-		f = new File(MainLocation + "low.jpg");
+		f = new File(MainLocation + "_low.jpg");
 		if(!f.exists()) {
 			scaleImage(MainLocation + "_original.jpg", MainLocation, "_low.jpg", 50, 71);
 		}

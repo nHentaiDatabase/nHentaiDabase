@@ -53,7 +53,7 @@ public class dataManager {
 			Scanner myReader = new Scanner(myObj);
 			int lines = 0;
 			while (myReader.hasNextLine()) {
-		        String data = myReader.nextLine();
+		        myReader.nextLine();
 		        lines++;
 		    }
 		    String[] fileData = new String[lines];
