@@ -2,6 +2,8 @@ package settings;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 
@@ -16,14 +18,17 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
@@ -44,11 +49,11 @@ public class settingsPanel extends JPanel {
 		JButton stats_btn = new JButton();
 		stats_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+				UIManager.put("OptionPane.minimumSize", new Dimension(600, 350));
 				statsPanel stats = new statsPanel(planToRead, reading, completed);
-				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.OK_OPTION);
+				
 				int result = inspectPane.showOptionDialog(null, stats, "stats", 0,
 						JOptionPane.PLAIN_MESSAGE, null, null, null);
 			}
@@ -91,8 +96,13 @@ public class settingsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
 				confirmDeleteEverything confirm = new confirmDeleteEverything();
+				
+				Component[] buttonText = OKCancelButtonCreate();
+				
         		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        		
+        		
+				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 				if(result == JOptionPane.OK_OPTION) {
 					System.out.println("everything gets deleted");
 					delete = true;
@@ -139,4 +149,54 @@ public class settingsPanel extends JPanel {
 	public boolean getDelete() {
 		return delete;
 	}
+	
+	public Component[] OKCancelButtonCreate() {
+		final JButton OKButton = new JButton();
+		OKButton.setPreferredSize(new Dimension(75,25));
+		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		OKButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(OKButton);
+				Window w = SwingUtilities.getWindowAncestor(OKButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		OKButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+		});
+		Component[] buttonText = new Component[]{	OKButton};
+		return buttonText;
+	}
+	
+	protected JOptionPane getOptionPane(JComponent parent) {
+        JOptionPane pane = null;
+        if (!(parent instanceof JOptionPane)) {
+            pane = getOptionPane((JComponent)parent.getParent());
+        } else {
+            pane = (JOptionPane) parent;
+        }
+        return pane;
+    }
 }

@@ -69,6 +69,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
@@ -842,7 +843,7 @@ public class nHentai {
         Dimension scrollBarDim_panel1 = new Dimension(15, scrollBar_panel1
               .getPreferredSize().height);
         scrollBar_panel1.setPreferredSize(scrollBarDim_panel1);
-        /*scrollBar_panel1.setUI(new BasicScrollBarUI() {
+        scrollBar_panel1.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -860,7 +861,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
 		
 		
 		planToRead_tab.add(scrollPane_panel1);
@@ -1213,7 +1214,7 @@ public class nHentai {
         Dimension scrollBarDim_panel2 = new Dimension(15, scrollBar_panel2
               .getPreferredSize().height);
         scrollBar_panel2.setPreferredSize(scrollBarDim_panel2);
-        /*scrollBar_panel2.setUI(new BasicScrollBarUI() {
+        scrollBar_panel2.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -1231,7 +1232,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
         
 		
 		reading_tab.add(scrollPane_panel2);
@@ -1588,7 +1589,7 @@ public class nHentai {
         Dimension scrollBarDim_panel3 = new Dimension(15, scrollBar_panel3
               .getPreferredSize().height);
         scrollBar_panel3.setPreferredSize(scrollBarDim_panel3);
-        /*scrollBar_panel3.setUI(new BasicScrollBarUI() {
+        scrollBar_panel3.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -1606,7 +1607,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
 		
 		completed_tab.add(scrollPane_panel3);
 		
@@ -1939,7 +1940,7 @@ public class nHentai {
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
+			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
 					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			System.out.println("pressed" + e.getActionCommand());
 			
@@ -2047,7 +2048,7 @@ public class nHentai {
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "newEntry", 0,
+			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
 					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			System.out.println("pressed" + e.getActionCommand());
 
@@ -2225,9 +2226,6 @@ public class nHentai {
 			}
 	    }
 	};
-	private JTextField search_panel1_TField;
-	private JTextField search_panel2_TField;
-	private JTextField search_panel3_TField;
 	
 	public void actionPerformedNewEntry(String start) {
 		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
