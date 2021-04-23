@@ -3,8 +3,26 @@ package stats;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import moreInformation.moreInformationPanel;
+
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Window;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 
 public class statsPanel extends JPanel {
 	private JTextField readDoujins_TField;
@@ -24,6 +42,7 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel);
 		
 		readDoujins_TField = new JTextField();
+		readDoujins_TField.setBackground(Color.WHITE);
 		readDoujins_TField.setEditable(false);
 		
 		int readingDoujins = getReadDoujins(reading, 8);
@@ -42,6 +61,7 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel_1);
 		
 		readPages_TField = new JTextField();
+		readPages_TField.setBackground(Color.WHITE);
 		readPages_TField.setEditable(false);
 		
 		int readingPages = getReadPages(reading, 8);
@@ -62,8 +82,15 @@ public class statsPanel extends JPanel {
 		picture_panel.setBounds(301, 50, 150, 212);
 		add(picture_panel);
 		
+		String OS = System.getProperty("os.name");
+		System.out.println(OS);
+		String appData = System.getenv("APPDATA");
+		if(OS.equals("Linux")) {
+			appData = System.getProperty("user.home");
+		}
+		
 		JLabel picture_lbl = new JLabel("");
-		picture_lbl.setIcon(new ImageIcon(getPictureLocation(reading, completed)));
+		picture_lbl.setIcon(new ImageIcon(appData + "/nHentaiDatabase/savedPhotos/" + getPictureId(reading, completed) + "_medium.jpg"));
 		picture_panel.add(picture_lbl);
 		
 		JLabel lblNewLabel_3 = new JLabel("time spend reading");
@@ -72,6 +99,7 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel_3);
 		
 		timeSpend_TField = new JTextField();
+		timeSpend_TField.setBackground(Color.WHITE);
 		timeSpend_TField.setEditable(false);
 		
 		String timeSpend = timeSpend(readingPages + completedPages);
@@ -80,6 +108,64 @@ public class statsPanel extends JPanel {
 		timeSpend_TField.setBounds(10, 165, 63, 20);
 		add(timeSpend_TField);
 		timeSpend_TField.setColumns(10);
+		
+		JButton inspectFavorite_btn = new JButton("");
+		inspectFavorite_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/MainGUI/inspectButton.png")));
+		inspectFavorite_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[][] tableArr = new String[1][1];
+				int modelRow = 0;
+				String favoriteId = getPictureId(reading, completed);
+				for(int i=0;i<reading.length;i++) {
+					if(reading[i][2].equals(favoriteId)) {
+						tableArr = reading;
+						modelRow = i;
+					}
+				}
+				for(int i=0;i<completed.length;i++) {
+					if(completed[i][2].equals(favoriteId)) {
+						tableArr = completed;
+						modelRow = i;
+					}
+				}
+				
+				
+				String title = tableArr[modelRow][3];
+				String id = tableArr[modelRow][2];
+				String tags = tableArr[modelRow][9];
+				String artist = tableArr[modelRow][4];
+				String pages = tableArr[modelRow][5];
+				String rating = tableArr[modelRow][8];
+				String status = tableArr[modelRow][6];
+				String URL = tableArr[modelRow][1];
+				String timesRead = tableArr[modelRow][7];
+
+				String OS = System.getProperty("os.name");
+				System.out.println(OS);
+				String appData = System.getenv("APPDATA");
+				String photoLocation;
+				if(OS.equals("Linux")) {
+					appData = System.getProperty("user.home");
+					photoLocation = appData + "/nHentaiDatabase/savedPhotos/" + favoriteId + "_medium.jpg";
+				}
+				photoLocation = appData + "\\nHentaiDatabase\\savedPhotos\\" + favoriteId + "_medium.jpg";
+
+				
+				moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
+						timesRead, status, tags,
+						photoLocation, false);
+				
+				Component[] buttonText = OKCancelButtonCreate();
+				
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+				JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.OK_OPTION);
+				int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
+						JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+			}
+		});
+		inspectFavorite_btn.setBounds(210, 75, 70, 60);
+		add(inspectFavorite_btn);
 	}
 	
 	public int getReadDoujins(String[][] data, int positionTimes) {
@@ -119,7 +205,7 @@ public class statsPanel extends JPanel {
 		}
 	}
 	
-	public String getPictureLocation(String[][] reading, String [][] completed) {
+	public String getPictureId(String[][] reading, String [][] completed) {
 		String id = "";
 		int timesRead = 0;
 		
@@ -152,9 +238,94 @@ public class statsPanel extends JPanel {
 			}
 		}
 		
-		String appData = System.getenv("APPDATA");
+		return id;
 		
-		return appData + "\\nHentaiDatabase\\savedPhotos\\" + id + "_medium.jpg";
+	}
+	
+	protected JOptionPane getOptionPane(JComponent parent) {
+        JOptionPane pane = null;
+        if (!(parent instanceof JOptionPane)) {
+            pane = getOptionPane((JComponent)parent.getParent());
+        } else {
+            pane = (JOptionPane) parent;
+        }
+        return pane;
+    }
+	
+	public Component[] OKCancelButtonCreate() {
+		final JButton OKButton = new JButton();
+		OKButton.setPreferredSize(new Dimension(75,25));
+		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		OKButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(OKButton);
+				Window w = SwingUtilities.getWindowAncestor(OKButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		OKButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
+			}
+		});
 		
+		final JButton cancelButton = new JButton();
+		cancelButton.setPreferredSize(new Dimension(58,25));
+		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(cancelButton);
+				Window w = SwingUtilities.getWindowAncestor(cancelButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		cancelButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+		});
+		
+		Component[] buttonText = new Component[]{	OKButton, cancelButton};
+		return buttonText;
 	}
 }

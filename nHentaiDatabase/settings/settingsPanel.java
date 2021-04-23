@@ -49,13 +49,18 @@ public class settingsPanel extends JPanel {
 		JButton stats_btn = new JButton();
 		stats_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				Component[] tmp = OKCancelButtonCreate();
+				Component[] buttonText = new Component[1];
+				buttonText[0] = tmp[0];
+				
 				UIManager.put("OptionPane.minimumSize", new Dimension(600, 350));
 				statsPanel stats = new statsPanel(planToRead, reading, completed);
 				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.OK_OPTION);
 				
 				int result = inspectPane.showOptionDialog(null, stats, "stats", 0,
-						JOptionPane.PLAIN_MESSAGE, null, null, null);
+						JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 			}
 		});
 		stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/stats.png")));
@@ -186,7 +191,44 @@ public class settingsPanel extends JPanel {
 				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
 			}
 		});
-		Component[] buttonText = new Component[]{	OKButton};
+		
+		final JButton cancelButton = new JButton();
+		cancelButton.setPreferredSize(new Dimension(58,25));
+		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+				paneAP.setValue(cancelButton);
+				Window w = SwingUtilities.getWindowAncestor(cancelButton);
+
+			    if (w != null) {
+			      w.setVisible(false);
+			    }
+			}
+			
+		});
+		cancelButton.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
+			}
+		});
+		
+		Component[] buttonText = new Component[]{	OKButton, cancelButton};
 		return buttonText;
 	}
 	

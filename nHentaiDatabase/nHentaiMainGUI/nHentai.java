@@ -178,9 +178,6 @@ public class nHentai {
 		System.out.println(OS);
 		if(OS.equals("Linux")) {
 			appdataLocation = System.getProperty("user.home");
-			if(appdataLocation.equals("/root")) {
-				appdataLocation = System.getProperty("user.dir");
-			}
 			mainFolderLocation = "/nHentaiDatabase";
 			photoFolderLocation = "/savedPhotos";
 			userDataFolderLocation = "/userData";
@@ -212,6 +209,8 @@ public class nHentai {
 	 */
 	private void initialize() {
 		
+		UIManager.put("Button.focus", new Color(0, 0, 0, 0));
+		UIManager.put("CheckBox.focus", new Color(0, 0, 0, 0));
 		UIManager.put("OptionPane.background", new Color(35, 35, 35));
 		UIManager.put("Panel.background", new Color(35, 35, 35));
 		
@@ -837,6 +836,37 @@ public class nHentai {
 		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
+		scrollPane_panel1.setBackground(Color.RED);
+		
+		JButton cornerButton_panel1 = new JButton();
+		cornerButton_panel1.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+		cornerButton_panel1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scrollPane_panel1.getVerticalScrollBar().setValue(0);
+			}
+			
+		});
+		cornerButton_panel1.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cornerButton_panel1.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cornerButton_panel1.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cornerButton_panel1.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cornerButton_panel1.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+		});
+		
+		scrollPane_panel1.setCorner(JScrollPane.UPPER_TRAILING_CORNER, cornerButton_panel1);
 		scrollPane_panel1.getViewport().setBackground(new Color(54, 57, 63));
 		
 		JScrollBar scrollBar_panel1 = scrollPane_panel1.getVerticalScrollBar();
@@ -881,6 +911,7 @@ public class nHentai {
 		table_panel1.setBackground(new Color(54, 57, 63));
 		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		table_panel1.setRowSelectionAllowed(false);
+		
 		model = new DefaultTableModel(new Object[][] {
 
 		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "status", "" });
@@ -888,7 +919,6 @@ public class nHentai {
 
 		ButtonColumnAll buttonColumnTable_panel1 = new ButtonColumnAll(table_panel1, deleteTableArrRow, 7);
 		buttonColumnTable_panel1.setMnemonic(KeyEvent.VK_D);
-
 		table_panel1.getColumnModel().getColumn(0).setResizable(false);
 		table_panel1.getColumnModel().getColumn(1).setResizable(false);
 		table_panel1.getColumnModel().getColumn(2).setResizable(false);
@@ -1209,6 +1239,37 @@ public class nHentai {
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
 		scrollPane_panel2.getViewport().setBackground(new Color(54, 57, 63));
+		
+		JButton cornerButton_panel2 = new JButton();
+		cornerButton_panel2.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+		cornerButton_panel2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scrollPane_panel2.getVerticalScrollBar().setValue(0);
+			}
+			
+		});
+		cornerButton_panel1.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cornerButton_panel2.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cornerButton_panel2.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cornerButton_panel2.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cornerButton_panel2.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+		});
+		
+		scrollPane_panel2.setCorner(JScrollPane.UPPER_TRAILING_CORNER, cornerButton_panel2);
+		
 		
 		JScrollBar scrollBar_panel2 = scrollPane_panel2.getVerticalScrollBar();
         Dimension scrollBarDim_panel2 = new Dimension(15, scrollBar_panel2
@@ -1584,6 +1645,36 @@ public class nHentai {
 		JScrollPane scrollPane_panel3 = new JScrollPane();
 		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
 		scrollPane_panel3.setBounds(250, 11, 666, 632);
+		
+		JButton cornerButton_panel3 = new JButton();
+		cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+		cornerButton_panel3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scrollPane_panel3.getVerticalScrollBar().setValue(0);
+			}
+			
+		});
+		cornerButton_panel1.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jump.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpSelected.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
+			}
+		});
+		
+		scrollPane_panel3.setCorner(JScrollPane.UPPER_TRAILING_CORNER, cornerButton_panel3);
 		
 		JScrollBar scrollBar_panel3 = scrollPane_panel3.getVerticalScrollBar();
         Dimension scrollBarDim_panel3 = new Dimension(15, scrollBar_panel3
