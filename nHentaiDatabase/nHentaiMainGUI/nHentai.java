@@ -1656,6 +1656,7 @@ public class nHentai {
 			}
 			
 		});
+		//je
 		cornerButton_panel1.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent evt) {
 				cornerButton_panel3.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/jumpButton/jumpHover.png")));
