@@ -52,6 +52,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.jgoodies.looks.windows.WindowsLookAndFeel;
+
 import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
@@ -141,8 +145,13 @@ public class nHentai {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Windows".equals(info.getName())) {
 					UIManager.setLookAndFeel(info.getClassName());
+					
 				}
+				System.out.println(info.getClassName());
 			}
+			//FlatDarkLaf.install();
+			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(new WindowsLookAndFeel());
 		} catch (Exception e) {
 
 		}
@@ -176,20 +185,20 @@ public class nHentai {
 		tableArrCompletedSave = new String[1][10];
 		String OS = System.getProperty("os.name");
 		System.out.println(OS);
-		if(OS.equals("Linux")) {
-			appdataLocation = System.getProperty("user.home");
-			mainFolderLocation = "/nHentaiDatabase";
-			photoFolderLocation = "/savedPhotos";
-			userDataFolderLocation = "/userData";
-			randomPhotoFolderLocation = "/randomPhotos";
-			Slash = "/";
-		}else {
+		if(OS.indexOf("Windows") >= 0) {
 			appdataLocation = System.getenv("APPDATA");
 			mainFolderLocation = "\\nHentaiDatabase";
 			photoFolderLocation = "\\savedPhotos";
 			userDataFolderLocation = "\\userData";
 			randomPhotoFolderLocation = "\\randomPhotos";
 			Slash = "\\";
+		}else {
+			appdataLocation = System.getProperty("user.home");
+			mainFolderLocation = "/.nHentaiDatabase";
+			photoFolderLocation = "/savedPhotos";
+			userDataFolderLocation = "/userData";
+			randomPhotoFolderLocation = "/randomPhotos";
+			Slash = "/";
 		}
 		
 			System.out.println(appdataLocation);
@@ -200,7 +209,7 @@ public class nHentai {
 			
 //		appdataLocation = System.getenv("APPDATA");
 		initialize();
-		loadingScreen = new loadingScreenMainGUI(appdataLocation);
+		loadingScreen = new loadingScreenMainGUI();
 		//getSave();
 	}
 
@@ -2874,12 +2883,6 @@ public class nHentai {
 	public class loadingScreenMainGUI {
 
 		private JFrame frame;
-
-		String mainFolderLocation = "/nHentaiDatabase";
-		String photoFolderLocation = "/savedPhotos";
-		String userDataFolderLocation = "/userData";
-		String randomPhotoFolderLocation = "/randomPhotos";
-		String appdataLocation;
 		
 		private Task task;
 		private Task2 task2;
@@ -2891,9 +2894,8 @@ public class nHentai {
 		/**
 		 * Create the application.
 		 */
-		public loadingScreenMainGUI(String appdata) {
+		public loadingScreenMainGUI() {
 			nHentaiAPI = new nHentaiWebBase();
-			appdataLocation = appdata;
 			setUpAppData(appdataLocation);
 			initialize();
 		}
