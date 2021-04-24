@@ -18,17 +18,24 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
@@ -37,6 +44,7 @@ public class settingsPanel extends JPanel {
 	private String fileLocation;
 	private boolean SFW;
 	private boolean delete = false;
+	private Point mouseCoord;
 	/**
 	 * Create the panel.
 	 */
@@ -57,10 +65,85 @@ public class settingsPanel extends JPanel {
 				UIManager.put("OptionPane.minimumSize", new Dimension(600, 350));
 				statsPanel stats = new statsPanel(planToRead, reading, completed);
 				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.OK_OPTION);
+						JOptionPane.OK_OPTION, null, buttonText, null);
 				
-				int result = inspectPane.showOptionDialog(null, stats, "stats", 0,
-						JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+				final JDialog dialog = new JDialog();
+				
+				inspectPane.addPropertyChangeListener(new PropertyChangeListener() {
+		            @Override
+		            public void propertyChange(PropertyChangeEvent evt) {
+		                String name = evt.getPropertyName();
+		                if ("value".equals(name)) {
+		                	dialog.dispose();
+		                    final Object value = inspectPane.getValue();
+		                    System.out.println(value);
+		                }
+		            }
+		        });
+		        dialog.setUndecorated(true);
+		        dialog.getContentPane().setLayout(new BorderLayout());
+		        
+		        JPanel dialogwindowToolbar = new JPanel();
+		        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+		        dialogwindowToolbar.setLayout(new BorderLayout());
+		        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+				
+				mouseCoord = null;
+				dialogwindowToolbar.addMouseListener(new MouseListener() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+						mouseCoord = e.getPoint();
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						mouseCoord = null;
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+					}
+				});
+				dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						Point currCoords = e.getLocationOnScreen();
+						dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+					}
+
+					@Override
+					public void mouseMoved(MouseEvent e) {
+					}
+
+				});
+				JButton dialogcloseWindow_btn = new JButton();
+				dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+				dialogcloseWindow_btn.setIcon(new ImageIcon(settings.class.getResource("/grafics/Close.png")));
+				dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+				dialogcloseWindow_btn.setRequestFocusEnabled(false);
+				dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						dialog.dispose();
+					}
+					
+				});
+				dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+				dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+		        dialog.getContentPane().add(inspectPane);
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(null);
+		        dialog.setVisible(true);
 			}
 		});
 		stats_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/stats.png")));
@@ -165,7 +248,7 @@ public class settingsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(OKButton);
+				paneAP.setValue("OK");
 				Window w = SwingUtilities.getWindowAncestor(OKButton);
 
 			    if (w != null) {
@@ -201,7 +284,7 @@ public class settingsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(cancelButton);
+				paneAP.setValue("cancel");
 				Window w = SwingUtilities.getWindowAncestor(cancelButton);
 
 			    if (w != null) {

@@ -127,7 +127,9 @@ public class nHentai {
 	private JProgressBar EntryLoader_panel1_PBar;
 	private JLabel responseTime_panel1_lbl;
 	private JProgressBar EntryLoader_panel2_PBar;
+	private JLabel responseTime_panel2_lbl;
 	private JProgressBar EntryLoader_panel3_PBar;
+	private JLabel responseTime_panel3_lbl;
 	
 	private loadingScreenMainGUI loadingScreen;
 
@@ -144,7 +146,15 @@ public class nHentai {
 	private JCheckBox searchAuthor_panel3_CBox;
 	private JCheckBox searchTags_panel3_CBox;
 	
-	
+	private String title;
+	private String id;
+	private String tags;
+	private String artist;
+	private String pages;
+	private String rating;
+	private String status;
+	private String URL;
+	private String timesRead;
 	
 	
 	/**
@@ -294,7 +304,7 @@ public class nHentai {
 				if(safed == false) {
 				
 					exitConfirm confirm = new exitConfirm();
-	        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION);
+	        		
 					
 					final JButton saveButton = new JButton();
 					saveButton.setPreferredSize(new Dimension(47,25));
@@ -305,7 +315,7 @@ public class nHentai {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-							paneAP.setValue(saveButton);
+							paneAP.setValue("save");
 							Window w = SwingUtilities.getWindowAncestor(saveButton);
 	
 						    if (w != null) {
@@ -341,7 +351,7 @@ public class nHentai {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-							paneAP.setValue(closeButton);
+							paneAP.setValue("close");
 							Window w = SwingUtilities.getWindowAncestor(closeButton);
 	
 						    if (w != null) {
@@ -377,7 +387,7 @@ public class nHentai {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-							paneAP.setValue(cancelButton);
+							paneAP.setValue("cancel");
 							Window w = SwingUtilities.getWindowAncestor(cancelButton);
 	
 						    if (w != null) {
@@ -406,25 +416,102 @@ public class nHentai {
 					
 					Component[] buttonText = new Component[]{	saveButton, closeButton, cancelButton};
 					
+					JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, buttonText, null);
+					
 					UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
 					
-	        		String[] options = new String[] {"save", "close", "cancel"};
-					int result = pane.showOptionDialog(null, confirm, "confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
-					if(result == JOptionPane.YES_OPTION) {
-						String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+					final JDialog dialog = new JDialog((Frame)null, "Boo");
+					
+			        pane.addPropertyChangeListener(new PropertyChangeListener() {
+			            @Override
+			            public void propertyChange(PropertyChangeEvent evt) {
+			                String name = evt.getPropertyName();
+			                if ("value".equals(name)) {
+			                	dialog.dispose();
+			                    final Object value = pane.getValue();
+			                    System.out.println(value);
+			                    if(value.equals("save")) {
+									String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+									
+									
+									
+									dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+									dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+									dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
+									String[] settings = new String[1];
+					    			settings[0] = "SFW: " + String.valueOf(SFW);
+					    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
+									System.exit(0);
+								}else if(value.equals("close")) {
+									System.exit(0);
+								}
+			                }
+			            }
+			        });
+			        dialog.setUndecorated(true);
+			        dialog.getContentPane().setLayout(new BorderLayout());
+			        
+			        JPanel dialogwindowToolbar = new JPanel();
+			        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+			        dialogwindowToolbar.setLayout(new BorderLayout());
+			        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+					
+					mouseCoord = null;
+					dialogwindowToolbar.addMouseListener(new MouseListener() {
+						@Override
+						public void mousePressed(MouseEvent e) {
+							mouseCoord = e.getPoint();
+						}
+
+						@Override
+						public void mouseReleased(MouseEvent e) {
+							mouseCoord = null;
+						}
+
+						@Override
+						public void mouseClicked(MouseEvent e) {
+						}
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+						}
+					});
+					dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+						@Override
+						public void mouseDragged(MouseEvent e) {
+							Point currCoords = e.getLocationOnScreen();
+							dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+						}
+
+						@Override
+						public void mouseMoved(MouseEvent e) {
+						}
+
+					});
+					JButton dialogcloseWindow_btn = new JButton();
+					dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+					dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+					dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+					dialogcloseWindow_btn.setRequestFocusEnabled(false);
+					dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							dialog.dispose();
+						}
 						
-						
-						
-						dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
-						dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
-						dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
-						String[] settings = new String[1];
-		    			settings[0] = "SFW: " + String.valueOf(SFW);
-		    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
-						System.exit(0);
-					}else if(result == JOptionPane.NO_OPTION) {
-						System.exit(0);
-					}
+					});
+					dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+					dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+			        dialog.getContentPane().add(pane);
+			        dialog.pack();
+			        dialog.setLocationRelativeTo(null);
+			        dialog.setVisible(true);
 				}else {
 					System.exit(0);
 				}
@@ -1374,6 +1461,12 @@ public class nHentai {
 		EntryLoader_panel2_PBar.setBounds(826, 646, 90, 14);
 		EntryLoader_panel2_PBar.setVisible(false);
 		reading_tab.add(EntryLoader_panel2_PBar);
+		
+		responseTime_panel2_lbl = new JLabel("nHentai response:");
+		responseTime_panel2_lbl.setForeground(Color.GRAY);
+		responseTime_panel2_lbl.setBounds(688, 646, 128, 14);
+		responseTime_panel2_lbl.setVisible(false);
+		reading_tab.add(responseTime_panel2_lbl);
 		/*
 		 * end panel 2
 		 */
@@ -1780,6 +1873,12 @@ public class nHentai {
 		EntryLoader_panel3_PBar.setBounds(826, 646, 90, 14);
 		EntryLoader_panel3_PBar.setVisible(false);
 		completed_tab.add(EntryLoader_panel3_PBar);
+		
+		responseTime_panel3_lbl = new JLabel("nHentai response:");
+		responseTime_panel3_lbl.setForeground(Color.GRAY);
+		responseTime_panel3_lbl.setBounds(688, 646, 128, 14);
+		responseTime_panel3_lbl.setVisible(false);
+		completed_tab.add(responseTime_panel3_lbl);
 
 		/*
 		 * end panel 3
@@ -2028,15 +2127,15 @@ public class nHentai {
 	        JTable table = (JTable)e.getSource();
 	        int modelRow = Integer.valueOf( e.getActionCommand() );
 	        
-	        String title = tableArr[modelRow][3];
-			String id = tableArr[modelRow][2];
-			String tags = tableArr[modelRow][9];
-			String artist = tableArr[modelRow][4];
-			String pages = tableArr[modelRow][5];
-			String rating = tableArr[modelRow][8];
-			String status = tableArr[modelRow][6];
-			String URL = tableArr[modelRow][1];
-			String timesRead = tableArr[modelRow][7];
+	        title = tableArr[modelRow][3];
+			id = tableArr[modelRow][2];
+			tags = tableArr[modelRow][9];
+			artist = tableArr[modelRow][4];
+			pages = tableArr[modelRow][5];
+			rating = tableArr[modelRow][8];
+			status = tableArr[modelRow][6];
+			URL = tableArr[modelRow][1];
+			timesRead = tableArr[modelRow][7];
 
 			String photoLocation;
 			if(SFW) {
@@ -2055,78 +2154,156 @@ public class nHentai {
 			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
-					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
-					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+					JOptionPane.OK_OPTION, null, buttonText, null);
+			
+			final JDialog dialog = new JDialog((Frame)null, "Boo");
+			
+	        inspectPane.addPropertyChangeListener(new PropertyChangeListener() {
+	            @Override
+	            public void propertyChange(PropertyChangeEvent evt) {
+	                String name = evt.getPropertyName();
+	                if ("value".equals(name)) {
+	                	dialog.dispose();
+	                    final Object value = inspectPane.getValue();
+	                    System.out.println(value);
+	                    if (value.equals("OK")) {
+	        				
+	        				safed = false;
+	        				
+	        				rating = moreInformation.getRating();
+	        				timesRead = moreInformation.getTimesRead();
+	        				boolean deleteEntry = moreInformation.getDeleteEntry();
+	        				
+	        				
+	        				tableArr[modelRow][8] = rating;
+	        				tableArr[modelRow][7] = timesRead;
+
+	        				String newStatus = moreInformation.getStatus();
+	        				
+	        				if(deleteEntry == true) {
+	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+	        					tableArr = rearangeArr(tableArr, modelRow);
+	        					tableArr = newArrIndex(tableArr);
+	        					for(int i=0;i<tableArr.length-1;i++) {
+	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
+	        					}
+	        				}
+	        				else if (newStatus.equals("reading")) {
+	        					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+	        					tableArr = rearangeArr(tableArr, modelRow);
+	        					tableArr = newArrIndex(tableArr);
+	        					for(int i=0;i<tableArr.length-1;i++) {
+	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
+	        					}
+	        					tableArrReading[tableArrReading.length - 1][1] = URL;
+	        					tableArrReading[tableArrReading.length - 1][3] = title;
+	        					tableArrReading[tableArrReading.length - 1][2] = id;
+	        					tableArrReading[tableArrReading.length - 1][9] = tags;
+	        					tableArrReading[tableArrReading.length - 1][4] = artist;
+	        					tableArrReading[tableArrReading.length - 1][5] = pages;
+	        					tableArrReading[tableArrReading.length - 1][8] = timesRead;
+	        					tableArrReading[tableArrReading.length - 1][6] = rating;
+	        					tableArrReading[tableArrReading.length - 1][7] = "reading";
+
+	        					tableArrReading = expandArr(tableArrReading);
+	        					expandTableReading(modelReading, id);
+	        					
+	        				}
+	        				else if(newStatus.equals("completed")) {
+	        					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
+	        					tableArr = rearangeArr(tableArr, modelRow);
+	        					tableArr = newArrIndex(tableArr);
+	        					for(int i=0;i<tableArr.length-1;i++) {
+	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
+	        					}
+	        					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
+	        					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
+	        					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
+	        					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
+	        					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
+	        					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
+	        					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
+	        					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
+	        					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
+
+	        					tableArrCompleted = expandArr(tableArrCompleted);
+	        					expandTableCompleted(modelCompleted, id);
+	        				}
+	        			}
+	                }
+	            }
+	        });
+	        dialog.setUndecorated(true);
+	        dialog.getContentPane().setLayout(new BorderLayout());
+	        
+	        JPanel dialogwindowToolbar = new JPanel();
+	        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+	        dialogwindowToolbar.setLayout(new BorderLayout());
+	        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+			
+			mouseCoord = null;
+			dialogwindowToolbar.addMouseListener(new MouseListener() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mouseCoord = e.getPoint();
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					mouseCoord = null;
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+			});
+			dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Point currCoords = e.getLocationOnScreen();
+					dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {
+				}
+
+			});
+			JButton dialogcloseWindow_btn = new JButton();
+			dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+			dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+			dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+			dialogcloseWindow_btn.setRequestFocusEnabled(false);
+			dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dialog.dispose();
+				}
+				
+			});
+			dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+			dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+	        dialog.getContentPane().add(inspectPane);
+	        dialog.pack();
+	        dialog.setLocationRelativeTo(null);
+	        dialog.setVisible(true);
+			
 			System.out.println("pressed" + e.getActionCommand());
 			
 			
-			if (result == JOptionPane.OK_OPTION) {
-				
-				safed = false;
-				
-				rating = moreInformation.getRating();
-				timesRead = moreInformation.getTimesRead();
-				boolean deleteEntry = moreInformation.getDeleteEntry();
-				
-				
-				tableArr[modelRow][8] = rating;
-				tableArr[modelRow][7] = timesRead;
-
-				String newStatus = moreInformation.getStatus();
-				
-				if(deleteEntry == true) {
-					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-					tableArr = rearangeArr(tableArr, modelRow);
-					tableArr = newArrIndex(tableArr);
-					for(int i=0;i<tableArr.length-1;i++) {
-						table_panel1.setValueAt(tableArr[i][0], i, 0);
-					}
-				}
-				else if (newStatus.equals("reading")) {
-					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-					tableArr = rearangeArr(tableArr, modelRow);
-					tableArr = newArrIndex(tableArr);
-					for(int i=0;i<tableArr.length-1;i++) {
-						table_panel1.setValueAt(tableArr[i][0], i, 0);
-					}
-					tableArrReading[tableArrReading.length - 1][1] = URL;
-					tableArrReading[tableArrReading.length - 1][3] = title;
-					tableArrReading[tableArrReading.length - 1][2] = id;
-					tableArrReading[tableArrReading.length - 1][9] = tags;
-					tableArrReading[tableArrReading.length - 1][4] = artist;
-					tableArrReading[tableArrReading.length - 1][5] = pages;
-					tableArrReading[tableArrReading.length - 1][8] = timesRead;
-					tableArrReading[tableArrReading.length - 1][6] = rating;
-					tableArrReading[tableArrReading.length - 1][7] = "reading";
-
-					tableArrReading = expandArr(tableArrReading);
-					expandTableReading(modelReading, id);
-					
-				}
-				else if(newStatus.equals("completed")) {
-					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-					tableArr = rearangeArr(tableArr, modelRow);
-					tableArr = newArrIndex(tableArr);
-					for(int i=0;i<tableArr.length-1;i++) {
-						table_panel1.setValueAt(tableArr[i][0], i, 0);
-					}
-					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
-					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
-					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
-					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
-					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
-					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
-					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
-					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
-					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
-
-					tableArrCompleted = expandArr(tableArrCompleted);
-					expandTableCompleted(modelCompleted, id);
-				}
-			}
+			
 	    }
 	};
 	
@@ -2137,15 +2314,15 @@ public class nHentai {
 	        JTable table = (JTable)e.getSource();
 	        int modelRow = Integer.valueOf( e.getActionCommand() );
 	        
-	        String title = tableArrReading[modelRow][3];
-			String id = tableArrReading[modelRow][2];
-			String tags = tableArrReading[modelRow][9];
-			String artist = tableArrReading[modelRow][4];
-			String pages = tableArrReading[modelRow][5];
-			String rating = tableArrReading[modelRow][6];
-			String status = tableArrReading[modelRow][7];
-			String URL = tableArrReading[modelRow][1];
-			String timesRead = tableArrReading[modelRow][8];
+	        title = tableArrReading[modelRow][3];
+			id = tableArrReading[modelRow][2];
+			tags = tableArrReading[modelRow][9];
+			artist = tableArrReading[modelRow][4];
+			pages = tableArrReading[modelRow][5];
+			rating = tableArrReading[modelRow][6];
+			status = tableArrReading[modelRow][7];
+			URL = tableArrReading[modelRow][1];
+			timesRead = tableArrReading[modelRow][8];
 
 			String photoLocation;
 			if(SFW) {
@@ -2163,76 +2340,154 @@ public class nHentai {
 			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
-					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
-					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+					JOptionPane.OK_OPTION, null, buttonText, null);
+			
+			final JDialog dialog = new JDialog((Frame)null, "Boo");
+			
+			inspectPane.addPropertyChangeListener(new PropertyChangeListener() {
+	            @Override
+	            public void propertyChange(PropertyChangeEvent evt) {
+	                String name = evt.getPropertyName();
+	                if ("value".equals(name)) {
+	                	dialog.dispose();
+	                    final Object value = inspectPane.getValue();
+	                    System.out.println(value);
+	                    if (value.equals("OK")) {
+	        				
+	        				safed = false;
+	        				
+	        				rating = moreInformation.getRating();
+	        				timesRead = moreInformation.getTimesRead();
+	        				boolean deleteEntry = moreInformation.getDeleteEntry();
+	        				
+	        				
+	        				tableArrReading[modelRow][6] = rating;
+	        				tableArrReading[modelRow][8] = timesRead;
+
+	        				String newStatus = moreInformation.getStatus();
+	        				
+	        				if(deleteEntry == true) {
+	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = newArrIndex(tableArrReading);
+	        					for(int i=0;i<tableArr.length-1;i++) {
+	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+	        					}
+	        				}
+	        				else if (newStatus.equals("plan to read")) {
+	        					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = newArrIndex(tableArrReading);
+	        					for(int i=0;i<tableArrReading.length-1;i++) {
+	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+	        					}
+	        					tableArr[tableArr.length - 1][1] = URL;
+	        					tableArr[tableArr.length - 1][3] = title;
+	        					tableArr[tableArr.length - 1][2] = id;
+	        					tableArr[tableArr.length - 1][9] = tags;
+	        					tableArr[tableArr.length - 1][4] = artist;
+	        					tableArr[tableArr.length - 1][5] = pages;
+	        					tableArr[tableArr.length - 1][6] = "plan to read";
+	        					tableArr[tableArr.length - 1][8] = rating;
+	        					tableArr[tableArr.length - 1][7] = timesRead;
+
+	        					tableArr = expandArr(tableArr);
+	        					expandTable(model, id);
+	        				}
+	        				else if(newStatus.equals("completed")) {
+	        					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
+	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = newArrIndex(tableArrReading);
+	        					for(int i=0;i<tableArrReading.length-1;i++) {
+	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
+	        					}
+	        					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
+	        					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
+	        					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
+	        					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
+	        					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
+	        					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
+	        					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
+	        					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
+	        					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
+
+	        					tableArrCompleted = expandArr(tableArrCompleted);
+	        					expandTableCompleted(modelCompleted, id);
+	        				}
+	        			}
+	                }
+	            }
+	        });
+	        dialog.setUndecorated(true);
+	        dialog.getContentPane().setLayout(new BorderLayout());
+	        
+	        JPanel dialogwindowToolbar = new JPanel();
+	        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+	        dialogwindowToolbar.setLayout(new BorderLayout());
+	        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+			
+			mouseCoord = null;
+			dialogwindowToolbar.addMouseListener(new MouseListener() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mouseCoord = e.getPoint();
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					mouseCoord = null;
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+			});
+			dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Point currCoords = e.getLocationOnScreen();
+					dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {
+				}
+
+			});
+			JButton dialogcloseWindow_btn = new JButton();
+			dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+			dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+			dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+			dialogcloseWindow_btn.setRequestFocusEnabled(false);
+			dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dialog.dispose();
+				}
+				
+			});
+			dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+			dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+	        dialog.getContentPane().add(inspectPane);
+	        dialog.pack();
+	        dialog.setLocationRelativeTo(null);
+	        dialog.setVisible(true);
+			
 			System.out.println("pressed" + e.getActionCommand());
 
-			if (result == JOptionPane.OK_OPTION) {
-				
-				safed = false;
-				
-				rating = moreInformation.getRating();
-				timesRead = moreInformation.getTimesRead();
-				boolean deleteEntry = moreInformation.getDeleteEntry();
-				
-				
-				tableArrReading[modelRow][6] = rating;
-				tableArrReading[modelRow][8] = timesRead;
-
-				String newStatus = moreInformation.getStatus();
-				
-				if(deleteEntry == true) {
-					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-					tableArrReading = rearangeArr(tableArrReading, modelRow);
-					tableArrReading = newArrIndex(tableArrReading);
-					for(int i=0;i<tableArr.length-1;i++) {
-						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
-					}
-				}
-				else if (newStatus.equals("plan to read")) {
-					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-					tableArrReading = rearangeArr(tableArrReading, modelRow);
-					tableArrReading = newArrIndex(tableArrReading);
-					for(int i=0;i<tableArrReading.length-1;i++) {
-						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
-					}
-					tableArr[tableArr.length - 1][1] = URL;
-					tableArr[tableArr.length - 1][3] = title;
-					tableArr[tableArr.length - 1][2] = id;
-					tableArr[tableArr.length - 1][9] = tags;
-					tableArr[tableArr.length - 1][4] = artist;
-					tableArr[tableArr.length - 1][5] = pages;
-					tableArr[tableArr.length - 1][6] = "plan to read";
-					tableArr[tableArr.length - 1][8] = rating;
-					tableArr[tableArr.length - 1][7] = timesRead;
-
-					tableArr = expandArr(tableArr);
-					expandTable(model, id);
-				}
-				else if(newStatus.equals("completed")) {
-					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-					tableArrReading = rearangeArr(tableArrReading, modelRow);
-					tableArrReading = newArrIndex(tableArrReading);
-					for(int i=0;i<tableArrReading.length-1;i++) {
-						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
-					}
-					tableArrCompleted[tableArrCompleted.length - 1][1] = URL;
-					tableArrCompleted[tableArrCompleted.length - 1][3] = title;
-					tableArrCompleted[tableArrCompleted.length - 1][2] = id;
-					tableArrCompleted[tableArrCompleted.length - 1][9] = tags;
-					tableArrCompleted[tableArrCompleted.length - 1][4] = artist;
-					tableArrCompleted[tableArrCompleted.length - 1][5] = pages;
-					tableArrCompleted[tableArrCompleted.length - 1][8] = "completed";
-					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
-					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
-
-					tableArrCompleted = expandArr(tableArrCompleted);
-					expandTableCompleted(modelCompleted, id);
-				}
-			}
+			
 	    }
 	};
 	
@@ -2243,15 +2498,15 @@ public class nHentai {
 	        JTable table = (JTable)e.getSource();
 	        int modelRow = Integer.valueOf( e.getActionCommand() );
 	        
-	        String title = tableArrCompleted[modelRow][3];
-			String id = tableArrCompleted[modelRow][2];
-			String tags = tableArrCompleted[modelRow][9];
-			String artist = tableArrCompleted[modelRow][4];
-			String pages = tableArrCompleted[modelRow][5];
-			String rating = tableArrCompleted[modelRow][6];
-			String status = tableArrCompleted[modelRow][8];
-			String URL = tableArrCompleted[modelRow][1];
-			String timesRead = tableArrCompleted[modelRow][7];
+	        title = tableArrCompleted[modelRow][3];
+			id = tableArrCompleted[modelRow][2];
+			tags = tableArrCompleted[modelRow][9];
+			artist = tableArrCompleted[modelRow][4];
+			pages = tableArrCompleted[modelRow][5];
+			rating = tableArrCompleted[modelRow][6];
+			status = tableArrCompleted[modelRow][8];
+			URL = tableArrCompleted[modelRow][1];
+			timesRead = tableArrCompleted[modelRow][7];
 
 			String photoLocation;
 			if(SFW) {
@@ -2270,76 +2525,154 @@ public class nHentai {
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION);
-			int result = inspectPane.showOptionDialog(null, moreInformation, "inspect", 0,
-					JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+			
+			final JDialog dialog = new JDialog((Frame)null, "Boo");
+			
+			inspectPane.addPropertyChangeListener(new PropertyChangeListener() {
+	            @Override
+	            public void propertyChange(PropertyChangeEvent evt) {
+	                String name = evt.getPropertyName();
+	                if ("value".equals(name)) {
+	                	dialog.dispose();
+	                    final Object value = inspectPane.getValue();
+	                    System.out.println(value);
+	                    if (value.equals("OK")) {
+	        				
+	        				safed = false;
+	        				
+	        				rating = moreInformation.getRating();
+	        				timesRead = moreInformation.getTimesRead();
+	        				boolean deleteEntry = moreInformation.getDeleteEntry();
+	        				
+	        				
+	        				tableArrCompleted[modelRow][6] = rating;
+	        				tableArrCompleted[modelRow][7] = timesRead;
+
+	        				String newStatus = moreInformation.getStatus();
+	        				
+	        				if(deleteEntry == true) {
+	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+	        					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
+	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					for(int i=0;i<tableArrCompleted.length-1;i++) {
+	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+	        					}
+	        				}
+	        				else if (newStatus.equals("plan to read")) {
+	        					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+	        					tableArrCompleted = rearangeArr(tableArrReading, modelRow);
+	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					for(int i=0;i<tableArrCompleted.length-1;i++) {
+	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+	        					}
+	        					tableArr[tableArr.length - 1][1] = URL;
+	        					tableArr[tableArr.length - 1][3] = title;
+	        					tableArr[tableArr.length - 1][2] = id;
+	        					tableArr[tableArr.length - 1][9] = tags;
+	        					tableArr[tableArr.length - 1][4] = artist;
+	        					tableArr[tableArr.length - 1][5] = pages;
+	        					tableArr[tableArr.length - 1][6] = "plan to read";
+	        					tableArr[tableArr.length - 1][8] = rating;
+	        					tableArr[tableArr.length - 1][7] = timesRead;
+
+	        					tableArr = expandArr(tableArr);
+	        					expandTable(model, id);
+	        				}
+	        				else if (newStatus.equals("reading")) {
+	        					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
+	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
+	        					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
+	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					for(int i=0;i<tableArr.length-1;i++) {
+	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
+	        					}
+	        					tableArrReading[tableArrReading.length - 1][1] = URL;
+	        					tableArrReading[tableArrReading.length - 1][3] = title;
+	        					tableArrReading[tableArrReading.length - 1][2] = id;
+	        					tableArrReading[tableArrReading.length - 1][9] = tags;
+	        					tableArrReading[tableArrReading.length - 1][4] = artist;
+	        					tableArrReading[tableArrReading.length - 1][5] = pages;
+	        					tableArrReading[tableArrReading.length - 1][8] = timesRead;
+	        					tableArrReading[tableArrReading.length - 1][6] = rating;
+	        					tableArrReading[tableArrReading.length - 1][7] = "reading";
+
+	        					tableArrReading = expandArr(tableArrReading);
+	        					expandTableReading(modelReading, id);
+	        					
+	        				}
+	        			}
+	                }
+	            }
+	        });
+	        dialog.setUndecorated(true);
+	        dialog.getContentPane().setLayout(new BorderLayout());
+	        
+	        JPanel dialogwindowToolbar = new JPanel();
+	        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+	        dialogwindowToolbar.setLayout(new BorderLayout());
+	        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+			
+			mouseCoord = null;
+			dialogwindowToolbar.addMouseListener(new MouseListener() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mouseCoord = e.getPoint();
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					mouseCoord = null;
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+			});
+			dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Point currCoords = e.getLocationOnScreen();
+					dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {
+				}
+
+			});
+			JButton dialogcloseWindow_btn = new JButton();
+			dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+			dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+			dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+			dialogcloseWindow_btn.setRequestFocusEnabled(false);
+			dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dialog.dispose();
+				}
+				
+			});
+			dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+			dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+	        dialog.getContentPane().add(inspectPane);
+	        dialog.pack();
+	        dialog.setLocationRelativeTo(null);
+	        dialog.setVisible(true);
+	        
 			System.out.println("pressed" + e.getActionCommand());
 
-			if (result == JOptionPane.OK_OPTION) {
-				
-				safed = false;
-				
-				rating = moreInformation.getRating();
-				timesRead = moreInformation.getTimesRead();
-				boolean deleteEntry = moreInformation.getDeleteEntry();
-				
-				
-				tableArrCompleted[modelRow][6] = rating;
-				tableArrCompleted[modelRow][7] = timesRead;
-
-				String newStatus = moreInformation.getStatus();
-				
-				if(deleteEntry == true) {
-					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
-					tableArrCompleted = newArrIndex(tableArrCompleted);
-					for(int i=0;i<tableArrCompleted.length-1;i++) {
-						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
-					}
-				}
-				else if (newStatus.equals("plan to read")) {
-					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-					tableArrCompleted = rearangeArr(tableArrReading, modelRow);
-					tableArrCompleted = newArrIndex(tableArrCompleted);
-					for(int i=0;i<tableArrCompleted.length-1;i++) {
-						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
-					}
-					tableArr[tableArr.length - 1][1] = URL;
-					tableArr[tableArr.length - 1][3] = title;
-					tableArr[tableArr.length - 1][2] = id;
-					tableArr[tableArr.length - 1][9] = tags;
-					tableArr[tableArr.length - 1][4] = artist;
-					tableArr[tableArr.length - 1][5] = pages;
-					tableArr[tableArr.length - 1][6] = "plan to read";
-					tableArr[tableArr.length - 1][8] = rating;
-					tableArr[tableArr.length - 1][7] = timesRead;
-
-					tableArr = expandArr(tableArr);
-					expandTable(model, id);
-				}
-				else if (newStatus.equals("reading")) {
-					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
-					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
-					tableArrCompleted = newArrIndex(tableArrCompleted);
-					for(int i=0;i<tableArr.length-1;i++) {
-						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
-					}
-					tableArrReading[tableArrReading.length - 1][1] = URL;
-					tableArrReading[tableArrReading.length - 1][3] = title;
-					tableArrReading[tableArrReading.length - 1][2] = id;
-					tableArrReading[tableArrReading.length - 1][9] = tags;
-					tableArrReading[tableArrReading.length - 1][4] = artist;
-					tableArrReading[tableArrReading.length - 1][5] = pages;
-					tableArrReading[tableArrReading.length - 1][8] = timesRead;
-					tableArrReading[tableArrReading.length - 1][6] = rating;
-					tableArrReading[tableArrReading.length - 1][7] = "reading";
-
-					tableArrReading = expandArr(tableArrReading);
-					expandTableReading(modelReading, id);
-					
-				}
-			}
+			
 	    }
 	};
 	
@@ -2349,11 +2682,6 @@ public class nHentai {
 		Component[] buttonText = OKCancelButtonCreate();
 		JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
-
-		
-		//int result2 = pane2.showOptionDialog(null, EntryGeneral, "new Entry", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
-
-		//JDialog d = pane2.createDialog(EntryGeneral, "new Entry");
 		
 		final JDialog dialog = new JDialog((Frame)null, "Boo");
 		
@@ -2473,6 +2801,15 @@ public class nHentai {
             								try {
             									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
             									modelReading = expandTableReading(modelReading, code);
+            									long time = nHentaiAPIRun.getInitTime();
+            									String unit = "ms";
+            									time  = time / 1000000;
+            									if(time > 999) {
+            										time = time / 1000;
+            										unit = "s";
+            									}
+            										
+            									responseTime_panel2_lbl.setText("nHentai response: " + time + unit);
             								} catch (IOException e) {
             									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             									Error errorPanel = new Error(code);
@@ -2504,6 +2841,15 @@ public class nHentai {
             									try {
             										tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
             										modelReading = expandTableReading(modelReading, rawCode);
+            										long time = nHentaiAPIRun.getInitTime();
+                									String unit = "ms";
+                									time  = time / 1000000;
+                									if(time > 999) {
+                										time = time / 1000;
+                										unit = "s";
+                									}
+                										
+                									responseTime_panel2_lbl.setText("nHentai response: " + time + unit);
             									} catch (IOException e) {
             										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             										Error errorPanel = new Error(code);
@@ -2519,10 +2865,12 @@ public class nHentai {
             						protected void done() {
             							EntryLoader_panel2_PBar.setVisible(false);
             							EntryLoader_panel2_PBar.setIndeterminate(false);
+            							responseTime_panel2_lbl.setVisible(true);
             						}
             					}
             					EntryLoader_panel2_PBar.setVisible(true);
             					EntryLoader_panel2_PBar.setIndeterminate(true);
+            					responseTime_panel2_lbl.setVisible(true);
             					Task2 task2 = new Task2();
             					task2.execute();
             					tableArrReadingSave = tableArrReading;
@@ -2535,6 +2883,15 @@ public class nHentai {
             								try {
             									tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
             									modelCompleted = expandTableCompleted(modelCompleted, code);
+            									long time = nHentaiAPIRun.getInitTime();
+            									String unit = "ms";
+            									time  = time / 1000000;
+            									if(time > 999) {
+            										time = time / 1000;
+            										unit = "s";
+            									}
+            										
+            									responseTime_panel3_lbl.setText("nHentai response: " + time + unit);
             								} catch (IOException e) {
             									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             									Error errorPanel = new Error(code);
@@ -2566,6 +2923,15 @@ public class nHentai {
             									try {
             										tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
             										modelCompleted = expandTableCompleted(modelCompleted, rawCode);
+            										long time = nHentaiAPIRun.getInitTime();
+                									String unit = "ms";
+                									time  = time / 1000000;
+                									if(time > 999) {
+                										time = time / 1000;
+                										unit = "s";
+                									}
+                										
+                									responseTime_panel3_lbl.setText("nHentai response: " + time + unit);
             									} catch (IOException e) {
             										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             										Error errorPanel = new Error(code);
@@ -2580,10 +2946,12 @@ public class nHentai {
             						protected void done() {
             							EntryLoader_panel1_PBar.setVisible(false);
             							EntryLoader_panel1_PBar.setIndeterminate(false);
+            							responseTime_panel3_lbl.setVisible(false);
             						}
             					}
             					EntryLoader_panel1_PBar.setIndeterminate(true);
             					EntryLoader_panel1_PBar.setVisible(true);
+            					responseTime_panel3_lbl.setVisible(true);
             					Task3 task3 = new Task3();
             					task3.execute();
             					tableArrCompletedSave = tableArrCompleted;
@@ -2594,9 +2962,8 @@ public class nHentai {
                 System.out.println(name);
             }
         });
-
         dialog.setUndecorated(true);
-        dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setLayout(new BorderLayout());
         
         JPanel dialogwindowToolbar = new JPanel();
         dialogwindowToolbar.setBackground(new Color(17, 19, 22));
@@ -2654,8 +3021,8 @@ public class nHentai {
 			
 		});
 		dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
-		dialog.add(dialogwindowToolbar, BorderLayout.PAGE_START);
-        dialog.add(pane2);
+		dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+        dialog.getContentPane().add(pane2);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
@@ -2668,66 +3035,141 @@ public class nHentai {
 	public void actionPerformedSetting() {
 		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
 		UIManager.put("OptionPane.minimumSize", new Dimension(500, 300));
-		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-		
-		
-		
 		Component[] buttonText = OKCancelButtonCreate();
+		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
 		
-		int result = pane.showOptionDialog(null, settings, "settings", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
-		if (result == JOptionPane.OK_OPTION) {
-			SFW = settings.getSFW();
-			safed = false;
-			
-				for(int i=0;i<tableArr.length-1;i++) {
-					reloadRowImage(i, "plan to read", tableArr[i][2]);
-				}
-				for(int i=0;i<tableArrReading.length-1;i++) {
-					reloadRowImage(i, "reading", tableArrReading[i][2]);
-				}
-				for(int i=0;i<tableArrCompleted.length-1;i++) {
-					reloadRowImage(i, "completed", tableArrCompleted[i][2]);
-				}
-				
-			boolean delete = settings.getDelete();
-			if(delete == true) {
-				for(int i=0;i<tableArr.length-1;i++) {
-					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
-				}
-				for(int i=0;i<tableArrReading.length-1;i++) {
-					((DefaultTableModel) table_panel2.getModel()).removeRow(i);
-				}
-				for(int i=0;i<tableArrCompleted.length-1;i++) {
-					((DefaultTableModel) table_panel3.getModel()).removeRow(i);
-				}
-				tableArr = new String[1][10];
-				tableArrReading = new String[1][10];
-				tableArrCompleted = new String[1][10];
-				File file = new File(appdataLocation + mainFolderLocation + photoFolderLocation);
-				Path fromFile = file.toPath();
-				try {
-					deleteDirectoryRecursion(fromFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				file = new File(appdataLocation + mainFolderLocation + userDataFolderLocation);
-				fromFile = file.toPath();
-				try {
-					deleteDirectoryRecursion(fromFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				file = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation);
-				fromFile = file.toPath();
-				try {
-					deleteDirectoryRecursion(fromFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		final JDialog dialog = new JDialog((Frame)null, "Boo");
+		
+        pane.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String name = evt.getPropertyName();
+                if ("value".equals(name)) {
+                	dialog.dispose();
+                    final Object value = pane.getValue();
+                    System.out.println(value);
+                	if (value.equals("OK")) {
+            			SFW = settings.getSFW();
+            			safed = false;
+            			
+            				for(int i=0;i<tableArr.length-1;i++) {
+            					reloadRowImage(i, "plan to read", tableArr[i][2]);
+            				}
+            				for(int i=0;i<tableArrReading.length-1;i++) {
+            					reloadRowImage(i, "reading", tableArrReading[i][2]);
+            				}
+            				for(int i=0;i<tableArrCompleted.length-1;i++) {
+            					reloadRowImage(i, "completed", tableArrCompleted[i][2]);
+            				}
+            				
+            			boolean delete = settings.getDelete();
+            			if(delete == true) {
+            				for(int i=0;i<tableArr.length-1;i++) {
+            					((DefaultTableModel) table_panel1.getModel()).removeRow(i);
+            				}
+            				for(int i=0;i<tableArrReading.length-1;i++) {
+            					((DefaultTableModel) table_panel2.getModel()).removeRow(i);
+            				}
+            				for(int i=0;i<tableArrCompleted.length-1;i++) {
+            					((DefaultTableModel) table_panel3.getModel()).removeRow(i);
+            				}
+            				tableArr = new String[1][10];
+            				tableArrReading = new String[1][10];
+            				tableArrCompleted = new String[1][10];
+            				File file = new File(appdataLocation + mainFolderLocation + photoFolderLocation);
+            				Path fromFile = file.toPath();
+            				try {
+            					deleteDirectoryRecursion(fromFile);
+            				} catch (IOException e) {
+            					e.printStackTrace();
+            				}
+            				
+            				file = new File(appdataLocation + mainFolderLocation + userDataFolderLocation);
+            				fromFile = file.toPath();
+            				try {
+            					deleteDirectoryRecursion(fromFile);
+            				} catch (IOException e) {
+            					e.printStackTrace();
+            				}
+            				
+            				file = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation);
+            				fromFile = file.toPath();
+            				try {
+            					deleteDirectoryRecursion(fromFile);
+            				} catch (IOException e) {
+            					e.printStackTrace();
+            				}
+            			}
+            		}
+                }
+            }
+        });
+        dialog.setUndecorated(true);
+        dialog.getContentPane().setLayout(new BorderLayout());
+        
+        JPanel dialogwindowToolbar = new JPanel();
+        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+        dialogwindowToolbar.setLayout(new BorderLayout());
+        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+		
+		mouseCoord = null;
+		dialogwindowToolbar.addMouseListener(new MouseListener() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mouseCoord = e.getPoint();
 			}
-		}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				mouseCoord = null;
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+				dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+			}
+
+		});
+		JButton dialogcloseWindow_btn = new JButton();
+		dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+		dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+		dialogcloseWindow_btn.setRequestFocusEnabled(false);
+		dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				dialog.dispose();
+			}
+			
+		});
+		dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+		dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+        dialog.getContentPane().add(pane);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+		
+		
 	}
 	
 	public void deleteDirectoryRecursion(Path path) throws IOException {
