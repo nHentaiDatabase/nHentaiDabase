@@ -3475,17 +3475,74 @@ public class nHentai {
 		private void initialize() {
 			frame = new JFrame();
 			frame.getContentPane().setBackground(new Color(35, 35, 35));
-			frame.setBounds(100, 100, 352, 125);
+			frame.setBounds(100, 100, 352, 130);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.getContentPane().setLayout(null);
+			frame.setUndecorated(true);
 			frame.setVisible(true);
+			
+			JPanel windowToolbar = new JPanel();
+			windowToolbar.setBackground(new Color(17, 19, 22));
+			windowToolbar.setBounds(0, 0, 352, 24);
+			mouseCoord = null;
+			windowToolbar.addMouseListener(new MouseListener() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mouseCoord = e.getPoint();
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					mouseCoord = null;
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+			});
+			windowToolbar.addMouseMotionListener(new MouseMotionListener() {
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Point currCoords = e.getLocationOnScreen();
+					frame.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {
+				}
+
+			});
+			frame.getContentPane().add(windowToolbar);
+			windowToolbar.setLayout(null);
+
+			JButton closeWindow_btn = new JButton();
+			closeWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+			closeWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+			closeWindow_btn.setBounds(328, 0, 24, 24);
+			closeWindow_btn.setRequestFocusEnabled(false);
+			closeWindow_btn.setVisible(true);
+			closeWindow_btn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent evt) {
+					System.exit(0);
+				}
+			});
+			windowToolbar.add(closeWindow_btn);
 			
 			UIManager.put("ProgressBar.selectionForeground", Color.black);
 			UIManager.put("ProgressBar.selectionBackground", Color.black);
 			progressBar = new JProgressBar();
 			progressBar.setBackground(Color.DARK_GRAY);
 			progressBar.setForeground(Color.GREEN);
-			progressBar.setBounds(10, 55, 316, 20);
+			progressBar.setBounds(10, 80, 316, 20);
 			progressBar.setValue(0);
 			progressBar.setStringPainted(true);
 			frame.getContentPane().add(progressBar);
@@ -3539,7 +3596,7 @@ public class nHentai {
 					btnNewButton.setIcon(new ImageIcon(loadingScreenMainGUI.class.getResource("/grafics/loadingScreen/startnHentaiDatabaseHover.png")));
 				}
 			});
-			btnNewButton.setBounds(83, 11, 166, 21);
+			btnNewButton.setBounds(83, 40, 166, 21);
 			frame.getContentPane().add(btnNewButton);
 			
 			
