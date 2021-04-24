@@ -2,6 +2,7 @@ package nHentaiMainGUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -33,9 +34,11 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -48,12 +51,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
 import settings.settingsPanel;
@@ -61,18 +64,24 @@ import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntryGeneral;
+import newEntry.newEntryGeneralOption;
 import outsourcedClasses.ButtonColumnAll;
 import outsourcedClasses.nHentaiAPIRun;
 import nHentaiWebScaper.Error;
 import search.searchEngine;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -116,6 +125,7 @@ public class nHentai {
 	private JTable table_panel3;
 	
 	private JProgressBar EntryLoader_panel1_PBar;
+	private JLabel responseTime_panel1_lbl;
 	private JProgressBar EntryLoader_panel2_PBar;
 	private JProgressBar EntryLoader_panel3_PBar;
 	
@@ -150,8 +160,7 @@ public class nHentai {
 				System.out.println(info.getClassName());
 			}
 			//FlatDarkLaf.install();
-			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.setLookAndFeel(new WindowsLookAndFeel());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 
 		}
@@ -232,7 +241,7 @@ public class nHentai {
 		frmNhentaidatabase.getContentPane().setLayout(null);
 
 		JPanel windowToolbar = new JPanel();
-		windowToolbar.setBackground(new java.awt.Color(28, 31, 34));
+		windowToolbar.setBackground(new Color(17, 19, 22));
 		windowToolbar.setBounds(0, 0, 946, 25);
 		mouseCoord = null;
 		windowToolbar.addMouseListener(new MouseListener() {
@@ -882,7 +891,7 @@ public class nHentai {
         Dimension scrollBarDim_panel1 = new Dimension(15, scrollBar_panel1
               .getPreferredSize().height);
         scrollBar_panel1.setPreferredSize(scrollBarDim_panel1);
-        scrollBar_panel1.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel1.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -900,7 +909,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		
 		
 		planToRead_tab.add(scrollPane_panel1);
@@ -954,6 +963,12 @@ public class nHentai {
 		EntryLoader_panel1_PBar.setVisible(false);
 		EntryLoader_panel1_PBar.setBounds(826, 646, 90, 14);
 		planToRead_tab.add(EntryLoader_panel1_PBar);
+		
+		responseTime_panel1_lbl = new JLabel("nHentai response:");
+		responseTime_panel1_lbl.setForeground(Color.GRAY);
+		responseTime_panel1_lbl.setBounds(688, 646, 128, 14);
+		responseTime_panel1_lbl.setVisible(false);
+		planToRead_tab.add(responseTime_panel1_lbl);
 		/*
 		 * end panel 1
 		 */
@@ -1284,7 +1299,7 @@ public class nHentai {
         Dimension scrollBarDim_panel2 = new Dimension(15, scrollBar_panel2
               .getPreferredSize().height);
         scrollBar_panel2.setPreferredSize(scrollBarDim_panel2);
-        scrollBar_panel2.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel2.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -1302,7 +1317,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
         
 		
 		reading_tab.add(scrollPane_panel2);
@@ -1690,7 +1705,7 @@ public class nHentai {
         Dimension scrollBarDim_panel3 = new Dimension(15, scrollBar_panel3
               .getPreferredSize().height);
         scrollBar_panel3.setPreferredSize(scrollBarDim_panel3);
-        scrollBar_panel3.setUI(new BasicScrollBarUI() {
+        /*scrollBar_panel3.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -1708,7 +1723,7 @@ public class nHentai {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });
+       });*/
 		
 		completed_tab.add(scrollPane_panel3);
 		
@@ -2331,218 +2346,319 @@ public class nHentai {
 	public void actionPerformedNewEntry(String start) {
 		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
 		UIManager.put("OptionPane.minimumSize", new Dimension(400, 550));
-		JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION);
-		
-		
 		Component[] buttonText = OKCancelButtonCreate();
+		JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
+
 		
-		int result2 = pane2.showOptionDialog(null, EntryGeneral, "new Entry", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+		//int result2 = pane2.showOptionDialog(null, EntryGeneral, "new Entry", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
+
+		//JDialog d = pane2.createDialog(EntryGeneral, "new Entry");
 		
-		if (result2 == JOptionPane.OK_OPTION) {
-			String code = EntryGeneral.getCode();
-			String URL = EntryGeneral.getURL();
-			String rating = EntryGeneral.getRating();
-			String status = EntryGeneral.getStatus();
-			boolean selected = EntryGeneral.getSelected();
-			
-			safed = false;
-			
-			switch (status){
-				case "plan to read":
-					
-					class Task extends SwingWorker<Void, Void> {
-						@Override
-						protected Void doInBackground() throws Exception {
-							if (!code.equals("") || !URL.equals("")) {
-								try {
-									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-									model = expandTable(model, code);
-									
-								} catch (IOException e) {
-									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-									Error errorPanel = new Error(code);
-									JOptionPane error = new JOptionPane();
-									error.showMessageDialog(null, errorPanel, "error", 0);
-									e.printStackTrace();
-								}
-							}
-							if (selected == true) {
-								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-								for (int i = 0; i < TextAreaData.length; i++) {
-									String rawData = TextAreaData[i];
-									String rawCode = "";
-									String rawRating = "";
-									boolean ratingTurn = false;
-									char[] rawDataChar = rawData.toCharArray();
-									for (int j = 0; j < rawDataChar.length; j++) {
-										if (ratingTurn == true) {
-											rawRating = rawRating + rawDataChar[j];
-										}
-										if (rawDataChar[j] == ' ') {
-											ratingTurn = true;
-										} else if (ratingTurn == false) {
-											rawCode = rawCode + rawDataChar[j];
-										}
-									}
-									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
-										rawRating = rawRating.substring(0, rawRating.length() - 1);
-									try {
-										tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-										model = expandTable(model, rawCode);
-									} catch (IOException e) {
-										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-										Error errorPanel = new Error(code);
-										JOptionPane error = new JOptionPane();
-										error.showMessageDialog(null, errorPanel, "error", 0);
-										e.printStackTrace();
-									}
-									System.out.println("§");
-								}
-							}
-							tableArrSave = tableArr;
-							return null;
-						}
-						
-						@Override
-						protected void done() {
-							EntryLoader_panel1_PBar.setIndeterminate(false);
-							EntryLoader_panel1_PBar.setVisible(false);
-						}
-					}
-					EntryLoader_panel1_PBar.setVisible(true);
-					EntryLoader_panel1_PBar.setIndeterminate(true);
-					Task task = new Task();
-					task.execute();
-					
-					
-					break;
-					
-				case "reading":
-					class Task2 extends SwingWorker<Void, Void> {
-						@Override
-						protected Void doInBackground() throws Exception {
-							if (!code.equals("") || !URL.equals("")) {
-								try {
-									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
-									modelReading = expandTableReading(modelReading, code);
-								} catch (IOException e) {
-									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-									Error errorPanel = new Error(code);
-									JOptionPane error = new JOptionPane();
-									error.showMessageDialog(null, errorPanel, "error", 0);
-									e.printStackTrace();
-								}
-							}
-							if (selected == true) {
-								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-								for (int i = 0; i < TextAreaData.length; i++) {
-									String rawData = TextAreaData[i];
-									String rawCode = "";
-									String rawRating = "";
-									boolean ratingTurn = false;
-									char[] rawDataChar = rawData.toCharArray();
-									for (int j = 0; j < rawDataChar.length; j++) {
-										if (ratingTurn == true) {
-											rawRating = rawRating + rawDataChar[j];
-										}
-										if (rawDataChar[j] == ' ') {
-											ratingTurn = true;
-										} else if (ratingTurn == false) {
-											rawCode = rawCode + rawDataChar[j];
-										}
-									}
-									if(!rawRating.equals(""))
-										rawRating = rawRating.substring(0, rawRating.length() - 1);
-									try {
-										tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
-										modelReading = expandTableReading(modelReading, rawCode);
-									} catch (IOException e) {
-										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-										Error errorPanel = new Error(code);
-										JOptionPane error = new JOptionPane();
-										error.showMessageDialog(null, errorPanel, "error", 0);
-										e.printStackTrace();
-									}
-								}
-							}
-							return null;
-						}
-						
-						protected void done() {
-							EntryLoader_panel2_PBar.setVisible(false);
-							EntryLoader_panel2_PBar.setIndeterminate(false);
-						}
-					}
-					EntryLoader_panel2_PBar.setVisible(true);
-					EntryLoader_panel2_PBar.setIndeterminate(true);
-					Task2 task2 = new Task2();
-					task2.execute();
-					tableArrReadingSave = tableArrReading;
-					break;
-				case "completed":
-					class Task3 extends SwingWorker<Void, Void> {
-						@Override
-						protected Void doInBackground() throws Exception {
-							if (!code.equals("") || !URL.equals("")) {
-								try {
-									tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
-									modelCompleted = expandTableCompleted(modelCompleted, code);
-								} catch (IOException e) {
-									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-									Error errorPanel = new Error(code);
-									JOptionPane error = new JOptionPane();
-									error.showMessageDialog(null, errorPanel, "error", 0);
-									e.printStackTrace();
-								}
-							}
-							if (selected == true) {
-								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-								for (int i = 0; i < TextAreaData.length; i++) {
-									String rawData = TextAreaData[i];
-									String rawCode = "";
-									String rawRating = "";
-									boolean ratingTurn = false;
-									char[] rawDataChar = rawData.toCharArray();
-									for (int j = 0; j < rawDataChar.length; j++) {
-										if (ratingTurn == true) {
-											rawRating = rawRating + rawDataChar[j];
-										}
-										if (rawDataChar[j] == ' ') {
-											ratingTurn = true;
-										} else if (ratingTurn == false) {
-											rawCode = rawCode + rawDataChar[j];
-										}
-									}
-									if(!rawRating.equals(""))
-										rawRating = rawRating.substring(0, rawRating.length() - 1);
-									try {
-										tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
-										modelCompleted = expandTableCompleted(modelCompleted, rawCode);
-									} catch (IOException e) {
-										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-										Error errorPanel = new Error(code);
-										JOptionPane error = new JOptionPane();
-										error.showMessageDialog(null, errorPanel, "error", 0);
-										e.printStackTrace();
-									}
-								}
-							}
-							return null;
-						}
-						protected void done() {
-							EntryLoader_panel1_PBar.setVisible(false);
-							EntryLoader_panel1_PBar.setIndeterminate(false);
-						}
-					}
-					EntryLoader_panel1_PBar.setIndeterminate(true);
-					EntryLoader_panel1_PBar.setVisible(true);
-					Task3 task3 = new Task3();
-					task3.execute();
-					tableArrCompletedSave = tableArrCompleted;
-					break;
+		final JDialog dialog = new JDialog((Frame)null, "Boo");
+		
+        pane2.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String name = evt.getPropertyName();
+                if ("value".equals(name)) {
+
+                    dialog.dispose();
+                    final Object value = pane2.getValue();
+                    System.out.println(value);
+                    if (value.equals("OK")) {
+            			String code = EntryGeneral.getCode();
+            			String URL = EntryGeneral.getURL();
+            			String rating = EntryGeneral.getRating();
+            			String status = EntryGeneral.getStatus();
+            			boolean selected = EntryGeneral.getSelected();
+            			
+            			safed = false;
+            			
+            			switch (status){
+            				case "plan to read":
+            					
+            					class Task extends SwingWorker<Void, Void> {
+            						@Override
+            						protected Void doInBackground() throws Exception {
+            							if (!code.equals("") || !URL.equals("")) {
+            								try {
+            									System.out.println("§");
+            									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+            									model = expandTable(model, code);
+            									long time = nHentaiAPIRun.getInitTime();
+            									String unit = "ms";
+            									time  = time / 1000000;
+            									if(time > 999) {
+            										time = time / 1000;
+            										unit = "s";
+            									}
+            										
+            									responseTime_panel1_lbl.setText("nHentai response: " + time + unit);
+            								} catch (IOException e) {
+            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            									Error errorPanel = new Error(code);
+            									JOptionPane error = new JOptionPane();
+            									error.showMessageDialog(null, errorPanel, "error", 0);
+            									e.printStackTrace();
+            								}
+            							}
+            							if (selected == true) {
+            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+            								for (int i = 0; i < TextAreaData.length; i++) {
+            									String rawData = TextAreaData[i];
+            									String rawCode = "";
+            									String rawRating = "";
+            									boolean ratingTurn = false;
+            									char[] rawDataChar = rawData.toCharArray();
+            									for (int j = 0; j < rawDataChar.length; j++) {
+            										if (ratingTurn == true) {
+            											rawRating = rawRating + rawDataChar[j];
+            										}
+            										if (rawDataChar[j] == ' ') {
+            											ratingTurn = true;
+            										} else if (ratingTurn == false) {
+            											rawCode = rawCode + rawDataChar[j];
+            										}
+            									}
+            									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
+            										rawRating = rawRating.substring(0, rawRating.length() - 1);
+            									try {
+            										tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+            										model = expandTable(model, rawCode);
+            										long time = nHentaiAPIRun.getInitTime();
+                									String unit = "ms";
+                									time  = time / 1000000;
+                									if(time > 999) {
+                										time = time / 1000;
+                										unit = "s";
+                									}
+                										
+                									responseTime_panel1_lbl.setText("nHentai response: " + time + unit);
+            									} catch (IOException e) {
+            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            										Error errorPanel = new Error(code);
+            										JOptionPane error = new JOptionPane();
+            										error.showMessageDialog(null, errorPanel, "error", 0);
+            										e.printStackTrace();
+            									}
+            									System.out.println("§");
+            								}
+            							}
+            							tableArrSave = tableArr;
+            							return null;
+            						}
+            						
+            						@Override
+            						protected void done() {
+            							EntryLoader_panel1_PBar.setIndeterminate(false);
+            							EntryLoader_panel1_PBar.setVisible(false);
+            							responseTime_panel1_lbl.setVisible(false);
+            						}
+            					}
+            					EntryLoader_panel1_PBar.setVisible(true);
+            					EntryLoader_panel1_PBar.setIndeterminate(true);
+            					responseTime_panel1_lbl.setVisible(true);
+            					Task task = new Task();
+            					task.execute();
+            					
+            					
+            					break;
+            					
+            				case "reading":
+            					class Task2 extends SwingWorker<Void, Void> {
+            						@Override
+            						protected Void doInBackground() throws Exception {
+            							if (!code.equals("") || !URL.equals("")) {
+            								try {
+            									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+            									modelReading = expandTableReading(modelReading, code);
+            								} catch (IOException e) {
+            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            									Error errorPanel = new Error(code);
+            									JOptionPane error = new JOptionPane();
+            									error.showMessageDialog(null, errorPanel, "error", 0);
+            									e.printStackTrace();
+            								}
+            							}
+            							if (selected == true) {
+            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+            								for (int i = 0; i < TextAreaData.length; i++) {
+            									String rawData = TextAreaData[i];
+            									String rawCode = "";
+            									String rawRating = "";
+            									boolean ratingTurn = false;
+            									char[] rawDataChar = rawData.toCharArray();
+            									for (int j = 0; j < rawDataChar.length; j++) {
+            										if (ratingTurn == true) {
+            											rawRating = rawRating + rawDataChar[j];
+            										}
+            										if (rawDataChar[j] == ' ') {
+            											ratingTurn = true;
+            										} else if (ratingTurn == false) {
+            											rawCode = rawCode + rawDataChar[j];
+            										}
+            									}
+            									if(!rawRating.equals(""))
+            										rawRating = rawRating.substring(0, rawRating.length() - 1);
+            									try {
+            										tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
+            										modelReading = expandTableReading(modelReading, rawCode);
+            									} catch (IOException e) {
+            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            										Error errorPanel = new Error(code);
+            										JOptionPane error = new JOptionPane();
+            										error.showMessageDialog(null, errorPanel, "error", 0);
+            										e.printStackTrace();
+            									}
+            								}
+            							}
+            							return null;
+            						}
+            						
+            						protected void done() {
+            							EntryLoader_panel2_PBar.setVisible(false);
+            							EntryLoader_panel2_PBar.setIndeterminate(false);
+            						}
+            					}
+            					EntryLoader_panel2_PBar.setVisible(true);
+            					EntryLoader_panel2_PBar.setIndeterminate(true);
+            					Task2 task2 = new Task2();
+            					task2.execute();
+            					tableArrReadingSave = tableArrReading;
+            					break;
+            				case "completed":
+            					class Task3 extends SwingWorker<Void, Void> {
+            						@Override
+            						protected Void doInBackground() throws Exception {
+            							if (!code.equals("") || !URL.equals("")) {
+            								try {
+            									tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+            									modelCompleted = expandTableCompleted(modelCompleted, code);
+            								} catch (IOException e) {
+            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            									Error errorPanel = new Error(code);
+            									JOptionPane error = new JOptionPane();
+            									error.showMessageDialog(null, errorPanel, "error", 0);
+            									e.printStackTrace();
+            								}
+            							}
+            							if (selected == true) {
+            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+            								for (int i = 0; i < TextAreaData.length; i++) {
+            									String rawData = TextAreaData[i];
+            									String rawCode = "";
+            									String rawRating = "";
+            									boolean ratingTurn = false;
+            									char[] rawDataChar = rawData.toCharArray();
+            									for (int j = 0; j < rawDataChar.length; j++) {
+            										if (ratingTurn == true) {
+            											rawRating = rawRating + rawDataChar[j];
+            										}
+            										if (rawDataChar[j] == ' ') {
+            											ratingTurn = true;
+            										} else if (ratingTurn == false) {
+            											rawCode = rawCode + rawDataChar[j];
+            										}
+            									}
+            									if(!rawRating.equals(""))
+            										rawRating = rawRating.substring(0, rawRating.length() - 1);
+            									try {
+            										tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
+            										modelCompleted = expandTableCompleted(modelCompleted, rawCode);
+            									} catch (IOException e) {
+            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            										Error errorPanel = new Error(code);
+            										JOptionPane error = new JOptionPane();
+            										error.showMessageDialog(null, errorPanel, "error", 0);
+            										e.printStackTrace();
+            									}
+            								}
+            							}
+            							return null;
+            						}
+            						protected void done() {
+            							EntryLoader_panel1_PBar.setVisible(false);
+            							EntryLoader_panel1_PBar.setIndeterminate(false);
+            						}
+            					}
+            					EntryLoader_panel1_PBar.setIndeterminate(true);
+            					EntryLoader_panel1_PBar.setVisible(true);
+            					Task3 task3 = new Task3();
+            					task3.execute();
+            					tableArrCompletedSave = tableArrCompleted;
+            					break;
+            			}
+            		}
+                }
+                System.out.println(name);
+            }
+        });
+
+        dialog.setUndecorated(true);
+        dialog.setLayout(new BorderLayout());
+        
+        JPanel dialogwindowToolbar = new JPanel();
+        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+        dialogwindowToolbar.setLayout(new BorderLayout());
+        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+		
+		mouseCoord = null;
+		dialogwindowToolbar.addMouseListener(new MouseListener() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mouseCoord = e.getPoint();
 			}
-		}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				mouseCoord = null;
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+				dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+			}
+
+		});
+		JButton dialogcloseWindow_btn = new JButton();
+		dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+		dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+		dialogcloseWindow_btn.setRequestFocusEnabled(false);
+		dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				dialog.dispose();
+			}
+			
+		});
+		dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+		dialog.add(dialogwindowToolbar, BorderLayout.PAGE_START);
+        dialog.add(pane2);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
 	}
 	
 	public void setVisible2(boolean visible) {
@@ -2626,8 +2742,7 @@ public class nHentai {
 	}
 	
 	public void actionPerformedSafe(String[][] inputArr) {
-		UIManager.put("OptionPane.background", new Color(244, 244, 244));
-		UIManager.put("Panel.background", new Color(244, 244, 244));
+		FlatDarkLaf.install();
 
 		JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
@@ -2659,16 +2774,22 @@ public class nHentai {
 
             dataManager.saveTable(inputArr, SaveFileLocation);
         }
-        UIManager.put("OptionPane.background", new Color(35, 35, 35));
-		UIManager.put("Panel.background", new Color(35, 35, 35));
+        
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String[][] actionPerformedLoad(String table) {
 		
 		safed = false;
 		
-		UIManager.put("OptionPane.background", new Color(244, 244, 244));
-		UIManager.put("Panel.background", new Color(244, 244, 244));
+		FlatDarkLaf.install();
+		
 		JFileChooser myJFileChooserLoad = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		myJFileChooserLoad.setDialogTitle("Choose a file to load");
 		myJFileChooserLoad.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -2699,8 +2820,14 @@ public class nHentai {
             }
             return dataManager.readTable(LoadFileLocation);
         }
-        UIManager.put("OptionPane.background", new Color(35, 35, 35));
-        UIManager.put("Panel.background", new Color(35, 35, 35));
+        
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return new String[1][10];
 	}	
@@ -2813,7 +2940,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(OKButton);
+				paneAP.setValue("OK");
 				Window w = SwingUtilities.getWindowAncestor(OKButton);
 
 			    if (w != null) {
@@ -2849,7 +2976,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(cancelButton);
+				paneAP.setValue("cancel");
 				Window w = SwingUtilities.getWindowAncestor(cancelButton);
 
 			    if (w != null) {

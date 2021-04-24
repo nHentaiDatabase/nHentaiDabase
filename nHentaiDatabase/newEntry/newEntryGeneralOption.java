@@ -1,88 +1,76 @@
 package newEntry;
 
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.plaf.FileChooserUI;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
-import moreInformation.moreInformationPanel;
+import newEntry.newEntryGeneral.ColorBox;
 
-import javax.accessibility.AccessibleContext;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.Point;
-
-import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.awt.event.ActionEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.JScrollPane;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import javax.swing.JProgressBar;
-
-public class newEntryGeneral extends JPanel {
-
+public class newEntryGeneralOption extends JDialog{
 	private JTextField code_TField;
 	private JTextField URL_TField;
 	private JComboBox rating_CBox;
 	private JTextArea textArea;
 	private JComboBox status_CBox;
 	private JCheckBox insertMultipleId_ChBox;
-	private Point mouseCoord;
+	
 	private String fileLocation;
 	
 	private String[][] Data;
 	
-	/**
-	 * Create the panel.
-	 */
-	public newEntryGeneral(String start) {
+	public static void main(String[] args) {
+        new newEntryGeneralOption("reading");
+    }
+	
+	public newEntryGeneralOption(String start) {
+		super();
+		setUndecorated(true);
 		setBackground(new Color(35, 35, 35));
 		setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("<html><body>insert new entry by entering the  code (ex. 177013),<br>or entring the full URL.</body></html>");
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblNewLabel.setBounds(10, 22, 549, 50);
+		lblNewLabel.setBounds(10, 11, 549, 50);
 		add(lblNewLabel);
 		
 		JLabel code_lbl = new JLabel("code:");
@@ -156,7 +144,7 @@ public class newEntryGeneral extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        /*scrollBar.setUI(new BasicScrollBarUI() {
+        scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -174,7 +162,7 @@ public class newEntryGeneral extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return createZeroButton();
          }
-       });*/
+       });
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);

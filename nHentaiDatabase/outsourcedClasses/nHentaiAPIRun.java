@@ -15,9 +15,14 @@ import nHentaiWebScaper.nHentaiWebBase;
 public class nHentaiAPIRun {
 
 	private nHentaiWebBase nHentaiAPI;
+	private long initTime;
 	
 	public nHentaiAPIRun() {
 		nHentaiAPI = new nHentaiWebBase();
+	}
+	
+	public long getInitTime() {
+		return initTime;
 	}
 	
 	public String[][] nHentaiAPIRun(String[][] tableArr, String location, String code, String URL, String rating, String status) throws IOException{
@@ -29,9 +34,9 @@ public class nHentaiAPIRun {
 		String pages = "";
 		
 		if(!code.equals("")) 
-			nHentaiAPI.initDocWithCode(code);
+			initTime = nHentaiAPI.initDocWithCode(code);
 		else if(!URL.equals("")) 
-			nHentaiAPI.initDocWithURL(URL);
+			initTime = nHentaiAPI.initDocWithURL(URL);
 		
 		coverImage = nHentaiAPI.getCoverImage();
 		title = nHentaiAPI.getTitle();
@@ -75,9 +80,9 @@ public class nHentaiAPIRun {
 		String pages = "";
 		
 		if(!code.equals("")) 
-			nHentaiAPI.initDocWithCode(code);
+			initTime = nHentaiAPI.initDocWithCode(code);
 		else if(!URL.equals("")) 
-			nHentaiAPI.initDocWithURL(URL);
+			initTime = nHentaiAPI.initDocWithURL(URL);
 		
 		coverImage = nHentaiAPI.getCoverImage();
 		title = nHentaiAPI.getTitle();
@@ -121,9 +126,9 @@ public class nHentaiAPIRun {
 		String pages = "";
 		
 		if(!code.equals("")) 
-			nHentaiAPI.initDocWithCode(code);
+			initTime = nHentaiAPI.initDocWithCode(code);
 		else if(!URL.equals("")) 
-			nHentaiAPI.initDocWithURL(URL);
+			initTime = nHentaiAPI.initDocWithURL(URL);
 		
 		coverImage = nHentaiAPI.getCoverImage();
 		title = nHentaiAPI.getTitle();

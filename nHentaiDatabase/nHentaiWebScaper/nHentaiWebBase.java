@@ -31,15 +31,25 @@ public class nHentaiWebBase {
 		
 	}
 	
-	public void initDocWithCode(String number) throws IOException{
+	public long initDocWithCode(String number) throws IOException{
 		String baseURL = "https://nhentai.net/g/";
 		String newURL = baseURL + number + "/";
 		
-		doc = Jsoup.connect(newURL).timeout(1000).maxBodySize(0) .get();
+		long timer1 = System.nanoTime();
+		
+		doc = Jsoup.connect(newURL).timeout(5000).maxBodySize(0) .get();
+		
+		long timer2 = System.nanoTime();
+		
+		return timer2 - timer1;
 	}
 	
-	public void initDocWithURL(String URL) throws IOException{
-		doc = Jsoup.connect(URL).timeout(1000).maxBodySize(0).get();
+	public long initDocWithURL(String URL) throws IOException{
+		long timer1 = System.nanoTime();
+		doc = Jsoup.connect(URL).timeout(5000).maxBodySize(0).get();
+		long timer2 = System.nanoTime();
+		
+		return timer2 - timer1;
 	}
 	
 	public String getCoverImage() {
