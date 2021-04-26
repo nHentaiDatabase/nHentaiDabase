@@ -31,6 +31,9 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+import outsourcedClasses.Methods;
+import renderEngine.renderMethods;
+
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.BorderFactory;
@@ -56,8 +59,11 @@ public class moreInformationPanel extends JPanel {
 	private JTextField pages_TField;
 	private JTextField timesRead_TField;
 
-	JComboBox status_CBox;
-	JComboBox rating_CBox;
+	private JComboBox status_CBox;
+	private JComboBox rating_CBox;
+	
+	private Methods methods = new Methods();
+	private renderMethods RenderMethods = new renderMethods();
 	
 	boolean deleteEntry = false;
 	/**
@@ -66,7 +72,7 @@ public class moreInformationPanel extends JPanel {
 	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation, boolean SFW) {
 		setBackground(new Color(35, 35, 35));
 		
-		splitTagsUp(tags);
+		methods.splitTagsUp(tags);
 		
 		setLayout(null);
 		
@@ -130,7 +136,7 @@ public class moreInformationPanel extends JPanel {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+						JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
 						paneAP.setValue(openButton);
 						Window w = SwingUtilities.getWindowAncestor(openButton);
 
@@ -165,7 +171,7 @@ public class moreInformationPanel extends JPanel {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+						JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
 						paneAP.setValue(copyButton);
 						Window w = SwingUtilities.getWindowAncestor(openButton);
 
@@ -262,19 +268,22 @@ public class moreInformationPanel extends JPanel {
 		id_TField.setText(id);
 		
 		title_TField.setText(title);
+		title_TField.setCaretPosition(0);
 		
 		author_TField.setText(author);
+		author_TField.setCaretPosition(0);
 		
 		pages_TField.setText(pages);
 		
 		timesRead_TField.setText(timesRead);
+		timesRead_TField.setCaretPosition(0);
 		
 		JLabel tags_lbl = new JLabel("tags");
 		tags_lbl.setForeground(Color.WHITE);
 		tags_lbl.setBounds(22, 641, 46, 14);
 		add(tags_lbl);
 		
-		String[] tagsArr = splitTagsUp(tags);
+		String[] tagsArr = methods.splitTagsUp(tags);
 		JButton[] tagButtonArr = new JButton[tagsArr.length];
 		
 		JPanel panel_1 = new JPanel();
@@ -315,12 +324,12 @@ public class moreInformationPanel extends JPanel {
            }
           @Override
          protected JButton createDecreaseButton(int orientation) {
-             return createZeroButton();
+             return methods.createZeroButton();
          }
 
          @Override
          protected JButton createIncreaseButton(int orientation) {
-             return createZeroButton();
+             return methods.createZeroButton();
          }
        });
         tagsBody_SPane.setBounds(22, 667, 428, 80);
@@ -335,7 +344,7 @@ public class moreInformationPanel extends JPanel {
         	}
         	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
      	   {
-        		handlePopupMenuWillBecomeVisible(e);
+        		RenderMethods.handlePopupMenuWillBecomeVisible(e);
      	   }
         });
         rating_CBox.setUI(new BasicComboBoxUI(){
@@ -350,7 +359,7 @@ public class moreInformationPanel extends JPanel {
         	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
         	       return arrowButton;
         	    }});
-        rating_CBox.setRenderer(new ColorBox());
+        rating_CBox.setRenderer(new renderEngine.colorComboBoxPopUp());
         rating_CBox.setBackground(new Color(59, 59, 59));
         rating_CBox.setForeground(Color.WHITE);
         rating_CBox.setModel(new DefaultComboBoxModel(new String[] {"N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
@@ -366,7 +375,7 @@ public class moreInformationPanel extends JPanel {
         	}
         	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
      	   {
-        		handlePopupMenuWillBecomeVisible(e);
+        		RenderMethods.handlePopupMenuWillBecomeVisible(e);
      	   }
         });
         status_CBox.setUI(new BasicComboBoxUI(){
@@ -381,7 +390,7 @@ public class moreInformationPanel extends JPanel {
         	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
         	       return arrowButton;
         	    }});
-        status_CBox.setRenderer(new ColorBox());
+        status_CBox.setRenderer(new renderEngine.colorComboBoxPopUp());
         status_CBox.setBackground(new Color(59, 59, 59));
         status_CBox.setForeground(Color.WHITE);
         status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
@@ -396,7 +405,7 @@ public class moreInformationPanel extends JPanel {
         		confirmDeleteEntry confirm = new confirmDeleteEntry();
         		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         		
-        		Component[] buttonText = OKCancelButtonCreate();
+        		Component[] buttonText = methods.OKCancelButtonCreate();
         		
 				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
 				if(result == JOptionPane.OK_OPTION) {
@@ -427,210 +436,39 @@ public class moreInformationPanel extends JPanel {
         add(deleteEntry_btn);
 	}
 	
-	public String[] splitTagsUp(String tags) {
-		char[] tagsChar = tags.toCharArray();
-		int tagNumber = 0;
-		for(int i=0;i<tagsChar.length;i++) {
-			if(tagsChar[i] == ',') {
-				tagNumber++;
-			}
-		}
-		String[] tagsArr = new String[tagNumber];
-		int currTag = 0;
-		for(int i=0;i<tagsChar.length;i++) {
-			if(tagsChar[i] == ',' && currTag+1<tagsArr.length)
-				currTag++;
-			else {
-				if(tagsArr[currTag] == null)
-					tagsArr[currTag] = "" + tagsChar[i];
-				else
-					tagsArr[currTag] = tagsArr[currTag] + tagsChar[i];				
-			}
-		}
-		for(int i=1;i<tagsArr.length;i++) {
-			String tmp = tagsArr[i];
-			StringBuilder sb = new StringBuilder(tmp);
-			sb.deleteCharAt(0);
-			tmp = sb.toString();
-			tagsArr[i] = tmp;
-		}
-		return tagsArr;
-	}
-	
+	/**
+	 * Get the Rating
+	 * 
+	 * @return String
+	 */
 	public String getRating() {
 		return (String) rating_CBox.getSelectedItem();
 	}
-	
+
+	/**
+	 * Get the Status
+	 * 
+	 * @return String
+	 */
 	public String getStatus() {
 		return (String) status_CBox.getSelectedItem();
 	}
-	
+
+	/**
+	 * Get the times read
+	 * 
+	 * @return String
+	 */
 	public String getTimesRead() {
 		return timesRead_TField.getText();
 	}
-	
+
+	/**
+	 * Get if the Entry gets deleted
+	 * 
+	 * @return boolean
+	 */
 	public boolean getDeleteEntry() {
 		return deleteEntry;
-	}
-	
-	protected JOptionPane getOptionPane(JComponent parent) {
-        JOptionPane pane = null;
-        if (!(parent instanceof JOptionPane)) {
-            pane = getOptionPane((JComponent)parent.getParent());
-        } else {
-            pane = (JOptionPane) parent;
-        }
-        return pane;
-    }
-	
-	class ColorBox extends JLabel implements ListCellRenderer {
-
-        public ColorBox() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			setText(value.toString());
-			
-			Color background;
-			Color foreground;
-			
-			// check if this cell is selected
-			if (isSelected) {
-				background = new Color(0, 34, 58);
-				foreground = Color.WHITE;
-			
-			// unselected, and not the DnD drop location
-			} else {
-				background = new Color(15, 15, 15);
-				foreground = Color.WHITE;
-			};
-			
-			setBackground(background);
-			setForeground(foreground);
-			list.setSelectionBackground(new Color(59, 59, 59));
-			
-			return this;
-		}
-    }   
-
-	protected JButton createZeroButton() {
-	    JButton button = new JButton("zero button");
-	    Dimension zeroDim = new Dimension(0,0);
-	    button.setPreferredSize(zeroDim);
-	    button.setMinimumSize(zeroDim);
-	    button.setMaximumSize(zeroDim);
-	    return button;
-	}
-	
-	public void handlePopupMenuWillBecomeVisible(PopupMenuEvent e) {
-		JComboBox comboBox = (JComboBox) e.getSource();
-	      Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
-	      Component c = ((Container) popup).getComponent(0);
-	      if (c instanceof JScrollPane)
-	      {
-	         JScrollPane scrollpane = (JScrollPane) c;
-	         JScrollBar scrollBar = scrollpane.getVerticalScrollBar();
-	         Dimension scrollBarDim = new Dimension(15, scrollBar
-	               .getPreferredSize().height);
-	         scrollBar.setPreferredSize(scrollBarDim);
-	         scrollBar.setUI(new BasicScrollBarUI() {
-	            @Override 
-	            protected void configureScrollBarColors(){
-	                this.thumbColor = new Color(32, 34, 37);
-	                this.thumbDarkShadowColor = new Color(32, 34, 37);
-	                this.thumbLightShadowColor = new Color(32, 34, 37);
-	                this.trackColor = new Color(59, 59, 59);
-	                this.trackHighlightColor = new Color(59, 59, 59);
-	            }
-	           @Override
-	          protected JButton createDecreaseButton(int orientation) {
-	              return createZeroButton();
-	          }
-
-	          @Override
-	          protected JButton createIncreaseButton(int orientation) {
-	              return createZeroButton();
-	          }
-	        });
-	      }
-	}
-	
-	public Component[] OKCancelButtonCreate() {
-		final JButton OKButton = new JButton();
-		OKButton.setPreferredSize(new Dimension(75,25));
-		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		OKButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(OKButton);
-				Window w = SwingUtilities.getWindowAncestor(OKButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		OKButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-		});
-		
-		final JButton cancelButton = new JButton();
-		cancelButton.setPreferredSize(new Dimension(58,25));
-		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue(cancelButton);
-				Window w = SwingUtilities.getWindowAncestor(cancelButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		cancelButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-		});
-		
-		Component[] buttonText = new Component[]{	OKButton, cancelButton};
-		return buttonText;
-	}
+	}   
 }

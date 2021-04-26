@@ -17,6 +17,12 @@ public class dataManager {
 		
 	}
 	
+	/**
+	 * Create a textfile with the given Array and save it.
+	 * 
+	 * @param table The given Array
+	 * @param location Where it should be saved.
+	 */
 	public void saveTable(String[][] table, String location) {
 		try {
             outputStream = new PrintWriter(location);
@@ -33,6 +39,12 @@ public class dataManager {
 		outputStream.close();
 	}
 	
+	/**
+	 * Save the Settings at the given Location.
+	 * 
+	 * @param settings Array with the settings
+	 * @param location Where it should be saved.
+	 */
 	public void saveSettings(String[] settings, String location) {
 		try {
             outputStream = new PrintWriter(location);
@@ -46,6 +58,12 @@ public class dataManager {
 		outputStream.close();
 	}
 	
+	/**
+	 * Read the save file and return a Array.
+	 * 
+	 * @param location The location of the save file
+	 * @return String[][]
+	 */
 	public String[][] readTable(String location) {
 		String[][] tmp = new String[][] {{""},{""}};
 		try {
@@ -68,6 +86,12 @@ public class dataManager {
 		return tmp;
 	}
 	
+	/**
+	 * Read the settings and return a Array.
+	 * 
+	 * @param location The location of the settings file
+	 * @return String[]
+	 */
 	public String[] readSettings(String location) {
 		String[] tmp = new String[1];
 		try {
@@ -86,6 +110,12 @@ public class dataManager {
 		return tmp;
 	}
 	
+	/**
+	 * Split the linear text file in a two dimensional Array
+	 * 
+	 * @param fileData All lines in the text document
+	 * @return String[][]
+	 */
 	private String[][] splitData(String[] fileData) {
 		int rows = 0;
 		for(int i=0;i<fileData.length;i++){
@@ -95,7 +125,7 @@ public class dataManager {
 		}
 		String[][] outputData = new String[rows][10];
 		int Jrefrence = 0;
-		//TODO
+		
 		for(int i=0;i<rows;i++) {
 			for(int j=Jrefrence;j<Jrefrence+10;j++) {
 				outputData[i][j-Jrefrence] = fileData[j];

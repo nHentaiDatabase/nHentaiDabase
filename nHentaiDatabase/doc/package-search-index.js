@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"datamanager"},{"l":"moreInformation"},{"l":"newEntry"},{"l":"nHentaiMainGUI"},{"l":"nHentaiWebScaper"},{"l":"outsourcedClasses"},{"l":"renderEngine"},{"l":"search"},{"l":"settings"},{"l":"stats"}]

@@ -6,6 +6,14 @@ public class searchEngine {
 		
 	}
 	
+	/**
+	 * Search the given Array for the search and respect the config
+	 * 
+	 * @param table The Array that is search through
+	 * @param search The search
+	 * @param config The config details
+	 * @return String[]
+	 */
 	public String[] search(String[][] table, String search, boolean[] config) {
 		search = search.toLowerCase();
 		String[] searchObj = getSearchObj(search);
@@ -96,6 +104,12 @@ public class searchEngine {
 		return resId;
 	}
 	
+	/**
+	 * Turns the single String search in a Array of search objects.
+	 * 
+	 * @param search The single String search
+	 * @return String[]
+	 */
 	public String[] getSearchObj(String search) {
 		char[] searchChar = search.toCharArray();
 		String[] searchObj;

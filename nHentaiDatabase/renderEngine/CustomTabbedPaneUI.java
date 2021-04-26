@@ -13,6 +13,11 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+/**
+ * 
+ * CustomTabbedPaneUI is for the color and shape of the Tabs
+ *  
+ */
 public class CustomTabbedPaneUI extends BasicTabbedPaneUI {
 
     private int inclTab = 4;

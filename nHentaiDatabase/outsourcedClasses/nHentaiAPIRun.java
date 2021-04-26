@@ -17,14 +17,37 @@ public class nHentaiAPIRun {
 	private nHentaiWebBase nHentaiAPI;
 	private long initTime;
 	
-	public nHentaiAPIRun() {
+	private Methods methods = new Methods();
+	
+	private String Shlash;
+	
+	/**
+	 * Constructor of nHentaiAPIRun
+	 * nHentaiAPIRun Manages the creation of a new entry. It only modifies the given Array.
+	 * 
+	 * @param shlash Which type of slash is used
+	 */
+	public nHentaiAPIRun(String shlash) {
 		nHentaiAPI = new nHentaiWebBase();
+		Shlash = shlash;
 	}
 	
 	public long getInitTime() {
 		return initTime;
 	}
 	
+	/**
+	 * The creation of a new entry of the section "plan to read".
+	 * 
+	 * @param tableArr The source Array
+	 * @param location The location where the pictures are saved
+	 * @param code The nHentai id of the new entry
+	 * @param URL The URL of the new entry
+	 * @param rating The rating of the new entry
+	 * @param status The status of the new entry
+	 * @return String[][]
+	 * @throws IOException
+	 */
 	public String[][] nHentaiAPIRun(String[][] tableArr, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
@@ -48,9 +71,9 @@ public class nHentaiAPIRun {
 		artist = nHentaiAPI.getArtist();
 		pages = nHentaiAPI.getPages();
 		
-		nHentaiAPI.saveImageAsFile(coverImage, location + "\\" + id + "_original.jpg");
-		scaleImage(location + "\\" + id, "_low.jpg", 50, 71);
-		scaleImage(location + "\\" + id, "_medium.jpg", 150, 212);
+		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
 		
 		tableArr[tableArr.length - 1][1] = coverImage;
 		tableArr[tableArr.length - 1][3] = title;
@@ -67,10 +90,22 @@ public class nHentaiAPIRun {
 		tableArr[tableArr.length - 1][8] = rating;
 		tableArr[tableArr.length - 1][7] = "0";
 		
-		tableArr = expandArr(tableArr);
+		tableArr = methods.expandArr(tableArr);
 		return tableArr;
 	}
 	
+	/**
+	 * The creation of a new entry of the section "reading".
+	 * 
+	 * @param tableArrReading The source Array
+	 * @param location The location where the pictures are saved
+	 * @param code The nHentai id of the new entry
+	 * @param URL The URL of the new entry
+	 * @param rating The rating of the new entry
+	 * @param status The status of the new entry
+	 * @return String[][]
+	 * @throws IOException
+	 */
 	public String[][] nHentaiAPIRunReading(String[][] tableArrReading, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
@@ -94,9 +129,9 @@ public class nHentaiAPIRun {
 		artist = nHentaiAPI.getArtist();
 		pages = nHentaiAPI.getPages();
 		
-		nHentaiAPI.saveImageAsFile(coverImage, location + "\\" + id + "_original.jpg");
-		scaleImage(location + "\\" + id, "_low.jpg", 50, 71);
-		scaleImage(location + "\\" + id, "_medium.jpg", 150, 212);
+		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
 		
 		tableArrReading[tableArrReading.length - 1][1] = coverImage;
 		tableArrReading[tableArrReading.length - 1][3] = title;
@@ -113,10 +148,22 @@ public class nHentaiAPIRun {
 		tableArrReading[tableArrReading.length - 1][7] = status;
 		tableArrReading[tableArrReading.length - 1][8] = "0";
 		
-		tableArrReading = expandArr(tableArrReading);
+		tableArrReading = methods.expandArr(tableArrReading);
 		return tableArrReading;
 	}
 	
+	/**
+	 * The creation of a new entry of the section "completed".
+	 * 
+	 * @param tableArrCompleted The source Array
+	 * @param location The location where the pictures are saved
+	 * @param code The nHentai id of the new entry
+	 * @param URL The URL of the new entry
+	 * @param rating The rating of the new entry
+	 * @param status The status of the new entry
+	 * @return String[][]
+	 * @throws IOException
+	 */
 	public String[][] nHentaiAPIRunCompleted(String[][] tableArrCompleted, String location, String code, String URL, String rating, String status) throws IOException{
 		String coverImage = "";
 		String title = "";
@@ -140,9 +187,9 @@ public class nHentaiAPIRun {
 		artist = nHentaiAPI.getArtist();
 		pages = nHentaiAPI.getPages();
 		
-		nHentaiAPI.saveImageAsFile(coverImage, location + "\\" + id + "_original.jpg");
-		scaleImage(location + "\\" + id, "_low.jpg", 50, 71);
-		scaleImage(location + "\\" + id, "_medium.jpg", 150, 212);
+		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
 		
 		tableArrCompleted[tableArrCompleted.length - 1][1] = coverImage;
 		tableArrCompleted[tableArrCompleted.length - 1][3] = title;
@@ -159,31 +206,7 @@ public class nHentaiAPIRun {
 		tableArrCompleted[tableArrCompleted.length - 1][7] = "1";
 		tableArrCompleted[tableArrCompleted.length - 1][8] = status;
 		
-		tableArrCompleted = expandArr(tableArrCompleted);
+		tableArrCompleted = methods.expandArr(tableArrCompleted);
 		return tableArrCompleted;
 	}
-	
-	public void scaleImage(String location, String name, int x, int y){
-        try{
-            ImageIcon ii = new ImageIcon(location + "_original.jpg");
-            BufferedImage bi = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = (Graphics2D)bi.createGraphics();
-            g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,
-                    RenderingHints.VALUE_RENDER_QUALITY));
-            boolean b = g2d.drawImage(ii.getImage(), 0, 0, x, y, null);
-            System.out.println(b);
-            ImageIO.write(bi, "jpg", new File(location + name));
-        }
-        catch (Exception e){
-                e.printStackTrace();
-        }
-	}
-	
-	public String[][] expandArr(String[][] input) {
-		String[][] tmp = new String[input.length +1][input[0].length];
-		System.arraycopy(input, 0, tmp, 0, input.length);
-		input = tmp;
-		return input;
-	}
-	
 }

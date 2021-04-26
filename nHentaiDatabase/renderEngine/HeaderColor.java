@@ -7,6 +7,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+/**
+ * 
+ * HeaderColor is for the Color of the table header
+ *
+ */
 public class HeaderColor extends DefaultTableCellRenderer{
 	public HeaderColor() {
 		setOpaque(true);

@@ -2,7 +2,6 @@ package nHentaiMainGUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -34,7 +33,6 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -57,15 +55,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
 import settings.settingsPanel;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntryGeneral;
-import newEntry.newEntryGeneralOption;
 import outsourcedClasses.ButtonColumnAll;
+import outsourcedClasses.Methods;
 import outsourcedClasses.nHentaiAPIRun;
 import nHentaiWebScaper.Error;
 import search.searchEngine;
@@ -98,6 +95,7 @@ public class nHentai {
 	private dataManager dataManager;
 	private nHentaiWebBase nHentaiAPI;
 	private nHentaiAPIRun nHentaiAPIRun;
+	private Methods methods;
 	private searchEngine searchEngine;
 
 	private String[][] tableArr;
@@ -180,7 +178,6 @@ public class nHentai {
 				try {
 					nHentai window = new nHentai();
 					window.frmNhentaidatabase.setVisible(true);
-					window.setVisible2(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -192,10 +189,6 @@ public class nHentai {
 	 * Create the application.
 	 */
 	public nHentai() {
-		dataManager = new dataManager();
-		nHentaiAPI = new nHentaiWebBase();
-		nHentaiAPIRun = new nHentaiAPIRun();
-		searchEngine = new searchEngine();
 		tableArr = new String[1][10];
 		tableArrSave = new String[1][10];
 		tableArrReading = new String[1][10];
@@ -220,16 +213,19 @@ public class nHentai {
 			Slash = "/";
 		}
 		
-			System.out.println(appdataLocation);
-			System.out.println(mainFolderLocation);
-			System.out.println(photoFolderLocation);
-			System.out.println(userDataFolderLocation);
-			System.out.println(randomPhotoFolderLocation);
-			
-//		appdataLocation = System.getenv("APPDATA");
+		System.out.println(appdataLocation);
+		System.out.println(mainFolderLocation);
+		System.out.println(photoFolderLocation);
+		System.out.println(userDataFolderLocation);
+		System.out.println(randomPhotoFolderLocation);
+
+		dataManager = new dataManager();
+		nHentaiAPI = new nHentaiWebBase();
+		nHentaiAPIRun = new nHentaiAPIRun(Slash);
+		searchEngine = new searchEngine();
+		methods = new Methods(appdataLocation, mainFolderLocation, photoFolderLocation, Slash,  randomPhotoFolderLocation, userDataFolderLocation);
 		initialize();
 		loadingScreen = new loadingScreenMainGUI();
-		//getSave();
 	}
 
 	/**
@@ -314,7 +310,7 @@ public class nHentai {
 	
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
 							paneAP.setValue("save");
 							Window w = SwingUtilities.getWindowAncestor(saveButton);
 	
@@ -350,7 +346,7 @@ public class nHentai {
 	
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
 							paneAP.setValue("close");
 							Window w = SwingUtilities.getWindowAncestor(closeButton);
 	
@@ -386,7 +382,7 @@ public class nHentai {
 	
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
+							JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
 							paneAP.setValue("cancel");
 							Window w = SwingUtilities.getWindowAncestor(cancelButton);
 	
@@ -415,10 +411,8 @@ public class nHentai {
 					});
 					
 					Component[] buttonText = new Component[]{	saveButton, closeButton, cancelButton};
-					
-					JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, buttonText, null);
-					
 					UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+					JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, buttonText, null);
 					
 					final JDialog dialog = new JDialog((Frame)null, "Boo");
 					
@@ -692,8 +686,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 
-				actionPerformedNewEntry("plan to read");
-				
+				actionPerformedNewEntry(tableArr, model, responseTime_panel1_lbl, EntryLoader_panel1_PBar, "plan to read");				
 			}
 		});
 		panel_panel1.add(newEntry_panel1_bnt);
@@ -782,7 +775,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				tableArr = actionPerformedLoad("plan to read");
-				model = ArrToTable(model, tableArr);
+				model = methods.ArrToTable(model, tableArr, SFW);
 			}
 		});
 		panel_panel1.add(loadTable__panel1_btn);
@@ -800,7 +793,7 @@ public class nHentai {
 							model.removeRow(0);
 						}
 						tableArr = tableArrSave;
-						ArrToTable(model, tableArr);
+						methods.ArrToTable(model, tableArr, SFW);
 						inSearchViewPlanToRead = false;
 						search_panel1_TField.setText("");
 					}
@@ -823,7 +816,7 @@ public class nHentai {
 						model.removeRow(0);
 					}
 					tableArr = tableArrSave;
-					ArrToTable(model, tableArr);
+					methods.ArrToTable(model, tableArr, SFW);
 					inSearchViewPlanToRead = false;
 					search_panel1_TField.setText("");
 				}
@@ -859,7 +852,7 @@ public class nHentai {
 					model.removeRow(0);
 				}
 				tableArr = tableArrSave;
-				ArrToTable(model, tableArr);
+				methods.ArrToTable(model, tableArr, SFW);
 				inSearchViewPlanToRead = false;
 				search_panel1_TField.setText("");
 			}
@@ -1105,8 +1098,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
-				actionPerformedNewEntry("reading");
-				
+				actionPerformedNewEntry(tableArrReading, modelReading, responseTime_panel2_lbl, EntryLoader_panel2_PBar, "reading");				
 			}
 		});
 		panel_panel2.add(newEntry_panel2_bnt);
@@ -1171,7 +1163,7 @@ public class nHentai {
 		loadTable__panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tableArrReading = actionPerformedLoad("reading");
-				modelReading = ArrToTableReading(modelReading);
+				modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 			}
 		});
 		loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
@@ -1209,7 +1201,7 @@ public class nHentai {
 							modelReading.removeRow(0);
 						}
 						tableArrReading = tableArrReadingSave;
-						modelReading = ArrToTable(modelReading, tableArrReading);
+						modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 						inSearchViewReading = false;
 						search_panel2_TField.setText("");
 					}
@@ -1232,7 +1224,7 @@ public class nHentai {
 						modelReading.removeRow(0);
 					}
 					tableArrReading = tableArrReadingSave;
-					modelReading = ArrToTable(modelReading, tableArrReading);
+					modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 					inSearchViewReading = false;
 					search_panel2_TField.setText("");
 				}
@@ -1268,7 +1260,7 @@ public class nHentai {
 					model.removeRow(0);
 				}
 				tableArr = tableArrSave;
-				ArrToTable(model, tableArr);
+				methods.ArrToTable(modelReading, tableArrReading, SFW);
 				inSearchViewPlanToRead = false;
 				search_panel2_TField.setText("");
 			}
@@ -1513,7 +1505,7 @@ public class nHentai {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
-				actionPerformedNewEntry("completed");
+				actionPerformedNewEntry(tableArrCompleted, modelCompleted, responseTime_panel3_lbl, EntryLoader_panel3_PBar, "completed");
 				
 			}
 		});
@@ -1581,7 +1573,7 @@ public class nHentai {
 			public void actionPerformed(ActionEvent e) {
 				
 				tableArrCompleted = actionPerformedLoad("completed");
-				modelCompleted = ArrToTableCompleted(modelCompleted);
+				modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 			}
 		});
 		loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
@@ -1621,7 +1613,7 @@ public class nHentai {
 							modelCompleted.removeRow(0);
 						}
 						tableArrCompleted = tableArrCompletedSave;
-						modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+						modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 						inSearchViewCompleted = false;
 						search_panel3_TField.setText("");
 					}
@@ -1644,7 +1636,7 @@ public class nHentai {
 						modelCompleted.removeRow(0);
 					}
 					tableArrCompleted = tableArrCompletedSave;
-					modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+					modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 					inSearchViewCompleted = false;
 					search_panel3_TField.setText("");
 				}
@@ -1680,7 +1672,7 @@ public class nHentai {
 					modelCompleted.removeRow(0);
 				}
 				tableArrCompleted = tableArrCompletedSave;
-				modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+				modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 				inSearchViewCompleted = false;
 				search_panel3_TField.setText("");
 			}
@@ -1887,238 +1879,21 @@ public class nHentai {
 	}
 
 	
-	public String[][] expandArr(String[][] input) {
-		String[][] tmp = new String[input.length + 1][input[0].length];
-		System.arraycopy(input, 0, tmp, 0, input.length);
-		input = tmp;
-		return input;
-	}
-
-	public String[][] rearangeArr(String[][] input, int index) {
-		String[][] tmp = new String[input.length - 1][input[0].length];
-		for (int i = 0; i < index; i++) {
-			for (int j = 0; j < input[0].length; j++) {
-				tmp[i][j] = input[i][j];
-			}
-		}
-		for (int i = index + 1; i < input.length; i++) {
-			for (int j = 0; j < input[0].length; j++) {
-				tmp[i - 1][j] = input[i][j];
-			}
-		}
-		return tmp;
-	}
-
-	public String[][] deleteLastArrRow(String[][] input) {
-		String[][] tmp = new String[input.length - 1][input[0].length];
-		for (int i = 0; i < input.length - 1; i++) {
-			for (int j = 0; j < input[0].length; j++) {
-				tmp[i][j] = input[i][j];
-			}
-		}
-		return tmp;
-	}
-
-	public DefaultTableModel ArrToTable(DefaultTableModel inputModel, String[][] inputArr) {
-		for (int i = 0; i < inputArr.length - 1; i++) {
-			Object[] tmp = new Object[inputArr[0].length];
-			for (int j = 0; j < inputArr[0].length; j++) {
-				tmp[j] = inputArr[i][j];
-			}
-			String Id = inputArr[i][2];
-			tmp[0] = String.valueOf(i + 1);
-			checkOneImage(Id, inputArr[i][1]);
-			Icon img;
-			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-			}else {
-				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-			}
-			tmp[1] = img;
-			inputModel.addRow(tmp);
-		}
-		return inputModel;
-	}
-
-	public DefaultTableModel expandTable(DefaultTableModel inputModel, String Id) {
-		Object[] tmp = new Object[tableArr[0].length];
-		for (int j = 0; j < tableArr[0].length; j++) {
-			tmp[j] = tableArr[tableArr.length - 2][j];
-		}
-		tmp[0] = String.valueOf(tableArr.length - 1);
-		Icon img;
-		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-		}else {
-			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-		}
-		tmp[1] = img;
-		inputModel.addRow(tmp);
-		return inputModel;
-	}
-
-	public DefaultTableModel ArrToTableReading(DefaultTableModel inputModel) {
-		for (int i = 0; i < tableArrReading.length - 1; i++) {
-			Object[] tmp = new Object[tableArrReading[0].length];
-			for (int j = 0; j < tableArrReading[0].length; j++) {
-				tmp[j] = tableArrReading[i][j];
-			}
-			String Id = tableArrReading[i][2];
-			tmp[0] = String.valueOf(i + 1);
-			checkOneImage(Id, tableArrReading[i][1]);
-			Icon img;
-			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-			}else {
-				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-			}
-			tmp[1] = img;
-			inputModel.addRow(tmp);
-		}
-		return inputModel;
-	}
 	
-	public DefaultTableModel expandTableReading(DefaultTableModel inputModel, String Id) {
-		Object[] tmp = new Object[tableArrReading[0].length];
-		for (int j = 0; j < tableArrReading[0].length; j++) {
-			tmp[j] = tableArrReading[tableArrReading.length - 2][j];
-		}
-		tmp[0] = String.valueOf(tableArrReading.length - 1);
-		Icon img;
-		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-		}else {
-			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-		}
-		tmp[1] = img;
-		inputModel.addRow(tmp);
-		return inputModel;
-	}
-	
-	public DefaultTableModel ArrToTableCompleted(DefaultTableModel inputModel) {
-		for (int i = 0; i < tableArrCompleted.length - 1; i++) {
-			Object[] tmp = new Object[tableArrCompleted[0].length];
-			for (int j = 0; j < tableArrCompleted[0].length; j++) {
-				tmp[j] = tableArrCompleted[i][j];
-			}
-			String Id = tableArrCompleted[i][2];
-			tmp[0] = String.valueOf(i + 1);
-			checkOneImage(Id, tableArrCompleted[i][1]);
-			Icon img;
-			if(SFW == false) {
-				img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-			}else {
-				int random = (int)(Math.random()*200);
-				img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-			}
-			tmp[1] = img;
-			inputModel.addRow(tmp);
-		}
-		return inputModel;
-	}
-	
-	public DefaultTableModel expandTableCompleted(DefaultTableModel inputModel, String Id) {
-		Object[] tmp = new Object[tableArrCompleted[0].length];
-		for (int j = 0; j < tableArrCompleted[0].length; j++) {
-			tmp[j] = tableArrCompleted[tableArrCompleted.length - 2][j];
-		}
-		tmp[0] = String.valueOf(tableArrCompleted.length - 1);
-		Icon img;
-		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-		}else {
-			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-		}
-		tmp[1] = img;
-		inputModel.addRow(tmp);
-		return inputModel;
-	}
 
-	public void setUpRandomPhotos() {
-		for(int i=0;i<200;i++) {
-			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
-			if(!f.exists()) {
-				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
-				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i, "_low.jpg", 50, 71);
-			}
-		}
-	}
 	
-	public void setUpAppData(String appData) {
-		new File(appData + mainFolderLocation).mkdirs();
-		new File(appData + mainFolderLocation + photoFolderLocation).mkdirs();
-		new File(appData + mainFolderLocation + userDataFolderLocation).mkdirs();
-		new File(appData + mainFolderLocation + randomPhotoFolderLocation).mkdirs();
-	}
 
-	public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight)
-			throws IOException {
-		BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics2D graphics2D = resizedImage.createGraphics();
-		graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-		graphics2D.dispose();
-		return resizedImage;
-	}
+	
 
-	public void scaleImage(String locationOriginal, String locationNew, String name, int x, int y) {
-		try {
-			ImageIcon ii = new ImageIcon(locationOriginal);
-			BufferedImage bi = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g2d = (Graphics2D) bi.createGraphics();
-			g2d.addRenderingHints(
-					new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-			boolean b = g2d.drawImage(ii.getImage(), 0, 0, x, y, null);
-			System.out.println(b);
-			ImageIO.write(bi, "jpg", new File(locationNew + name));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public void checkAllImages(String[][] inputArr) {
-		String[] URLs = new String[inputArr.length-1];
-		String[] IDs = new String[inputArr.length-1];
-		for(int i=0;i<URLs.length;i++) {
-			URLs[i] = inputArr[i][1];
-			IDs[i] = inputArr[i][2];
-		}
-		for(int i=0;i<URLs.length;i++) {
-			String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + IDs[i];
-			File f = new File(MainLocation + "_original.jpg");
-			if(!f.exists()) {
-				nHentaiAPI.saveImageAsFile(URLs[i], MainLocation + "_original.jpg");
-			}
-			f = new File(MainLocation + "_medium.jpg");
-			if(!f.exists()) {
-				scaleImage(MainLocation + "_original.jpg", MainLocation , "_medium.jpg", 150, 212);
-			}
-			f = new File(MainLocation + "low.jpg");
-			if(!f.exists()) {
-				scaleImage(MainLocation + "_original.jpg", MainLocation,  "_low.jpg", 50, 71);
-			}
-		}
-	}
+
 	
-	public void checkOneImage(String Id, String URL) {
-		String MainLocation = appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id ;
-		File f = new File(MainLocation + "_original.jpg");
-		if(!f.exists()) {
-			nHentaiAPI.saveImageAsFile(URL, MainLocation + "_original.jpg");
-		}
-		f = new File(MainLocation + "_medium.jpg");
-		if(!f.exists()) {
-			scaleImage(MainLocation + "_original.jpg", MainLocation,  "_medium.jpg", 150, 212);
-		}
-		f = new File(MainLocation + "_low.jpg");
-		if(!f.exists()) {
-			scaleImage(MainLocation + "_original.jpg", MainLocation, "_low.jpg", 50, 71);
-		}
-	}
+
+	
+
+	
+	
+	
 	
 	Action deleteTableArrRow = new AbstractAction()
 	{
@@ -2150,7 +1925,7 @@ public class nHentai {
 					timesRead, status, tags,
 					photoLocation, SFW);
 			
-			Component[] buttonText = OKCancelButtonCreate();
+			Component[] buttonText = methods.OKCancelButtonCreate();
 			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
@@ -2182,8 +1957,8 @@ public class nHentai {
 	        				
 	        				if(deleteEntry == true) {
 	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-	        					tableArr = rearangeArr(tableArr, modelRow);
-	        					tableArr = newArrIndex(tableArr);
+	        					tableArr = methods.rearangeArr(tableArr, modelRow);
+	        					tableArr = methods.newArrIndex(tableArr);
 	        					for(int i=0;i<tableArr.length-1;i++) {
 	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
 	        					}
@@ -2191,8 +1966,8 @@ public class nHentai {
 	        				else if (newStatus.equals("reading")) {
 	        					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-	        					tableArr = rearangeArr(tableArr, modelRow);
-	        					tableArr = newArrIndex(tableArr);
+	        					tableArr = methods.rearangeArr(tableArr, modelRow);
+	        					tableArr = methods.newArrIndex(tableArr);
 	        					for(int i=0;i<tableArr.length-1;i++) {
 	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
 	        					}
@@ -2206,15 +1981,15 @@ public class nHentai {
 	        					tableArrReading[tableArrReading.length - 1][6] = rating;
 	        					tableArrReading[tableArrReading.length - 1][7] = "reading";
 
-	        					tableArrReading = expandArr(tableArrReading);
-	        					expandTableReading(modelReading, id);
+	        					tableArrReading = methods.expandArr(tableArrReading);
+	        					methods.expandTable(tableArrReading, modelReading, id, SFW);
 	        					
 	        				}
 	        				else if(newStatus.equals("completed")) {
 	        					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel1.getModel()).removeRow(modelRow);
-	        					tableArr = rearangeArr(tableArr, modelRow);
-	        					tableArr = newArrIndex(tableArr);
+	        					tableArr = methods.rearangeArr(tableArr, modelRow);
+	        					tableArr = methods.newArrIndex(tableArr);
 	        					for(int i=0;i<tableArr.length-1;i++) {
 	        						table_panel1.setValueAt(tableArr[i][0], i, 0);
 	        					}
@@ -2228,8 +2003,8 @@ public class nHentai {
 	        					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
 	        					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
 
-	        					tableArrCompleted = expandArr(tableArrCompleted);
-	        					expandTableCompleted(modelCompleted, id);
+	        					tableArrCompleted = methods.expandArr(tableArrCompleted);
+	        					methods.expandTable(tableArrCompleted, modelCompleted, id, SFW);
 	        				}
 	        			}
 	                }
@@ -2336,7 +2111,7 @@ public class nHentai {
 					timesRead, status, tags,
 					photoLocation, SFW);
 			
-			Component[] buttonText = OKCancelButtonCreate();
+			Component[] buttonText = methods.OKCancelButtonCreate();
 			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
@@ -2368,8 +2143,8 @@ public class nHentai {
 	        				
 	        				if(deleteEntry == true) {
 	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
-	        					tableArrReading = newArrIndex(tableArrReading);
+	        					tableArrReading = methods.rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = methods.newArrIndex(tableArrReading);
 	        					for(int i=0;i<tableArr.length-1;i++) {
 	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
 	        					}
@@ -2377,8 +2152,8 @@ public class nHentai {
 	        				else if (newStatus.equals("plan to read")) {
 	        					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
-	        					tableArrReading = newArrIndex(tableArrReading);
+	        					tableArrReading = methods.rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = methods.newArrIndex(tableArrReading);
 	        					for(int i=0;i<tableArrReading.length-1;i++) {
 	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
 	        					}
@@ -2392,14 +2167,14 @@ public class nHentai {
 	        					tableArr[tableArr.length - 1][8] = rating;
 	        					tableArr[tableArr.length - 1][7] = timesRead;
 
-	        					tableArr = expandArr(tableArr);
-	        					expandTable(model, id);
+	        					tableArr = methods.expandArr(tableArr);
+	        					methods.expandTable(tableArr, model, id, SFW);
 	        				}
 	        				else if(newStatus.equals("completed")) {
 	        					//actionPerformedNewStatusCompleted(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel2.getModel()).removeRow(modelRow);
-	        					tableArrReading = rearangeArr(tableArrReading, modelRow);
-	        					tableArrReading = newArrIndex(tableArrReading);
+	        					tableArrReading = methods.rearangeArr(tableArrReading, modelRow);
+	        					tableArrReading = methods.newArrIndex(tableArrReading);
 	        					for(int i=0;i<tableArrReading.length-1;i++) {
 	        						table_panel2.setValueAt(tableArrReading[i][0], i, 0);
 	        					}
@@ -2413,8 +2188,8 @@ public class nHentai {
 	        					tableArrCompleted[tableArrCompleted.length - 1][6] = rating;
 	        					tableArrCompleted[tableArrCompleted.length - 1][7] = String.valueOf(Integer.valueOf(timesRead) + 1);
 
-	        					tableArrCompleted = expandArr(tableArrCompleted);
-	        					expandTableCompleted(modelCompleted, id);
+	        					tableArrCompleted = methods.expandArr(tableArrCompleted);
+	        					methods.expandTable(tableArrCompleted, modelCompleted, id, SFW);
 	        				}
 	        			}
 	                }
@@ -2520,11 +2295,11 @@ public class nHentai {
 					timesRead, status, tags,
 					photoLocation, SFW);
 			
-			Component[] buttonText = OKCancelButtonCreate();
+			Component[] buttonText = methods.OKCancelButtonCreate();
 			
 			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
-					JOptionPane.OK_OPTION);
+					JOptionPane.OK_OPTION, null, buttonText, null);
 			
 			final JDialog dialog = new JDialog((Frame)null, "Boo");
 			
@@ -2552,8 +2327,8 @@ public class nHentai {
 	        				
 	        				if(deleteEntry == true) {
 	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-	        					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
-	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					tableArrCompleted = methods.rearangeArr(tableArrCompleted, modelRow);
+	        					tableArrCompleted = methods.newArrIndex(tableArrCompleted);
 	        					for(int i=0;i<tableArrCompleted.length-1;i++) {
 	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
 	        					}
@@ -2561,8 +2336,8 @@ public class nHentai {
 	        				else if (newStatus.equals("plan to read")) {
 	        					//actionPerformedNewStatusPlanToRead(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-	        					tableArrCompleted = rearangeArr(tableArrReading, modelRow);
-	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					tableArrCompleted = methods.rearangeArr(tableArrReading, modelRow);
+	        					tableArrCompleted = methods.newArrIndex(tableArrCompleted);
 	        					for(int i=0;i<tableArrCompleted.length-1;i++) {
 	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
 	        					}
@@ -2576,14 +2351,14 @@ public class nHentai {
 	        					tableArr[tableArr.length - 1][8] = rating;
 	        					tableArr[tableArr.length - 1][7] = timesRead;
 
-	        					tableArr = expandArr(tableArr);
-	        					expandTable(model, id);
+	        					tableArr = methods.expandArr(tableArr);
+	        					methods.expandTable(tableArr, model, id, SFW);
 	        				}
 	        				else if (newStatus.equals("reading")) {
 	        					//actionPerformedNewStatusReading(modelRow, URL, title, id, tags, artist, pages, rating, timesRead);
 	        					((DefaultTableModel) table_panel3.getModel()).removeRow(modelRow);
-	        					tableArrCompleted = rearangeArr(tableArrCompleted, modelRow);
-	        					tableArrCompleted = newArrIndex(tableArrCompleted);
+	        					tableArrCompleted = methods.rearangeArr(tableArrCompleted, modelRow);
+	        					tableArrCompleted = methods.newArrIndex(tableArrCompleted);
 	        					for(int i=0;i<tableArr.length-1;i++) {
 	        						table_panel3.setValueAt(tableArrCompleted[i][0], i, 0);
 	        					}
@@ -2597,8 +2372,8 @@ public class nHentai {
 	        					tableArrReading[tableArrReading.length - 1][6] = rating;
 	        					tableArrReading[tableArrReading.length - 1][7] = "reading";
 
-	        					tableArrReading = expandArr(tableArrReading);
-	        					expandTableReading(modelReading, id);
+	        					tableArrReading = methods.expandArr(tableArrReading);
+	        					methods.expandTable(tableArrReading, modelReading, id, SFW);
 	        					
 	        				}
 	        			}
@@ -2676,10 +2451,11 @@ public class nHentai {
 	    }
 	};
 	
-	public void actionPerformedNewEntry(String start) {
-		newEntryGeneral EntryGeneral = new newEntryGeneral(start);
+	public void actionPerformedNewEntry(String[][] Arr, DefaultTableModel Model, JLabel label, JProgressBar Bar, String wichTable) {
+		
+		newEntryGeneral EntryGeneral = new newEntryGeneral(wichTable);
 		UIManager.put("OptionPane.minimumSize", new Dimension(400, 550));
-		Component[] buttonText = OKCancelButtonCreate();
+		Component[] buttonText = methods.OKCancelButtonCreate();
 		JOptionPane pane2 = new JOptionPane(EntryGeneral, JOptionPane.PLAIN_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
 		
@@ -2703,8 +2479,6 @@ public class nHentai {
             			
             			safed = false;
             			
-            			switch (status){
-            				case "plan to read":
             					
             					class Task extends SwingWorker<Void, Void> {
             						@Override
@@ -2712,8 +2486,17 @@ public class nHentai {
             							if (!code.equals("") || !URL.equals("")) {
             								try {
             									System.out.println("§");
-            									tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-            									model = expandTable(model, code);
+            									switch(wichTable) {
+            										case "plan to read":
+            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									model = methods.expandTable(Arr, Model, code, SFW);
+            										case "reading":
+            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									modelReading = methods.expandTable(Arr, Model, code, SFW);
+            										case "completed":
+            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									modelCompleted = methods.expandTable(Arr, Model, code, SFW);
+            									}
             									long time = nHentaiAPIRun.getInitTime();
             									String unit = "ms";
             									time  = time / 1000000;
@@ -2722,7 +2505,7 @@ public class nHentai {
             										unit = "s";
             									}
             										
-            									responseTime_panel1_lbl.setText("nHentai response: " + time + unit);
+            									label.setText("nHentai response: " + time + unit);
             								} catch (IOException e) {
             									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             									Error errorPanel = new Error(code);
@@ -2752,8 +2535,17 @@ public class nHentai {
             									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
             										rawRating = rawRating.substring(0, rawRating.length() - 1);
             									try {
-            										tableArr = nHentaiAPIRun.nHentaiAPIRun(tableArr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-            										model = expandTable(model, rawCode);
+            										switch(wichTable) {
+            										case "plan to read":
+            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									model = methods.expandTable(Arr, Model, code, SFW);
+            										case "reading":
+            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									modelReading = methods.expandTable(Arr, Model, code, SFW);
+            										case "completed":
+            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+                    									modelCompleted = methods.expandTable(Arr, Model, code, SFW);
+            										}
             										long time = nHentaiAPIRun.getInitTime();
                 									String unit = "ms";
                 									time  = time / 1000000;
@@ -2762,7 +2554,7 @@ public class nHentai {
                 										unit = "s";
                 									}
                 										
-                									responseTime_panel1_lbl.setText("nHentai response: " + time + unit);
+                									label.setText("nHentai response: " + time + unit);
             									} catch (IOException e) {
             										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
             										Error errorPanel = new Error(code);
@@ -2779,184 +2571,17 @@ public class nHentai {
             						
             						@Override
             						protected void done() {
-            							EntryLoader_panel1_PBar.setIndeterminate(false);
-            							EntryLoader_panel1_PBar.setVisible(false);
-            							responseTime_panel1_lbl.setVisible(false);
+            							Bar.setIndeterminate(false);
+            							Bar.setVisible(false);
+            							label.setVisible(false);
             						}
             					}
-            					EntryLoader_panel1_PBar.setVisible(true);
-            					EntryLoader_panel1_PBar.setIndeterminate(true);
-            					responseTime_panel1_lbl.setVisible(true);
+            					Bar.setVisible(true);
+            					Bar.setIndeterminate(true);
+            					label.setVisible(true);
             					Task task = new Task();
             					task.execute();
-            					
-            					
-            					break;
-            					
-            				case "reading":
-            					class Task2 extends SwingWorker<Void, Void> {
-            						@Override
-            						protected Void doInBackground() throws Exception {
-            							if (!code.equals("") || !URL.equals("")) {
-            								try {
-            									tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
-            									modelReading = expandTableReading(modelReading, code);
-            									long time = nHentaiAPIRun.getInitTime();
-            									String unit = "ms";
-            									time  = time / 1000000;
-            									if(time > 999) {
-            										time = time / 1000;
-            										unit = "s";
-            									}
-            										
-            									responseTime_panel2_lbl.setText("nHentai response: " + time + unit);
-            								} catch (IOException e) {
-            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            									Error errorPanel = new Error(code);
-            									JOptionPane error = new JOptionPane();
-            									error.showMessageDialog(null, errorPanel, "error", 0);
-            									e.printStackTrace();
-            								}
-            							}
-            							if (selected == true) {
-            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-            								for (int i = 0; i < TextAreaData.length; i++) {
-            									String rawData = TextAreaData[i];
-            									String rawCode = "";
-            									String rawRating = "";
-            									boolean ratingTurn = false;
-            									char[] rawDataChar = rawData.toCharArray();
-            									for (int j = 0; j < rawDataChar.length; j++) {
-            										if (ratingTurn == true) {
-            											rawRating = rawRating + rawDataChar[j];
-            										}
-            										if (rawDataChar[j] == ' ') {
-            											ratingTurn = true;
-            										} else if (ratingTurn == false) {
-            											rawCode = rawCode + rawDataChar[j];
-            										}
-            									}
-            									if(!rawRating.equals(""))
-            										rawRating = rawRating.substring(0, rawRating.length() - 1);
-            									try {
-            										tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(tableArrReading, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
-            										modelReading = expandTableReading(modelReading, rawCode);
-            										long time = nHentaiAPIRun.getInitTime();
-                									String unit = "ms";
-                									time  = time / 1000000;
-                									if(time > 999) {
-                										time = time / 1000;
-                										unit = "s";
-                									}
-                										
-                									responseTime_panel2_lbl.setText("nHentai response: " + time + unit);
-            									} catch (IOException e) {
-            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            										Error errorPanel = new Error(code);
-            										JOptionPane error = new JOptionPane();
-            										error.showMessageDialog(null, errorPanel, "error", 0);
-            										e.printStackTrace();
-            									}
-            								}
-            							}
-            							return null;
-            						}
-            						
-            						protected void done() {
-            							EntryLoader_panel2_PBar.setVisible(false);
-            							EntryLoader_panel2_PBar.setIndeterminate(false);
-            							responseTime_panel2_lbl.setVisible(true);
-            						}
-            					}
-            					EntryLoader_panel2_PBar.setVisible(true);
-            					EntryLoader_panel2_PBar.setIndeterminate(true);
-            					responseTime_panel2_lbl.setVisible(true);
-            					Task2 task2 = new Task2();
-            					task2.execute();
-            					tableArrReadingSave = tableArrReading;
-            					break;
-            				case "completed":
-            					class Task3 extends SwingWorker<Void, Void> {
-            						@Override
-            						protected Void doInBackground() throws Exception {
-            							if (!code.equals("") || !URL.equals("")) {
-            								try {
-            									tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
-            									modelCompleted = expandTableCompleted(modelCompleted, code);
-            									long time = nHentaiAPIRun.getInitTime();
-            									String unit = "ms";
-            									time  = time / 1000000;
-            									if(time > 999) {
-            										time = time / 1000;
-            										unit = "s";
-            									}
-            										
-            									responseTime_panel3_lbl.setText("nHentai response: " + time + unit);
-            								} catch (IOException e) {
-            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            									Error errorPanel = new Error(code);
-            									JOptionPane error = new JOptionPane();
-            									error.showMessageDialog(null, errorPanel, "error", 0);
-            									e.printStackTrace();
-            								}
-            							}
-            							if (selected == true) {
-            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-            								for (int i = 0; i < TextAreaData.length; i++) {
-            									String rawData = TextAreaData[i];
-            									String rawCode = "";
-            									String rawRating = "";
-            									boolean ratingTurn = false;
-            									char[] rawDataChar = rawData.toCharArray();
-            									for (int j = 0; j < rawDataChar.length; j++) {
-            										if (ratingTurn == true) {
-            											rawRating = rawRating + rawDataChar[j];
-            										}
-            										if (rawDataChar[j] == ' ') {
-            											ratingTurn = true;
-            										} else if (ratingTurn == false) {
-            											rawCode = rawCode + rawDataChar[j];
-            										}
-            									}
-            									if(!rawRating.equals(""))
-            										rawRating = rawRating.substring(0, rawRating.length() - 1);
-            									try {
-            										tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(tableArrCompleted, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
-            										modelCompleted = expandTableCompleted(modelCompleted, rawCode);
-            										long time = nHentaiAPIRun.getInitTime();
-                									String unit = "ms";
-                									time  = time / 1000000;
-                									if(time > 999) {
-                										time = time / 1000;
-                										unit = "s";
-                									}
-                										
-                									responseTime_panel3_lbl.setText("nHentai response: " + time + unit);
-            									} catch (IOException e) {
-            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            										Error errorPanel = new Error(code);
-            										JOptionPane error = new JOptionPane();
-            										error.showMessageDialog(null, errorPanel, "error", 0);
-            										e.printStackTrace();
-            									}
-            								}
-            							}
-            							return null;
-            						}
-            						protected void done() {
-            							EntryLoader_panel1_PBar.setVisible(false);
-            							EntryLoader_panel1_PBar.setIndeterminate(false);
-            							responseTime_panel3_lbl.setVisible(false);
-            						}
-            					}
-            					EntryLoader_panel1_PBar.setIndeterminate(true);
-            					EntryLoader_panel1_PBar.setVisible(true);
-            					responseTime_panel3_lbl.setVisible(true);
-            					Task3 task3 = new Task3();
-            					task3.execute();
-            					tableArrCompletedSave = tableArrCompleted;
-            					break;
-            			}
+
             		}
                 }
                 System.out.println(name);
@@ -3028,14 +2653,10 @@ public class nHentai {
         dialog.setVisible(true);
 	}
 	
-	public void setVisible2(boolean visible) {
-		frmNhentaidatabase.setVisible(visible);
-	}
-	
 	public void actionPerformedSetting() {
 		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
 		UIManager.put("OptionPane.minimumSize", new Dimension(500, 300));
-		Component[] buttonText = OKCancelButtonCreate();
+		Component[] buttonText = methods.OKCancelButtonCreate();
 		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
 		
 		final JDialog dialog = new JDialog((Frame)null, "Boo");
@@ -3053,13 +2674,13 @@ public class nHentai {
             			safed = false;
             			
             				for(int i=0;i<tableArr.length-1;i++) {
-            					reloadRowImage(i, "plan to read", tableArr[i][2]);
+            					model = methods.reloadRowImage(i, model, tableArr, tableArr[i][2], SFW);
             				}
             				for(int i=0;i<tableArrReading.length-1;i++) {
-            					reloadRowImage(i, "reading", tableArrReading[i][2]);
+            					modelReading = methods.reloadRowImage(i, modelReading, tableArrReading, tableArrReading[i][2], SFW);
             				}
             				for(int i=0;i<tableArrCompleted.length-1;i++) {
-            					reloadRowImage(i, "completed", tableArrCompleted[i][2]);
+            					modelCompleted = methods.reloadRowImage(i, modelCompleted, tableArrCompleted, tableArrCompleted[i][2], SFW);
             				}
             				
             			boolean delete = settings.getDelete();
@@ -3079,7 +2700,7 @@ public class nHentai {
             				File file = new File(appdataLocation + mainFolderLocation + photoFolderLocation);
             				Path fromFile = file.toPath();
             				try {
-            					deleteDirectoryRecursion(fromFile);
+            					methods.deleteDirectoryRecursion(fromFile);
             				} catch (IOException e) {
             					e.printStackTrace();
             				}
@@ -3087,7 +2708,7 @@ public class nHentai {
             				file = new File(appdataLocation + mainFolderLocation + userDataFolderLocation);
             				fromFile = file.toPath();
             				try {
-            					deleteDirectoryRecursion(fromFile);
+            					methods.deleteDirectoryRecursion(fromFile);
             				} catch (IOException e) {
             					e.printStackTrace();
             				}
@@ -3095,7 +2716,7 @@ public class nHentai {
             				file = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation);
             				fromFile = file.toPath();
             				try {
-            					deleteDirectoryRecursion(fromFile);
+            					methods.deleteDirectoryRecursion(fromFile);
             				} catch (IOException e) {
             					e.printStackTrace();
             				}
@@ -3170,17 +2791,6 @@ public class nHentai {
         dialog.setVisible(true);
 		
 		
-	}
-	
-	public void deleteDirectoryRecursion(Path path) throws IOException {
-		  if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
-		    try (DirectoryStream<Path> entries = Files.newDirectoryStream(path)) {
-		      for (Path entry : entries) {
-		        deleteDirectoryRecursion(entry);
-		      }
-		    }
-		  }
-		  Files.delete(path);
 	}
 	
 	public void actionPerformedSafe(String[][] inputArr) {
@@ -3274,181 +2884,6 @@ public class nHentai {
 		return new String[1][10];
 	}	
 	
-	public void getSave() {
-		String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
-		
-		File f = new File(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
-		if(f.exists()) {
-			tableArr = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
-			model = ArrToTable(model, tableArr);
-		}
-		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
-		if(f.exists()) {
-			tableArrReading = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
-			modelReading = ArrToTableReading(modelReading);
-		}
-		f = new File(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
-		if(f.exists()) {
-			tableArrCompleted = dataManager.readTable(SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
-			modelCompleted = ArrToTableCompleted(modelCompleted);
-		}
-	}
-	
-	public void reloadRowImage(int index, String table, String Id) {			
-		
-		Icon img;
-		if(SFW == false) {
-			img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
-		}else {
-			int random = (int)(Math.random()*200);
-			img = new ImageIcon(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + random + "_low.jpg");
-		}
-		
-		Object[] data;
-		
-		switch (table){
-		case "plan to read":
-			data = new Object[8];
-			for(int i=0;i<8;i++) {
-				data[i] = tableArr [index][i];
-			}
-			data[0] = index+1;
-			data[1] = img;
-			model = updateRow(model, index, data);
-			break;
-		case "reading":
-			data = new Object[9];
-			for(int i=0;i<9;i++) {
-				data[i] = tableArrReading [index][i];
-			}
-			data[0] = index+1;
-			data[1] = img;
-			modelReading = updateRow(modelReading, index, data);
-			break;
-		case "completed":
-			data = new Object[10];
-			for(int i=0;i<10;i++) {
-				data[i] = tableArrCompleted [index][i];
-			}
-			data[0] = index+1;
-			data[1] = img;
-			modelCompleted = updateRow(modelCompleted, index, data);
-			break;
-		}
-	}
-	
-	public DefaultTableModel updateRow(DefaultTableModel inputModel, int index,Object[] values)
-    {
-        for (int i = 0 ; i < values.length ; i++)
-        {
-        	inputModel.setValueAt(values[i],index,i);
-        }
-        return inputModel;
-    }
-	
-	protected JOptionPane getOptionPane(JComponent parent) {
-        JOptionPane pane = null;
-        if (!(parent instanceof JOptionPane)) {
-            pane = getOptionPane((JComponent)parent.getParent());
-        } else {
-            pane = (JOptionPane) parent;
-        }
-        return pane;
-    }
-	
-	protected JButton createZeroButton() {
-	    JButton button = new JButton("zero button");
-	    Dimension zeroDim = new Dimension(0,0);
-	    button.setPreferredSize(zeroDim);
-	    button.setMinimumSize(zeroDim);
-	    button.setMaximumSize(zeroDim);
-	    return button;
-	}
-	
-	public String[][] newArrIndex(String[][] inputArr){
-		for(int i=0;i<inputArr.length-1;i++) {
-			inputArr[i][0] = String.valueOf(i+1);
-		}
-		return inputArr;
-	}
-	
-	public Component[] OKCancelButtonCreate() {
-		final JButton OKButton = new JButton();
-		OKButton.setPreferredSize(new Dimension(75,25));
-		OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-		OKButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		OKButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue("OK");
-				Window w = SwingUtilities.getWindowAncestor(OKButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		OKButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OK.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				OKButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/settings/OKHover.png")));
-			}
-		});
-		
-		final JButton cancelButton = new JButton();
-		cancelButton.setPreferredSize(new Dimension(58,25));
-		cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-		cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane paneAP = getOptionPane((JComponent)e.getSource());
-				paneAP.setValue("cancel");
-				Window w = SwingUtilities.getWindowAncestor(cancelButton);
-
-			    if (w != null) {
-			      w.setVisible(false);
-			    }
-			}
-			
-		});
-		cancelButton.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancel.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				cancelButton.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/close/cancelHover.png")));
-			}
-		});
-		
-		Component[] buttonText = new Component[]{	OKButton, cancelButton};
-		return buttonText;
-	}
-	
 	public class loadingScreenMainGUI {
 
 		private JFrame frame;
@@ -3465,7 +2900,7 @@ public class nHentai {
 		 */
 		public loadingScreenMainGUI() {
 			nHentaiAPI = new nHentaiWebBase();
-			setUpAppData(appdataLocation);
+			methods.setUpAppData(appdataLocation);
 			initialize();
 		}
 
@@ -3604,28 +3039,6 @@ public class nHentai {
 			
 		}
 		
-		public void setUpAppData(String appData) {
-			new File(appData + mainFolderLocation).mkdirs();
-			new File(appData + mainFolderLocation + photoFolderLocation).mkdirs();
-			new File(appData + mainFolderLocation + userDataFolderLocation).mkdirs();
-			new File(appData + mainFolderLocation + randomPhotoFolderLocation).mkdirs();
-		}
-		
-		public void scaleImage(String locationOriginal, String locationNew, String name, int x, int y) {
-			try {
-				ImageIcon ii = new ImageIcon(locationOriginal);
-				BufferedImage bi = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
-				Graphics2D g2d = (Graphics2D) bi.createGraphics();
-				g2d.addRenderingHints(
-						new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-				boolean b = g2d.drawImage(ii.getImage(), 0, 0, x, y, null);
-				System.out.println(b);
-				ImageIO.write(bi, "jpg", new File(locationNew + name));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
 		class Task extends SwingWorker<Void, Void> {
 	        /*
 	         * Main task. Executed in background thread.
@@ -3641,7 +3054,7 @@ public class nHentai {
 	    			File f = new File(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
 	    			if(!f.exists()) {
 	    				nHentaiAPI.saveImageAsFile("https://picsum.photos/150/212", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg");
-	    				scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i, "_low.jpg", 50, 71);
+	    				methods.scaleImage(appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i + "_medium.jpg", appdataLocation + mainFolderLocation + randomPhotoFolderLocation + Slash + i, "_low.jpg", 50, 71);
 	    			}
 	    			second++;
 	    			if(second == 2) {
@@ -3708,7 +3121,7 @@ public class nHentai {
 	    				}
 	    				String Id = tableArr[i][2];
 	    				tmp[0] = String.valueOf(i + 1);
-	    				checkOneImage(Id, tableArr[i][1]);
+	    				methods.checkOneImage(Id, tableArr[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
 	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
@@ -3747,7 +3160,7 @@ public class nHentai {
 	    				}
 	    				String Id = tableArrReading[i][2];
 	    				tmp[0] = String.valueOf(i + 1);
-	    				checkOneImage(Id, tableArrReading[i][1]);
+	    				methods.checkOneImage(Id, tableArrReading[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
 	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
@@ -3787,7 +3200,7 @@ public class nHentai {
 	    				}
 	    				String Id = tableArrCompleted[i][2];
 	    				tmp[0] = String.valueOf(i + 1);
-	    				checkOneImage(Id, tableArrCompleted[i][1]);
+	    				methods.checkOneImage(Id, tableArrCompleted[i][1]);
 	    				Icon img;
 	    				if(SFW == false) {
 	    					img = new ImageIcon(appdataLocation + mainFolderLocation + photoFolderLocation + Slash + Id + "_low.jpg");			
@@ -3863,7 +3276,7 @@ public class nHentai {
 			model.removeRow(0);
 		}
 		tableArr = resultArr;
-		model = ArrToTable(model, tableArr);
+		model = methods.ArrToTable(model, tableArr, SFW);
 		inSearchViewPlanToRead = true;
 	}
 	
@@ -3894,7 +3307,7 @@ public class nHentai {
 			modelReading.removeRow(0);
 		}
 		tableArrReading = resultArr;
-		modelReading = ArrToTable(modelReading, tableArrReading);
+		modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 		inSearchViewReading = true;
 	}
 	
@@ -3925,7 +3338,7 @@ public class nHentai {
 			modelCompleted.removeRow(0);
 		}
 		tableArrCompleted = resultArr;
-		modelCompleted = ArrToTable(modelCompleted, tableArrCompleted);
+		modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 		inSearchViewCompleted = true;
 	}
 	

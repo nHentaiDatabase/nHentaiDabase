@@ -17,6 +17,9 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import moreInformation.moreInformationPanel;
+import outsourcedClasses.Methods;
+import renderEngine.colorComboBoxPopUp;
+import renderEngine.renderMethods;
 
 import javax.accessibility.AccessibleContext;
 import javax.swing.BorderFactory;
@@ -60,6 +63,8 @@ import java.awt.Dimension;
 import javax.swing.JProgressBar;
 
 public class newEntryGeneral extends JPanel {
+	public newEntryGeneral() {
+	}
 
 	private JTextField code_TField;
 	private JTextField URL_TField;
@@ -71,6 +76,9 @@ public class newEntryGeneral extends JPanel {
 	private String fileLocation;
 	
 	private String[][] Data;
+	
+	private Methods methods = new Methods();
+	private renderMethods RenderMethods = new renderMethods();
 	
 	/**
 	 * Create the panel.
@@ -129,7 +137,7 @@ public class newEntryGeneral extends JPanel {
         	}
         	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
      	   {
-        		handlePopupMenuWillBecomeVisible(e);
+        		RenderMethods.handlePopupMenuWillBecomeVisible(e);
      	   }
         });
         rating_CBox.setUI(new BasicComboBoxUI(){
@@ -144,7 +152,7 @@ public class newEntryGeneral extends JPanel {
         	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
         	       return arrowButton;
         	    }});
-        rating_CBox.setRenderer(new ColorBox());
+        rating_CBox.setRenderer(new renderEngine.colorComboBoxPopUp());
         rating_CBox.setBackground(new Color(59, 59, 59));
         rating_CBox.setForeground(Color.WHITE);
 		rating_CBox.setModel(new DefaultComboBoxModel(new String[] {"N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
@@ -156,7 +164,7 @@ public class newEntryGeneral extends JPanel {
         Dimension scrollBarDim = new Dimension(15, scrollBar
               .getPreferredSize().height);
         scrollBar.setPreferredSize(scrollBarDim);
-        /*scrollBar.setUI(new BasicScrollBarUI() {
+        scrollBar.setUI(new BasicScrollBarUI() {
            @Override 
            protected void configureScrollBarColors(){
                this.thumbColor = new Color(10, 10, 10);
@@ -167,14 +175,14 @@ public class newEntryGeneral extends JPanel {
            }
           @Override
          protected JButton createDecreaseButton(int orientation) {
-             return createZeroButton();
+             return methods.createZeroButton();
          }
 
          @Override
          protected JButton createIncreaseButton(int orientation) {
-             return createZeroButton();
+             return methods.createZeroButton();
          }
-       });*/
+       });
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 366, 359, 123);
 		add(scrollPane);
@@ -280,7 +288,7 @@ public class newEntryGeneral extends JPanel {
         	}
         	public void popupMenuWillBecomeVisible(PopupMenuEvent e)
      	   {
-        		handlePopupMenuWillBecomeVisible(e);
+        		RenderMethods.handlePopupMenuWillBecomeVisible(e);
      	   }
         });
         status_CBox.setUI(new BasicComboBoxUI(){
@@ -295,7 +303,7 @@ public class newEntryGeneral extends JPanel {
         	       arrowButton.setBorder(BorderFactory.createLineBorder(new Color(59, 59, 59)));
         	       return arrowButton;
         	    }});
-        status_CBox.setRenderer(new ColorBox());
+        status_CBox.setRenderer(new renderEngine.colorComboBoxPopUp());
         status_CBox.setBackground(new Color(59, 59, 59));
         status_CBox.setForeground(Color.WHITE);
 		status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
@@ -306,6 +314,11 @@ public class newEntryGeneral extends JPanel {
 		code_TField.requestFocus();
 	}
 	
+	/**
+	 * Import the txt file with the Id's in the TextArrea.
+	 * 
+	 * @param TXTFileLocation The location of the txt file
+	 */
 	public void importTxtInTField(String TXTFileLocation) {
 		
 		try {
@@ -337,30 +350,59 @@ public class newEntryGeneral extends JPanel {
 		}
 	}
 	
+	/**
+	 * get the Id/Code
+	 * @return String
+	 */
 	public String getCode() {
 		return code_TField.getText();
 	}
 	
+	/**
+	 * get the URL
+	 * @return String
+	 */
 	public String getURL() {
 		return URL_TField.getText();
 	}
 	
+	/**
+	 * get the rating
+	 * @return String
+	 */
 	public String getRating() {
 		return (String)rating_CBox.getSelectedItem();
 	}
 	
+	/**
+	 * get the Status
+	 * @return String
+	 */
 	public String getStatus() {
 		return (String)status_CBox.getSelectedItem();
 	}
 	
+	/**
+	 * get the FileLocation
+	 * @return String
+	 */
 	public String getFileLocation() {
 		return fileLocation;
 	}
 	
+	/**
+	 * get if more than one Id was entered
+	 * @return boolean
+	 */
 	public boolean getSelected() {
 		return insertMultipleId_ChBox.isSelected();
 	}
 	
+	/**
+	 * Reads and formats the Data in the text area.
+	 * 
+	 * @return String[]
+	 */
 	public String[] getDataInTextArea(){
 		String[] lowData = new String[1];
 		String rawData = textArea.getText();
@@ -387,84 +429,16 @@ public class newEntryGeneral extends JPanel {
 		return tmp;
 	}
 	
+	/**
+	 * Expands the Array with one index.
+	 * 
+	 * @param input the input Array
+	 * @return String[]
+	 */
 	public String[] expandArr(String[] input) {
 		String[] tmp = new String[input.length + 1];
 		System.arraycopy(input, 0, tmp, 0, input.length);
 		input = tmp;
 		return input;
 	}
-	
-	public void handlePopupMenuWillBecomeVisible(PopupMenuEvent e) {
-		JComboBox comboBox = (JComboBox) e.getSource();
-	      Object popup = comboBox.getUI().getAccessibleChild(comboBox, 0);
-	      Component c = ((Container) popup).getComponent(0);
-	      if (c instanceof JScrollPane)
-	      {
-	         JScrollPane scrollpane = (JScrollPane) c;
-	         JScrollBar scrollBar = scrollpane.getVerticalScrollBar();
-	         Dimension scrollBarDim = new Dimension(15, scrollBar
-	               .getPreferredSize().height);
-	         scrollBar.setPreferredSize(scrollBarDim);
-	         scrollBar.setUI(new BasicScrollBarUI() {
-	            @Override 
-	            protected void configureScrollBarColors(){
-	                this.thumbColor = new Color(32, 34, 37);
-	                this.thumbDarkShadowColor = new Color(32, 34, 37);
-	                this.thumbLightShadowColor = new Color(32, 34, 37);
-	                this.trackColor = new Color(59, 59, 59);
-	                this.trackHighlightColor = new Color(59, 59, 59);
-	            }
-	           @Override
-	          protected JButton createDecreaseButton(int orientation) {
-	              return createZeroButton();
-	          }
-
-	          @Override
-	          protected JButton createIncreaseButton(int orientation) {
-	              return createZeroButton();
-	          }
-	        });
-	      }
-	}
-	
-	protected JButton createZeroButton() {
-	    JButton button = new JButton("zero button");
-	    Dimension zeroDim = new Dimension(0,0);
-	    button.setPreferredSize(zeroDim);
-	    button.setMinimumSize(zeroDim);
-	    button.setMaximumSize(zeroDim);
-	    return button;
-	}
-	
-	class ColorBox extends JLabel implements ListCellRenderer {
-
-        public ColorBox() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			setText(value.toString());
-			
-			Color background;
-			Color foreground;
-			
-			// check if this cell is selected
-			if (isSelected) {
-				background = new Color(0, 34, 58);
-				foreground = Color.WHITE;
-			
-			// unselected, and not the DnD drop location
-			} else {
-				background = new Color(15, 15, 15);
-				foreground = Color.WHITE;
-			};
-			
-			setBackground(background);
-			setForeground(foreground);
-			list.setSelectionBackground(new Color(59, 59, 59));
-			
-			return this;
-		}
-    }  
 }
