@@ -154,7 +154,7 @@ public class nHentai {
 	private String URL;
 	private String timesRead;
 	
-	
+	private boolean start = false;
 	/**
 	 * Launch the application.
 	 */
@@ -177,7 +177,6 @@ public class nHentai {
 			public void run() {
 				try {
 					nHentai window = new nHentai();
-					window.frmNhentaidatabase.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -245,6 +244,7 @@ public class nHentai {
 		frmNhentaidatabase.setUndecorated(true);
 		frmNhentaidatabase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmNhentaidatabase.getContentPane().setLayout(null);
+		frmNhentaidatabase.setVisible(false);
 
 		JPanel windowToolbar = new JPanel();
 		windowToolbar.setBackground(new Color(17, 19, 22));
@@ -427,11 +427,22 @@ public class nHentai {
 			                    if(value.equals("save")) {
 									String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
 									
+									if(inSearchViewPlanToRead == false)
+										dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+									else
+										dataManager.saveTable(tableArrSave, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+									
+									if(inSearchViewPlanToRead == false)
+										dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+									else
+										dataManager.saveTable(tableArrReadingSave, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+									
+									if(inSearchViewPlanToRead == false)
+										dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
+									else
+										dataManager.saveTable(tableArrCompletedSave, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
 									
 									
-									dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
-									dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
-									dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash +"nHentaiDatabaseCompleted.nhdb");
 									String[] settings = new String[1];
 					    			settings[0] = "SFW: " + String.valueOf(SFW);
 					    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
@@ -579,11 +590,15 @@ public class nHentai {
 				    }
 				    
 				}
-				
+				Task task;
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				Task task = new Task(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+				if(inSearchViewPlanToRead == false)
+					task = new Task(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+				else
+					task = new Task(tableArrSave, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+				
 				task.addPropertyChangeListener(new PropertyChangeListener() {
 
 					@Override
@@ -601,18 +616,47 @@ public class nHentai {
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				task = new Task(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+				if(inSearchViewPlanToRead == false)
+					task = new Task(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+				else
+					task = new Task(tableArrReadingSave, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+				
+				task.addPropertyChangeListener(new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+		                if ("progress" == evt.getPropertyName()) {
+		                    int progress = (Integer) evt.getNewValue();
+		                    EntryLoader_panel1_PBar.setValue(progress);
+		                    EntryLoader_panel2_PBar.setValue(progress);
+		                    EntryLoader_panel3_PBar.setValue(progress);
+		                } 
+		            }
+		        });
 				task.execute();
 				
 				EntryLoader_panel1_PBar.setVisible(true);
 				EntryLoader_panel2_PBar.setVisible(true);
 				EntryLoader_panel3_PBar.setVisible(true);
-				task = new Task(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
-				task.execute();
+				if(inSearchViewPlanToRead == false)
+					task = new Task(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
+				else
+					task = new Task(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 				
-				//dataManager.saveTable(tableArr, SaveFileLocation + "\\nHentaiDatabasePlanToRead.nhdb");
-				//dataManager.saveTable(tableArrReading, SaveFileLocation + "\\nHentaiDatabaseReading.nhdb");
-				//dataManager.saveTable(tableArrCompleted, SaveFileLocation + "\\nHentaiDatabaseCompleted.nhdb");
+				task.addPropertyChangeListener(new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+		                if ("progress" == evt.getPropertyName()) {
+		                    int progress = (Integer) evt.getNewValue();
+		                    EntryLoader_panel1_PBar.setValue(progress);
+		                    EntryLoader_panel2_PBar.setValue(progress);
+		                    EntryLoader_panel3_PBar.setValue(progress);
+		                } 
+		            }
+		        });
+				task.execute();
+
 				String[] settings = new String[1];
     			settings[0] = "SFW: " + String.valueOf(SFW);
     			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
@@ -746,7 +790,10 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				actionPerformedSafe(tableArr);
+				if(inSearchViewPlanToRead == false)
+					actionPerformedSafe(tableArr);
+				else
+					actionPerformedSafe(tableArrSave);
 			}
 		});
 		panel_panel1.add(saveTable_panel1_btn);
@@ -1134,7 +1181,10 @@ public class nHentai {
 		JButton saveTable_panel2_btn = new JButton("");
 		saveTable_panel2_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				actionPerformedSafe(tableArrReading);
+				if(inSearchViewReading == false)
+					actionPerformedSafe(tableArrReading);
+				else
+					actionPerformedSafe(tableArrReadingSave);
 			}
 		});
 		saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
@@ -1541,7 +1591,10 @@ public class nHentai {
 		JButton saveTable_panel3_btn = new JButton("");
 		saveTable_panel3_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				actionPerformedSafe(tableArrCompleted);
+				if(inSearchViewCompleted == true)
+					actionPerformedSafe(tableArrCompleted);
+				else
+					actionPerformedSafe(tableArrCompletedSave);
 			}
 		});
 		saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
@@ -3245,6 +3298,7 @@ public class nHentai {
 	            System.out.println("finish");
 	            frame.setVisible(false);
 	            frmNhentaidatabase.setVisible(true);
+	            start = true;
 	        }
 	    }	
 	}

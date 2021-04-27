@@ -17,7 +17,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
@@ -31,11 +33,13 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+import nHentaiMainGUI.nHentai;
 import outsourcedClasses.Methods;
 import renderEngine.renderMethods;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 
@@ -43,9 +47,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -64,6 +73,8 @@ public class moreInformationPanel extends JPanel {
 	
 	private Methods methods = new Methods();
 	private renderMethods RenderMethods = new renderMethods();
+	
+	private Point mouseCoord;
 	
 	boolean deleteEntry = false;
 	/**
@@ -125,8 +136,7 @@ public class moreInformationPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				openWebsite open = new openWebsite();
-				JOptionPane pane = new JOptionPane(open, JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.YES_NO_OPTION);
+				
 				
 				final JButton openButton = new JButton();
 				openButton.setPreferredSize(new Dimension(57,23));
@@ -137,7 +147,7 @@ public class moreInformationPanel extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
-						paneAP.setValue(openButton);
+						paneAP.setValue("open");
 						Window w = SwingUtilities.getWindowAncestor(openButton);
 
 					    if (w != null) {
@@ -172,7 +182,7 @@ public class moreInformationPanel extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						JOptionPane paneAP = methods.getOptionPane((JComponent)e.getSource());
-						paneAP.setValue(copyButton);
+						paneAP.setValue("copy");
 						Window w = SwingUtilities.getWindowAncestor(openButton);
 
 					    if (w != null) {
@@ -201,21 +211,99 @@ public class moreInformationPanel extends JPanel {
 				UIManager.put("OptionPane.minimumSize", new Dimension(400, 110));
 				Component[] buttonText = new Component[]{	openButton, 
 															copyButton};
-				int result = pane.showOptionDialog(null, open, "settings", 0, JOptionPane.PLAIN_MESSAGE, null,
-						buttonText, null);
-				if(result == JOptionPane.OK_OPTION) {
-					try {
-						Desktop.getDesktop().browse(new URI("https://nhentai.net/g/"+ id+ "/"));
-					} catch (IOException | URISyntaxException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+				JOptionPane pane = new JOptionPane(open, JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.YES_NO_OPTION, null, buttonText, null);
+				final JDialog dialog = new JDialog((Frame)null, "Boo");
+				
+		        pane.addPropertyChangeListener(new PropertyChangeListener() {
+		            @Override
+		            public void propertyChange(PropertyChangeEvent evt) {
+		                String name = evt.getPropertyName();
+		                if ("value".equals(name)) {
+		                	dialog.dispose();
+		                    final Object value = pane.getValue();
+		                    System.out.println(value);
+		                    if(value.equals("open")) {
+		    					try {
+		    						Desktop.getDesktop().browse(new URI("https://nhentai.net/g/"+ id+ "/"));
+		    					} catch (IOException | URISyntaxException e1) {
+		    						// TODO Auto-generated catch block
+		    						e1.printStackTrace();
+		    					}
+		    				}else if(value.equals("copy")) {
+		    					String copy = "https://nhentai.net/g/"+ id+ "/";
+		    					StringSelection stringSelection = new StringSelection(copy);
+		    					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    					clipboard.setContents(stringSelection, null);
+		    				}
+		                }
+		            }
+		        });
+		        dialog.setUndecorated(true);
+		        dialog.getContentPane().setLayout(new BorderLayout());
+		        
+		        JPanel dialogwindowToolbar = new JPanel();
+		        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+		        dialogwindowToolbar.setLayout(new BorderLayout());
+		        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+				
+				mouseCoord = null;
+				dialogwindowToolbar.addMouseListener(new MouseListener() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+						mouseCoord = e.getPoint();
 					}
-				}else if(result == JOptionPane.NO_OPTION) {
-					String copy = "https://nhentai.net/g/"+ id+ "/";
-					StringSelection stringSelection = new StringSelection(copy);
-					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-					clipboard.setContents(stringSelection, null);
-				}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						mouseCoord = null;
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+					}
+				});
+				dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						Point currCoords = e.getLocationOnScreen();
+						dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+					}
+
+					@Override
+					public void mouseMoved(MouseEvent e) {
+					}
+
+				});
+				JButton dialogcloseWindow_btn = new JButton();
+				dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+				dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+				dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+				dialogcloseWindow_btn.setRequestFocusEnabled(false);
+				dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						dialog.dispose();
+					}
+					
+				});
+				dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+				dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+		        dialog.getContentPane().add(pane);
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(null);
+		        dialog.setVisible(true);
+				
 			}
 		});
 		image_lbl.setIcon(new ImageIcon(pictureLocation));
@@ -403,15 +491,91 @@ public class moreInformationPanel extends JPanel {
         	public void actionPerformed(ActionEvent e) {
         		UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
         		confirmDeleteEntry confirm = new confirmDeleteEntry();
-        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        		
         		Component[] buttonText = methods.OKCancelButtonCreate();
+        		JOptionPane pane = new JOptionPane(confirm, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
         		
-				int result = pane.showOptionDialog(null, confirm, "confirm", 0, JOptionPane.PLAIN_MESSAGE, null, buttonText, null);
-				if(result == JOptionPane.OK_OPTION) {
-					System.out.println("Entry gets deleted");
-					deleteEntry = true;
-				}
+        		
+        		final JDialog dialog = new JDialog((Frame)null, "Boo");
+				
+		        pane.addPropertyChangeListener(new PropertyChangeListener() {
+		            @Override
+		            public void propertyChange(PropertyChangeEvent evt) {
+		                String name = evt.getPropertyName();
+		                if ("value".equals(name)) {
+		                	dialog.dispose();
+		                    final Object value = pane.getValue();
+		                    System.out.println(value);
+		                    if(value.equals("OK")) {
+		    					System.out.println("Entry gets deleted");
+		    					deleteEntry = true;
+		    				}
+		                }
+		            }
+		        });
+		        dialog.setUndecorated(true);
+		        dialog.getContentPane().setLayout(new BorderLayout());
+		        
+		        JPanel dialogwindowToolbar = new JPanel();
+		        dialogwindowToolbar.setBackground(new Color(17, 19, 22));
+		        dialogwindowToolbar.setLayout(new BorderLayout());
+		        dialogwindowToolbar.setPreferredSize(new Dimension(200, 25));
+				
+				mouseCoord = null;
+				dialogwindowToolbar.addMouseListener(new MouseListener() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+						mouseCoord = e.getPoint();
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						mouseCoord = null;
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+					}
+				});
+				dialogwindowToolbar.addMouseMotionListener(new MouseMotionListener() {
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						Point currCoords = e.getLocationOnScreen();
+						dialog.setLocation(currCoords.x - mouseCoord.x, currCoords.y - mouseCoord.y);
+					}
+
+					@Override
+					public void mouseMoved(MouseEvent e) {
+					}
+
+				});
+				JButton dialogcloseWindow_btn = new JButton();
+				dialogcloseWindow_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+				dialogcloseWindow_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Close.png")));
+				dialogcloseWindow_btn.setPreferredSize(new Dimension(24, 24));
+				dialogcloseWindow_btn.setRequestFocusEnabled(false);
+				dialogcloseWindow_btn.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						dialog.dispose();
+					}
+					
+				});
+				dialogwindowToolbar.add(dialogcloseWindow_btn, BorderLayout.LINE_END);
+				dialog.getContentPane().add(dialogwindowToolbar, BorderLayout.PAGE_START);
+		        dialog.getContentPane().add(pane);
+		        dialog.pack();
+		        dialog.setLocationRelativeTo(null);
+		        dialog.setVisible(true);
         	}
         });
         deleteEntry_btn.setIcon(new ImageIcon(moreInformationPanel.class.getResource("/grafics/inspect/delete.png")));
