@@ -45,7 +45,7 @@ public class statsPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public statsPanel(String[][] planToRead, String[][] reading, String [][] completed) {
+	public statsPanel(String[][] planToRead, String[][] reading, String [][] completed, boolean resScroll) {
 		setLayout(null);
 		setBackground(new Color(35, 35, 35));
 		
@@ -166,7 +166,7 @@ public class statsPanel extends JPanel {
 				
 				moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 						timesRead, status, tags,
-						photoLocation, false);
+						photoLocation, false, resScroll);
 				
 				Component[] buttonText = methods.OKCancelButtonCreate();
 				

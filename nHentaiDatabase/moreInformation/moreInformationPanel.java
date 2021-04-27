@@ -80,55 +80,91 @@ public class moreInformationPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation, boolean SFW) {
+	public moreInformationPanel(String id, String title, String author, String pages, String rating, String timesRead, String status, String tags, String pictureLocation, boolean SFW, boolean scroll) {
 		setBackground(new Color(35, 35, 35));
 		
 		methods.splitTagsUp(tags);
 		
 		setLayout(null);
 		
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 466, 770);
+		scrollPane.setBackground(new Color(35, 35, 35));
+		scrollPane.setVisible(false);
+		if(scroll == true)
+			scrollPane.setVisible(true);
+		add(scrollPane);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(35, 35, 35));
+		panel_2.setLayout(null);
+		panel_2.setBorder(null);
+		panel_2.setVisible(false);
+		if(scroll == true)
+			panel_2.setVisible(true);
+		scrollPane.setViewportView(panel_2);
+		
 		JLabel Id_lbl = new JLabel("id");
 		Id_lbl.setForeground(Color.WHITE);
 		Id_lbl.setBounds(22, 151, 46, 14);
+		if(scroll == true)
+			panel_2.add(Id_lbl);
 		add(Id_lbl);
 		
 		JLabel title_lbl = new JLabel("title");
 		title_lbl.setForeground(Color.WHITE);
 		title_lbl.setBounds(22, 221, 46, 14);
+		if(scroll == true)
+			panel_2.add(title_lbl);
 		add(title_lbl);
 		
 		JLabel author_lbl = new JLabel("author");
 		author_lbl.setForeground(Color.WHITE);
 		author_lbl.setBounds(22, 291, 46, 14);
+		if(scroll == true)
+			panel_2.add(author_lbl);
 		add(author_lbl);
 		
 		JLabel pages_lbl = new JLabel("pages");
 		pages_lbl.setForeground(Color.WHITE);
 		pages_lbl.setBounds(22, 361, 46, 14);
+		if(scroll == true)
+			panel_2.add(pages_lbl);
 		add(pages_lbl);
 		
 		JLabel rating_lbl = new JLabel("rating");
 		rating_lbl.setForeground(Color.WHITE);
 		rating_lbl.setBounds(22, 431, 46, 14);
+		if(scroll == true)
+			panel_2.add(rating_lbl);
 		add(rating_lbl);
 		
 		JLabel timesRead_lbl = new JLabel("times read");
 		timesRead_lbl.setForeground(Color.WHITE);
 		timesRead_lbl.setBounds(22, 501, 82, 14);
+		if(scroll == true)
+			panel_2.add(timesRead_lbl);
 		add(timesRead_lbl);
 		
 		JLabel status_lbl = new JLabel("status");
 		status_lbl.setForeground(Color.WHITE);
 		status_lbl.setBounds(22, 571, 46, 14);
+		if(scroll == true)
+			panel_2.add(status_lbl);
 		add(status_lbl);
 		
 		JLabel titlePicture_lbl = new JLabel("title picture");
 		titlePicture_lbl.setForeground(Color.WHITE);
 		titlePicture_lbl.setBounds(216, 11, 74, 14);
+		if(scroll == true)
+			panel_2.add(titlePicture_lbl);
 		add(titlePicture_lbl);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(300, 11, 150, 212);
+		if(scroll == true)
+			panel_2.add(panel);
 		add(panel);
 		
 		JLabel image_lbl = new JLabel("");
@@ -309,12 +345,15 @@ public class moreInformationPanel extends JPanel {
 		image_lbl.setIcon(new ImageIcon(pictureLocation));
 		panel.add(image_lbl);
 		
+		
 		id_TField = new JTextField();
 		id_TField.setEditable(false);
 		id_TField.setForeground(Color.WHITE);
 		id_TField.setBackground(new Color(59, 59, 59));
 		id_TField.setBounds(22, 167, 86, 20);
 		id_TField.setBorder(null);
+		if(scroll == true)
+			panel_2.add(id_TField);
 		add(id_TField);
 		id_TField.setColumns(10);
 		
@@ -324,6 +363,8 @@ public class moreInformationPanel extends JPanel {
 		title_TField.setForeground(Color.WHITE);
 		title_TField.setBounds(22, 237, 268, 20);
 		title_TField.setBorder(null);
+		if(scroll == true)
+			panel_2.add(title_TField);
 		add(title_TField);
 		title_TField.setColumns(10);
 		
@@ -333,6 +374,8 @@ public class moreInformationPanel extends JPanel {
 		author_TField.setForeground(Color.WHITE);
 		author_TField.setBounds(22, 307, 140, 20);
 		author_TField.setBorder(null);
+		if(scroll == true)
+			panel_2.add(author_TField);
 		add(author_TField);
 		author_TField.setColumns(10);
 		
@@ -342,6 +385,8 @@ public class moreInformationPanel extends JPanel {
 		pages_TField.setForeground(Color.WHITE);
 		pages_TField.setBounds(22, 377, 74, 20);
 		pages_TField.setBorder(null);
+		if(scroll == true)
+			panel_2.add(pages_TField);
 		add(pages_TField);
 		pages_TField.setColumns(10);
 		
@@ -350,6 +395,8 @@ public class moreInformationPanel extends JPanel {
 		timesRead_TField.setForeground(Color.WHITE);
 		timesRead_TField.setBounds(22, 517, 46, 20);
 		timesRead_TField.setBorder(null);
+		if(scroll == true)
+			panel_2.add(timesRead_TField);
 		add(timesRead_TField);
 		timesRead_TField.setColumns(10);
 
@@ -369,6 +416,8 @@ public class moreInformationPanel extends JPanel {
 		JLabel tags_lbl = new JLabel("tags");
 		tags_lbl.setForeground(Color.WHITE);
 		tags_lbl.setBounds(22, 641, 46, 14);
+		if(scroll == true)
+			panel_2.add(tags_lbl);
 		add(tags_lbl);
 		
 		String[] tagsArr = methods.splitTagsUp(tags);
@@ -419,8 +468,10 @@ public class moreInformationPanel extends JPanel {
          protected JButton createIncreaseButton(int orientation) {
              return methods.createZeroButton();
          }
-       });
+        });
         tagsBody_SPane.setBounds(22, 667, 428, 80);
+        if(scroll == true)
+        	panel_2.add(tagsBody_SPane);
         add(tagsBody_SPane);
         
         
@@ -453,6 +504,8 @@ public class moreInformationPanel extends JPanel {
         rating_CBox.setModel(new DefaultComboBoxModel(new String[] {"N/A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
         rating_CBox.setSelectedItem(rating);
         rating_CBox.setBounds(20, 447, 59, 24);
+        if(scroll == true)
+        	panel_2.add(rating_CBox);
         add(rating_CBox);
         
         status_CBox = new JComboBox();
@@ -484,6 +537,8 @@ public class moreInformationPanel extends JPanel {
         status_CBox.setModel(new DefaultComboBoxModel(new String[] {"plan to read", "reading", "completed"}));
         status_CBox.setSelectedItem(status);
         status_CBox.setBounds(22, 587, 97, 24);
+        if(scroll == true)
+        	panel_2.add(status_CBox);
         add(status_CBox);
         
         JButton deleteEntry_btn = new JButton();
@@ -597,6 +652,8 @@ public class moreInformationPanel extends JPanel {
 			}
 		});
         deleteEntry_btn.setBounds(353, 587, 97, 23);
+        if(scroll == true)
+        	panel_2.add(deleteEntry_btn);
         add(deleteEntry_btn);
 	}
 	

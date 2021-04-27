@@ -74,6 +74,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 
 import javax.swing.filechooser.FileSystemView;
@@ -155,6 +157,9 @@ public class nHentai {
 	private String timesRead;
 	
 	private boolean start = false;
+	
+	private String goodRes = "good";
+	private boolean resScroll = false;
 	/**
 	 * Launch the application.
 	 */
@@ -167,7 +172,6 @@ public class nHentai {
 				}
 				System.out.println(info.getClassName());
 			}
-			//FlatDarkLaf.install();
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 
@@ -218,6 +222,18 @@ public class nHentai {
 		System.out.println(userDataFolderLocation);
 		System.out.println(randomPhotoFolderLocation);
 
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		int width = gd.getDisplayMode().getWidth();
+		int height = gd.getDisplayMode().getHeight();
+		
+		if(width < 950) {
+			goodRes = "not usable";
+			resScroll = true;
+		}
+		else if(height < 925) {
+			goodRes = "inspect not usable";
+			resScroll = true;
+		}
 		dataManager = new dataManager();
 		nHentaiAPI = new nHentaiWebBase();
 		nHentaiAPIRun = new nHentaiAPIRun(Slash);
@@ -1976,7 +1992,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation, SFW);
+					photoLocation, SFW, resScroll);
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
@@ -2162,7 +2178,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation, SFW);
+					photoLocation, SFW, resScroll);
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
@@ -2346,7 +2362,7 @@ public class nHentai {
 			
 			moreInformationPanel moreInformation = new moreInformationPanel(id, title, artist, pages, rating,
 					timesRead, status, tags,
-					photoLocation, SFW);
+					photoLocation, SFW, resScroll);
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
@@ -2707,7 +2723,7 @@ public class nHentai {
 	}
 	
 	public void actionPerformedSetting() {
-		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW);
+		settingsPanel settings = new settingsPanel(tableArr, tableArrReading, tableArrCompleted, SFW, resScroll);
 		UIManager.put("OptionPane.minimumSize", new Dimension(500, 300));
 		Component[] buttonText = methods.OKCancelButtonCreate();
 		JOptionPane pane = new JOptionPane(settings, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, buttonText, null);
@@ -2969,6 +2985,7 @@ public class nHentai {
 			frame.setUndecorated(true);
 			frame.setVisible(true);
 			
+			
 			JPanel windowToolbar = new JPanel();
 			windowToolbar.setBackground(new Color(17, 19, 22));
 			windowToolbar.setBounds(0, 0, 352, 24);
@@ -3087,9 +3104,16 @@ public class nHentai {
 			btnNewButton.setBounds(83, 40, 166, 21);
 			frame.getContentPane().add(btnNewButton);
 			
-			
-			
-			
+			JLabel display_lbl = new JLabel("Display Status: good");
+			display_lbl.setForeground(Color.WHITE);
+			display_lbl.setBackground(Color.red);
+			display_lbl.setBounds(10, 105, 400, 21);
+			display_lbl.setVisible(true);
+			if(goodRes.equals("not usable"))
+				display_lbl.setText("The display is to small. (full HD recomended)");
+			if(goodRes.equals("inspect not usable"))
+				display_lbl.setText("The display is to small for all features. (1080p recomended)");
+			frame.getContentPane().add(display_lbl);
 		}
 		
 		class Task extends SwingWorker<Void, Void> {

@@ -51,7 +51,7 @@ public class settingsPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed, boolean sfw) {
+	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed, boolean sfw, boolean resScroll) {
 		SFW = sfw;
 		setForeground(Color.WHITE);
 		setBackground(new Color(34, 34, 34));
@@ -66,7 +66,7 @@ public class settingsPanel extends JPanel {
 				buttonText[0] = tmp[0];
 				
 				UIManager.put("OptionPane.minimumSize", new Dimension(600, 350));
-				statsPanel stats = new statsPanel(planToRead, reading, completed);
+				statsPanel stats = new statsPanel(planToRead, reading, completed, resScroll);
 				JOptionPane inspectPane = new JOptionPane(stats, JOptionPane.PLAIN_MESSAGE,
 						JOptionPane.OK_OPTION, null, buttonText, null);
 				
