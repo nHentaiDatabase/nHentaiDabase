@@ -1996,7 +1996,11 @@ public class nHentai {
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
-			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			if(resScroll == true)
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 600));
+			else
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION, null, buttonText, null);
 			
@@ -2182,7 +2186,11 @@ public class nHentai {
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
-			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			if(resScroll == true)
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 600));
+			else
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION, null, buttonText, null);
 			
@@ -2366,7 +2374,10 @@ public class nHentai {
 			
 			Component[] buttonText = methods.OKCancelButtonCreate();
 			
-			UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
+			if(resScroll == true)
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 600));
+			else
+				UIManager.put("OptionPane.minimumSize", new Dimension(500, 900));
 			JOptionPane inspectPane = new JOptionPane(moreInformation, JOptionPane.PLAIN_MESSAGE,
 					JOptionPane.OK_OPTION, null, buttonText, null);
 			
@@ -2519,7 +2530,7 @@ public class nHentai {
 			
 	    }
 	};
-	
+	boolean already;
 	public void actionPerformedNewEntry(String[][] Arr, DefaultTableModel Model, JLabel label, JProgressBar Bar, String wichTable) {
 		
 		newEntryGeneral EntryGeneral = new newEntryGeneral(wichTable);
@@ -2544,6 +2555,38 @@ public class nHentai {
             			String URL = EntryGeneral.getURL();
             			String rating = EntryGeneral.getRating();
             			String status = EntryGeneral.getStatus();
+            			
+            			already = false;
+            			switch(status) {
+            			case "plan to read":
+            				for(int i=0;i<tableArr.length-1;i++) {
+            					if(code.equals(tableArr[i][2])) {
+            						int times = Integer.valueOf(tableArr[i][7]);
+            						tableArr[i][7] = String.valueOf(times + 1);
+            						already = true;
+            					}
+            				}
+            				break;
+						case "reading":
+							for(int i=0;i<tableArrReading.length-1;i++) {
+            					if(code.equals(tableArrReading[i][2])) {
+            						int times = Integer.valueOf(tableArrReading[i][8]);
+            						tableArrReading[i][8] = String.valueOf(times + 1);
+            						already = true;
+            					}
+            				}
+							break;
+						case "completed":
+							for(int i=0;i<tableArrCompleted.length-1;i++) {
+            					if(code.equals(tableArrCompleted[i][2])) {
+            						int times = Integer.valueOf(tableArrCompleted[i][7]);
+            						tableArrCompleted[i][8] = String.valueOf(times + 1);
+            						already = true;
+            					}
+            				}
+							break;
+            			}
+            			
             			boolean selected = EntryGeneral.getSelected();
             			
             			safed = false;
@@ -2552,19 +2595,22 @@ public class nHentai {
             					class Task extends SwingWorker<Void, Void> {
             						@Override
             						protected Void doInBackground() throws Exception {
-            							if (!code.equals("") || !URL.equals("")) {
+            							if ((!code.equals("") || !URL.equals("")) && already == false) {
             								try {
             									System.out.println("§");
-            									switch(wichTable) {
+            									switch(status) {
             										case "plan to read":
             											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
                     									model = methods.expandTable(Arr, Model, code, SFW);
+                    									break;
             										case "reading":
             											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
                     									modelReading = methods.expandTable(Arr, Model, code, SFW);
+                    									break;
             										case "completed":
             											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
                     									modelCompleted = methods.expandTable(Arr, Model, code, SFW);
+                    									break;
             									}
             									long time = nHentaiAPIRun.getInitTime();
             									String unit = "ms";
@@ -2604,16 +2650,19 @@ public class nHentai {
             									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
             										rawRating = rawRating.substring(0, rawRating.length() - 1);
             									try {
-            										switch(wichTable) {
+            										switch(status) {
             										case "plan to read":
-            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									model = methods.expandTable(Arr, Model, code, SFW);
+            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+                    									model = methods.expandTable(Arr, Model, rawCode, SFW);
+                    									break;
             										case "reading":
-            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									modelReading = methods.expandTable(Arr, Model, code, SFW);
+            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+                    									modelReading = methods.expandTable(Arr, Model, rawCode, SFW);
+                    									break;
             										case "completed":
-            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									modelCompleted = methods.expandTable(Arr, Model, code, SFW);
+            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+                    									modelCompleted = methods.expandTable(Arr, Model, rawCode, SFW);
+                    									break;
             										}
             										long time = nHentaiAPIRun.getInitTime();
                 									String unit = "ms";
@@ -2626,7 +2675,7 @@ public class nHentai {
                 									label.setText("nHentai response: " + time + unit);
             									} catch (IOException e) {
             										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            										Error errorPanel = new Error(code);
+            										Error errorPanel = new Error(rawCode);
             										JOptionPane error = new JOptionPane();
             										error.showMessageDialog(null, errorPanel, "error", 0);
             										e.printStackTrace();
