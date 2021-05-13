@@ -11,7 +11,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -26,6 +31,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+
+import org.imgscalr.Scalr;
 
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
@@ -191,16 +198,20 @@ public class Methods {
 	 * @param y The y parameter for the scaled image
 	 */
 	public void scaleImage(String locationOriginal, String locationNew, String name, int x, int y) {
+		
+		
+		BufferedImage bi = null;
 		try {
-			ImageIcon ii = new ImageIcon(locationOriginal);
-			BufferedImage bi = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g2d = (Graphics2D) bi.createGraphics();
-			g2d.addRenderingHints(
-					new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-			boolean b = g2d.drawImage(ii.getImage(), 0, 0, x, y, null);
-			System.out.println(b);
-			ImageIO.write(bi, "jpg", new File(locationNew + name));
-		} catch (Exception e) {
+			bi = ImageIO.read(new File(locationOriginal));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedImage rezise = Scalr.resize(bi, Scalr.Method.QUALITY, x, y, Scalr.OP_ANTIALIAS);
+		try {
+			ImageIO.write(rezise, "jpg", new File(locationNew + name));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -458,5 +469,69 @@ public class Methods {
 			tagsArr[i] = tmp;
 		}
 		return tagsArr;
+	}
+	
+	/**
+	 * Checks if a new Entry already exists in the given Array.
+	 * 
+	 * @param Arr The Array to search in
+	 * @param id the code of the new Entry
+	 * @return int the position of the same Entry (When there is no double Entry it returns -1)
+	 */
+	public int checkIfIdExists(String[][] Arr, String id) {
+		int index = -1;
+
+		for(int i=0;i<Arr.length-1;i++) {
+			if(id.equals(Arr[i][2])) {
+				index = i;
+			}
+		}
+		return index;
+	}
+	
+	/**
+	 * Extract the id from the URL
+	 * 
+	 * @param URL the URL to the doujin
+	 * @return the true id
+	 */
+	public String URLToId(String URL) {
+		String tmp = URL;
+		StringBuilder sb = new StringBuilder(tmp);
+		sb.delete(0, 14);
+		sb.deleteCharAt(sb.length()-1);
+		tmp = sb.toString();
+		return tmp;
+	}
+	
+	/**
+	 * Copy the source to the target.
+	 * 
+	 * @param sourceLocation
+	 * @param targetLocation
+	 * @throws IOException
+	 */
+	public static void copyFile(File sourceFile, File destFile)
+	        throws IOException {
+	    if (!sourceFile.exists()) {
+	        return;
+	    }
+	    if (!destFile.exists()) {
+	        destFile.createNewFile();
+	    }
+	    FileChannel source = null;
+	    FileChannel destination = null;
+	    source = new FileInputStream(sourceFile).getChannel();
+	    destination = new FileOutputStream(destFile).getChannel();
+	    if (destination != null && source != null) {
+	        destination.transferFrom(source, 0, source.size());
+	    }
+	    if (source != null) {
+	        source.close();
+	    }
+	    if (destination != null) {
+	        destination.close();
+	    }
+
 	}
 }

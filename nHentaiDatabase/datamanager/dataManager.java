@@ -93,7 +93,7 @@ public class dataManager {
 	 * @return String[]
 	 */
 	public String[] readSettings(String location) {
-		String[] tmp = new String[1];
+		String[] tmp = new String[2];
 		try {
 			File myObj = new File(location);
 			Scanner myReader;
@@ -109,7 +109,7 @@ public class dataManager {
 		}
 		return tmp;
 	}
-	
+
 	/**
 	 * Split the linear text file in a two dimensional Array
 	 * 

@@ -6,7 +6,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,16 +16,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
@@ -38,7 +33,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -57,6 +51,8 @@ import javax.swing.table.TableCellRenderer;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import settings.settingsPanel;
+import updater.LocationFinder;
+import updater.gitHubUpdater;
 import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
@@ -70,22 +66,23 @@ import search.searchEngine;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 
+/**
+ * 
+ * @author Philipp Bleimund
+ * @version 1.4.2
+ */
 public class nHentai {
 
 	private JFrame frmNhentaidatabase;
@@ -99,7 +96,11 @@ public class nHentai {
 	private nHentaiAPIRun nHentaiAPIRun;
 	private Methods methods;
 	private searchEngine searchEngine;
+	private gitHubUpdater Updater;
+	private LocationFinder finder;
 
+	private String[] settings;
+	
 	private String[][] tableArr;
 	private String[][] tableArrSave;
 	private boolean inSearchViewPlanToRead = false;
@@ -160,10 +161,17 @@ public class nHentai {
 	
 	private String goodRes = "good";
 	private boolean resScroll = false;
+	
+	public String OLDVERSION = "1.5.8";
+	public String VERSION = "1.5.8";
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) throws IOException {
+		
+		
+		
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Windows".equals(info.getName())) {
@@ -192,6 +200,9 @@ public class nHentai {
 	 * Create the application.
 	 */
 	public nHentai() {
+		
+		
+		
 		tableArr = new String[1][10];
 		tableArrSave = new String[1][10];
 		tableArrReading = new String[1][10];
@@ -238,8 +249,18 @@ public class nHentai {
 		nHentaiAPI = new nHentaiWebBase();
 		nHentaiAPIRun = new nHentaiAPIRun(Slash);
 		searchEngine = new searchEngine();
+		Updater = new gitHubUpdater();
 		methods = new Methods(appdataLocation, mainFolderLocation, photoFolderLocation, Slash,  randomPhotoFolderLocation, userDataFolderLocation);
+		
+		File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+		File dir = jarDir.getAbsoluteFile().getParentFile();
+		String path = dir.toString();
+		System.out.println(path);
+		//System.out.println(finder.getLocationJar(this.getClass()));
+		
 		initialize();
+		
+		
 		loadingScreen = new loadingScreenMainGUI();
 	}
 
@@ -2556,36 +2577,7 @@ public class nHentai {
             			String rating = EntryGeneral.getRating();
             			String status = EntryGeneral.getStatus();
             			
-            			already = false;
-            			switch(status) {
-            			case "plan to read":
-            				for(int i=0;i<tableArr.length-1;i++) {
-            					if(code.equals(tableArr[i][2])) {
-            						int times = Integer.valueOf(tableArr[i][7]);
-            						tableArr[i][7] = String.valueOf(times + 1);
-            						already = true;
-            					}
-            				}
-            				break;
-						case "reading":
-							for(int i=0;i<tableArrReading.length-1;i++) {
-            					if(code.equals(tableArrReading[i][2])) {
-            						int times = Integer.valueOf(tableArrReading[i][8]);
-            						tableArrReading[i][8] = String.valueOf(times + 1);
-            						already = true;
-            					}
-            				}
-							break;
-						case "completed":
-							for(int i=0;i<tableArrCompleted.length-1;i++) {
-            					if(code.equals(tableArrCompleted[i][2])) {
-            						int times = Integer.valueOf(tableArrCompleted[i][7]);
-            						tableArrCompleted[i][8] = String.valueOf(times + 1);
-            						already = true;
-            					}
-            				}
-							break;
-            			}
+            			
             			
             			boolean selected = EntryGeneral.getSelected();
             			
@@ -2595,21 +2587,36 @@ public class nHentai {
             					class Task extends SwingWorker<Void, Void> {
             						@Override
             						protected Void doInBackground() throws Exception {
-            							if ((!code.equals("") || !URL.equals("")) && already == false) {
+            							int index;
+            							if ((!code.equals("") || !URL.equals(""))) {
+            								
+            								
             								try {
             									System.out.println("§");
             									switch(status) {
             										case "plan to read":
-            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									model = methods.expandTable(Arr, Model, code, SFW);
+            											index = methods.checkIfIdExists(Arr, code);
+            											if(index == -1) {
+	            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+	                    									model = methods.expandTable(tableArr, Model, code, SFW);
+            											}else
+            												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
                     									break;
             										case "reading":
-            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									modelReading = methods.expandTable(Arr, Model, code, SFW);
+            											index = methods.checkIfIdExists(Arr, code);
+            											if(index == -1) {
+	            											tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+	                    									modelReading = methods.expandTable(tableArrReading, Model, code, SFW);
+            											}else
+            												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
                     									break;
             										case "completed":
-            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
-                    									modelCompleted = methods.expandTable(Arr, Model, code, SFW);
+            											index = methods.checkIfIdExists(Arr, code);
+            											if(index == -1) {
+	            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, code, SFW);
+            											}else
+            												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
                     									break;
             									}
             									long time = nHentaiAPIRun.getInitTime();
@@ -2652,18 +2659,30 @@ public class nHentai {
             									try {
             										switch(status) {
             										case "plan to read":
-            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-                    									model = methods.expandTable(Arr, Model, rawCode, SFW);
+            											index = methods.checkIfIdExists(Arr, rawCode);
+            											if(index == -1) {
+	            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
+	                    									model = methods.expandTable(tableArr, Model, rawCode, SFW);
+            											}else
+            												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
                     									break;
             										case "reading":
-            											tableArrReading = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-                    									modelReading = methods.expandTable(Arr, Model, rawCode, SFW);
+            											index = methods.checkIfIdExists(Arr, rawCode);
+            											if(index == -1) {
+	            											tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
+	                    									modelReading = methods.expandTable(tableArrReading, Model, rawCode, SFW);
+            											}else
+            												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
                     									break;
             										case "completed":
-            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-                    									modelCompleted = methods.expandTable(Arr, Model, rawCode, SFW);
+            											index = methods.checkIfIdExists(Arr, rawCode);
+            											if(index == -1) {
+	            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
+	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, rawCode, SFW);
+            											}else
+            												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
                     									break;
-            										}
+            									}
             										long time = nHentaiAPIRun.getInitTime();
                 									String unit = "ms";
                 									time  = time / 1000000;
@@ -3013,6 +3032,7 @@ public class nHentai {
 		
 		nHentaiWebBase nHentaiAPI;
 
+		JCheckBox update_CBox;
 		/**
 		 * Create the application.
 		 */
@@ -3033,7 +3053,6 @@ public class nHentai {
 			frame.getContentPane().setLayout(null);
 			frame.setUndecorated(true);
 			frame.setVisible(true);
-			
 			
 			JPanel windowToolbar = new JPanel();
 			windowToolbar.setBackground(new Color(17, 19, 22));
@@ -3163,6 +3182,18 @@ public class nHentai {
 			if(goodRes.equals("inspect not usable"))
 				display_lbl.setText("The display is to small for all features. (1080p recomended)");
 			frame.getContentPane().add(display_lbl);
+			
+			update_CBox = new JCheckBox("update");
+			update_CBox.setForeground(Color.WHITE);
+			update_CBox.setBackground(new Color(35, 35, 35));
+			update_CBox.setBounds(10, 55, 70, 23);
+			if(Updater.getIfNewVersion(VERSION)){
+				update_CBox.setVisible(true);
+			}else {
+				update_CBox.setVisible(false);
+			}
+			update_CBox.setSelected(false);
+			frame.getContentPane().add(update_CBox);
 		}
 		
 		class Task extends SwingWorker<Void, Void> {
@@ -3205,6 +3236,7 @@ public class nHentai {
 	            System.out.println("finish");
 	        }
 	    }	
+		
 		class Task2 extends SwingWorker<Void, Void> {
 	        /*
 	         * Main task. Executed in background thread.
@@ -3220,16 +3252,39 @@ public class nHentai {
 	    		
 	        	File f = new File(SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 	    		if(f.exists()) {
-	    			String[] settings = new String[1];
+	    			settings = new String[2];
 	    			settings = dataManager.readSettings(SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
+	    			
+	    			settings[1] = VERSION;
+	    			
 	    			if(settings[0].indexOf("true") >= 0) {
 	    				SFW = true;
 	    			}else if(settings[0].indexOf("false") >= 0) {
 	    				SFW = false;
 	    			}
+	    			
+	    			if(update_CBox.isSelected()){
+
+						File currLocation = finder.getJarDir(nHentai.class);
+						System.out.println(currLocation);
+						
+						dataManager.saveSettings(new String[]{currLocation + "", VERSION}, SaveFileLocation +  Slash + "updateInformation" );
+						
+						File file = new File(appdataLocation + mainFolderLocation + Slash + "updater.jar");
+						try {
+							Desktop.getDesktop().open(file);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+				        System.out.println("Ending");
+				        System.exit(0);
+	    			}
 	    		}else {
-	    			String[] settings = new String[1];
+	    			String[] settings = new String[2];
 	    			settings[0] = "SFW: " + String.valueOf(SFW);
+	    			settings[1] = VERSION;
 	    			dataManager.saveSettings(settings, SaveFileLocation + Slash + "nHentaiDatabaseSettings.nhdb");
 	    		}
 	        	
@@ -3368,7 +3423,7 @@ public class nHentai {
 				} catch (InterruptedException | ExecutionException e1) {
 					e1.printStackTrace();
 				}
-	            System.out.println("finish");
+	            System.out.println("finish2");
 	            frame.setVisible(false);
 	            frmNhentaidatabase.setVisible(true);
 	            start = true;

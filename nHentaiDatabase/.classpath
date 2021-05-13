@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="&apos;**&apos;|doc/|grafics/" kind="src" path=""/>
+	<classpathentry excluding="&apos;**&apos;|doc/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -12,5 +12,7 @@
 	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/flatlaf-1.1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/jgoodies-looks-2.7.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/jgoodies-common-1.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/imgscalr-lib-4.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/imgscalr-lib-4.2.jar" sourcepath="C:/Users/Philipp Bleimund/Documents/nHentaiDatabase/imgscalr-lib-4.2-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -72,8 +72,8 @@ public class nHentaiAPIRun {
 		pages = nHentaiAPI.getPages();
 		
 		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_low.jpg", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_medium.jpg", 150, 212);
 		
 		tableArr[tableArr.length - 1][1] = coverImage;
 		tableArr[tableArr.length - 1][3] = title;
@@ -130,8 +130,8 @@ public class nHentaiAPIRun {
 		pages = nHentaiAPI.getPages();
 		
 		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_low.jpg", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_medium.jpg", 150, 212);
 		
 		tableArrReading[tableArrReading.length - 1][1] = coverImage;
 		tableArrReading[tableArrReading.length - 1][3] = title;
@@ -188,8 +188,8 @@ public class nHentaiAPIRun {
 		pages = nHentaiAPI.getPages();
 		
 		nHentaiAPI.saveImageAsFile(coverImage, location + Shlash + id + "_original.jpg");
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_low", 50, 71);
-		methods.scaleImage(location + Shlash + id + "_original", location + "\\" + id, "_medium", 150, 212);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_low.jpg", 50, 71);
+		methods.scaleImage(location + Shlash + id + "_original.jpg", location + "\\" + id, "_medium.jpg", 150, 212);
 		
 		tableArrCompleted[tableArrCompleted.length - 1][1] = coverImage;
 		tableArrCompleted[tableArrCompleted.length - 1][3] = title;
