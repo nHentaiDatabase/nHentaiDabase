@@ -1094,21 +1094,20 @@ public class nHentai {
 		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
 		table_panel1.setRowSelectionAllowed(false);
 		
-		model = new DefaultTableModel(new Object[][] {
-
-		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "status", "" });
+		model = new DefaultTableModel(new Object[][] {}, new String[] { "number", "cover", "id", "title", "author", "pages", "status", "" });
 		table_panel1.setModel(model);
-
-		ButtonColumnAll buttonColumnTable_panel1 = new ButtonColumnAll(table_panel1, deleteTableArrRow, 7);
-		buttonColumnTable_panel1.setMnemonic(KeyEvent.VK_D);
 		table_panel1.getColumnModel().getColumn(0).setResizable(false);
+		table_panel1.getColumnModel().getColumn(0).setPreferredWidth(47);
 		table_panel1.getColumnModel().getColumn(1).setResizable(false);
+		table_panel1.getColumnModel().getColumn(1).setPreferredWidth(42);
 		table_panel1.getColumnModel().getColumn(2).setResizable(false);
 		table_panel1.getColumnModel().getColumn(3).setResizable(false);
+		table_panel1.getColumnModel().getColumn(3).setPreferredWidth(126);
 		table_panel1.getColumnModel().getColumn(4).setResizable(false);
+		table_panel1.getColumnModel().getColumn(4).setPreferredWidth(95);
 		table_panel1.getColumnModel().getColumn(5).setResizable(false);
+		table_panel1.getColumnModel().getColumn(5).setPreferredWidth(65);
 		table_panel1.getColumnModel().getColumn(6).setResizable(false);
-		table_panel1.setRowHeight(71);
 		table_panel1.getColumnModel().getColumn(1).setCellRenderer(new TableCellRenderer() {
 
 			@Override
@@ -1119,6 +1118,14 @@ public class nHentai {
 				return lbl;
 			}
 		});
+
+		table_panel1.getTableHeader().setBackground(Color.RED);
+		table_panel1.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
+		
+		
+		ButtonColumnAll buttonColumnTable_panel1 = new ButtonColumnAll(table_panel1, deleteTableArrRow, 7);
+		buttonColumnTable_panel1.setMnemonic(KeyEvent.VK_D);
+		table_panel1.setRowHeight(71);
 		scrollPane_panel1.setViewportView(table_panel1);
 		
 		EntryLoader_panel1_PBar = new JProgressBar();
@@ -1504,24 +1511,24 @@ public class nHentai {
 		table_panel2.setRowSelectionAllowed(false);
 		modelReading = new DefaultTableModel(new Object[][] {
 
-		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "rating", "status", "" });
+		}, new String[] { "number", "cover", "id", "title", "author", "pages", "rating", "status", "" });
 		table_panel2.setModel(modelReading);
-		table_panel2.getTableHeader().setBackground(Color.RED);
-		table_panel2.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
-		
-		ButtonColumnAll buttonColumnTable_panel2 = new ButtonColumnAll(table_panel2, deleteTableArrReadingRow, 8);
-		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
-		
 		table_panel2.getColumnModel().getColumn(0).setResizable(false);
+		table_panel2.getColumnModel().getColumn(0).setPreferredWidth(47);
 		table_panel2.getColumnModel().getColumn(1).setResizable(false);
+		table_panel2.getColumnModel().getColumn(1).setPreferredWidth(42);
 		table_panel2.getColumnModel().getColumn(2).setResizable(false);
+		table_panel2.getColumnModel().getColumn(2).setPreferredWidth(65);
 		table_panel2.getColumnModel().getColumn(3).setResizable(false);
+		table_panel2.getColumnModel().getColumn(3).setPreferredWidth(113);
 		table_panel2.getColumnModel().getColumn(4).setResizable(false);
+		table_panel2.getColumnModel().getColumn(4).setPreferredWidth(95);
 		table_panel2.getColumnModel().getColumn(5).setResizable(false);
+		table_panel2.getColumnModel().getColumn(5).setPreferredWidth(65);
 		table_panel2.getColumnModel().getColumn(6).setResizable(false);
+		table_panel2.getColumnModel().getColumn(6).setPreferredWidth(45);
 		table_panel2.getColumnModel().getColumn(7).setResizable(false);
 		table_panel2.getColumnModel().getColumn(8).setResizable(false);
-		table_panel2.setRowHeight(71);
 		table_panel2.getColumnModel().getColumn(1).setCellRenderer(new TableCellRenderer() {
 
 			@Override
@@ -1532,6 +1539,14 @@ public class nHentai {
 				return lbl;
 			}
 		});
+
+		table_panel2.getTableHeader().setBackground(Color.RED);
+		table_panel2.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
+		
+		
+		ButtonColumnAll buttonColumnTable_panel2 = new ButtonColumnAll(table_panel2, deleteTableArrReadingRow, 8);
+		buttonColumnTable_panel2.setMnemonic(KeyEvent.VK_D);
+		table_panel2.setRowHeight(71);
 		scrollPane_panel2.setViewportView(table_panel2);
 		
 		EntryLoader_panel2_PBar = new JProgressBar();
@@ -1918,25 +1933,27 @@ public class nHentai {
 	    table_panel3.setRowSelectionAllowed(false);
 		modelCompleted = new DefaultTableModel(new Object[][] {
 
-		}, new String[] { "number", "title picture", "id", "title", "author", "pages", "rating", "times Read", "status", "" });
+		}, new String[] { "number", "cover", "id", "title", "author", "pages", "rating", "times Read", "status", "" });
 		table_panel3.setModel(modelCompleted);
-		table_panel3.getTableHeader().setBackground(Color.RED);
-		table_panel3.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
-		
-		ButtonColumnAll buttonColumnTable_panel3 = new ButtonColumnAll(table_panel3, deleteTableArrCompletedRow, 9);
-		buttonColumnTable_panel3.setMnemonic(KeyEvent.VK_D);
-		
 		table_panel3.getColumnModel().getColumn(0).setResizable(false);
+		table_panel3.getColumnModel().getColumn(0).setPreferredWidth(47);
 		table_panel3.getColumnModel().getColumn(1).setResizable(false);
+		table_panel3.getColumnModel().getColumn(1).setPreferredWidth(42);
 		table_panel3.getColumnModel().getColumn(2).setResizable(false);
+		table_panel3.getColumnModel().getColumn(2).setPreferredWidth(60);
 		table_panel3.getColumnModel().getColumn(3).setResizable(false);
+		table_panel3.getColumnModel().getColumn(3).setPreferredWidth(100);
 		table_panel3.getColumnModel().getColumn(4).setResizable(false);
+		table_panel3.getColumnModel().getColumn(4).setPreferredWidth(79);
 		table_panel3.getColumnModel().getColumn(5).setResizable(false);
+		table_panel3.getColumnModel().getColumn(5).setPreferredWidth(50);
 		table_panel3.getColumnModel().getColumn(6).setResizable(false);
+		table_panel3.getColumnModel().getColumn(6).setPreferredWidth(46);
 		table_panel3.getColumnModel().getColumn(7).setResizable(false);
+		table_panel3.getColumnModel().getColumn(7).setPreferredWidth(64);
 		table_panel3.getColumnModel().getColumn(8).setResizable(false);
+		table_panel3.getColumnModel().getColumn(8).setPreferredWidth(59);
 		table_panel3.getColumnModel().getColumn(9).setResizable(false);
-		table_panel3.setRowHeight(71);
 		table_panel3.getColumnModel().getColumn(1).setCellRenderer(new TableCellRenderer() {
 
 			@Override
@@ -1947,6 +1964,12 @@ public class nHentai {
 				return lbl;
 			}
 		});
+		table_panel3.getTableHeader().setBackground(Color.RED);
+		table_panel3.getTableHeader().setDefaultRenderer(new renderEngine.HeaderColor());
+		
+		ButtonColumnAll buttonColumnTable_panel3 = new ButtonColumnAll(table_panel3, deleteTableArrCompletedRow, 9);
+		buttonColumnTable_panel3.setMnemonic(KeyEvent.VK_D);
+		table_panel3.setRowHeight(71);
 		scrollPane_panel3.setViewportView(table_panel3);
 		
 		EntryLoader_panel3_PBar = new JProgressBar();
@@ -3270,7 +3293,7 @@ public class nHentai {
 						
 						dataManager.saveSettings(new String[]{currLocation + "", VERSION}, SaveFileLocation +  Slash + "updateInformation" );
 						
-						File file = new File(appdataLocation + mainFolderLocation + Slash + "updater.jar");
+						File file = new File(currLocation + Slash + "updater.jar");
 						try {
 							Desktop.getDesktop().open(file);
 						} catch (IOException e) {

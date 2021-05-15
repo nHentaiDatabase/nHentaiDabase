@@ -22,7 +22,7 @@ public class gitHubUpdater {
 	 * @param downloadLocation The given save location
 	 */
 	public void downloadUpdate(String downloadLocation) {
-		String sUrl = "https://github.com/PhilippBleimund/nHentaiDatabase/releases/latest/download/update.jar";
+		String sUrl = "https://github.com/PhilippBleimund/nHentaiDatabase/releases/latest/download/nHentaiDatabase.jar";
 		
 		URL url = null;
 		try {
