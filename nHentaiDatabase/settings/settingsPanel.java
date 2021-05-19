@@ -54,7 +54,7 @@ public class settingsPanel extends JPanel {
 	public settingsPanel(String[][] planToRead, String[][] reading, String [][] completed, boolean sfw, boolean resScroll) {
 		SFW = sfw;
 		setForeground(Color.WHITE);
-		setBackground(new Color(34, 34, 34));
+		setBackground(new Color(35, 35, 35));
 		setLayout(null);
 		
 		JButton stats_btn = new JButton();

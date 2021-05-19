@@ -55,7 +55,9 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel);
 		
 		readDoujins_TField = new JTextField();
-		readDoujins_TField.setBackground(Color.WHITE);
+		readDoujins_TField.setForeground(Color.WHITE);
+		readDoujins_TField.setBackground(new Color(59, 59, 59));
+		readDoujins_TField.setBorder(null);
 		readDoujins_TField.setEditable(false);
 		
 		int readingDoujins = getReadDoujins(reading, 8);
@@ -74,7 +76,9 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel_1);
 		
 		readPages_TField = new JTextField();
-		readPages_TField.setBackground(Color.WHITE);
+		readPages_TField.setForeground(Color.WHITE);
+		readPages_TField.setBackground(new Color(59, 59, 59));
+		readPages_TField.setBorder(null);
 		readPages_TField.setEditable(false);
 		
 		int readingPages = getReadPages(reading, 8);
@@ -112,7 +116,9 @@ public class statsPanel extends JPanel {
 		add(lblNewLabel_3);
 		
 		timeSpend_TField = new JTextField();
-		timeSpend_TField.setBackground(Color.WHITE);
+		timeSpend_TField.setForeground(Color.WHITE);
+		timeSpend_TField.setBackground(new Color(59, 59, 59));
+		timeSpend_TField.setBorder(null);
 		timeSpend_TField.setEditable(false);
 		
 		String timeSpend = timeSpend(readingPages + completedPages);

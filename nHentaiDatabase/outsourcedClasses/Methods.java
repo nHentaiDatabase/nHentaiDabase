@@ -452,21 +452,18 @@ public class Methods {
 		String[] tagsArr = new String[tagNumber];
 		int currTag = 0;
 		for(int i=0;i<tagsChar.length;i++) {
-			if(tagsChar[i] == ',' && currTag+1<tagsArr.length)
-				currTag++;
+			if(tagsChar[i] == ',') {
+				if(currTag+1<tagsArr.length)
+					currTag++;
+			}
 			else {
-				if(tagsArr[currTag] == null)
-					tagsArr[currTag] = "" + tagsChar[i];
+				if(tagsArr[currTag] == null) {
+					if(tagsChar[i] != ' ')
+						tagsArr[currTag] = "" + tagsChar[i];
+				}
 				else
 					tagsArr[currTag] = tagsArr[currTag] + tagsChar[i];				
 			}
-		}
-		for(int i=1;i<tagsArr.length;i++) {
-			String tmp = tagsArr[i];
-			StringBuilder sb = new StringBuilder(tmp);
-			sb.deleteCharAt(0);
-			tmp = sb.toString();
-			tagsArr[i] = tmp;
 		}
 		return tagsArr;
 	}

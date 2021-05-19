@@ -2007,7 +2007,6 @@ public class nHentai {
 	
 	
 	
-	
 	Action deleteTableArrRow = new AbstractAction()
 	{
 	    public void actionPerformed(ActionEvent e)
