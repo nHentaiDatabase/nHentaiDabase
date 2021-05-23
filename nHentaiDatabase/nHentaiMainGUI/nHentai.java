@@ -23,7 +23,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -50,6 +54,8 @@ import javax.swing.table.TableCellRenderer;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
+import SaveObj.doujinObj;
+import ThreadPoolClasses.ThreadPool;
 import settings.settingsPanel;
 import updater.LocationFinder;
 import updater.gitHubUpdater;
@@ -256,7 +262,6 @@ public class nHentai {
 		File dir = jarDir.getAbsoluteFile().getParentFile();
 		String path = dir.toString();
 		System.out.println(path);
-		//System.out.println(finder.getLocationJar(this.getClass()));
 		
 		initialize();
 		
@@ -2573,7 +2578,7 @@ public class nHentai {
 			
 	    }
 	};
-	boolean already;
+
 	public void actionPerformedNewEntry(String[][] Arr, DefaultTableModel Model, JLabel label, JProgressBar Bar, String wichTable) {
 		
 		newEntryGeneral EntryGeneral = new newEntryGeneral(wichTable);
@@ -2619,7 +2624,8 @@ public class nHentai {
             										case "plan to read":
             											index = methods.checkIfIdExists(Arr, code);
             											if(index == -1) {
-	            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read");
+	            											doujinObj obj = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read", new nHentaiWebBase());
+	            											tableArr = methods.insertObjInTableArr(tableArr, obj);
 	                    									model = methods.expandTable(tableArr, Model, code, SFW);
             											}else
             												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
@@ -2627,7 +2633,8 @@ public class nHentai {
             										case "reading":
             											index = methods.checkIfIdExists(Arr, code);
             											if(index == -1) {
-	            											tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading");
+            												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading", new nHentaiWebBase());
+            												tableArrReading = methods.insertObjInTableArr(tableArrReading, obj);
 	                    									modelReading = methods.expandTable(tableArrReading, Model, code, SFW);
             											}else
             												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
@@ -2635,7 +2642,8 @@ public class nHentai {
             										case "completed":
             											index = methods.checkIfIdExists(Arr, code);
             											if(index == -1) {
-	            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed");
+            												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed", new nHentaiWebBase());
+            												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, obj);
 	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, code, SFW);
             											}else
             												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
@@ -2660,69 +2668,126 @@ public class nHentai {
             							}
             							if (selected == true) {
             								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-            								for (int i = 0; i < TextAreaData.length; i++) {
-            									String rawData = TextAreaData[i];
-            									String rawCode = "";
-            									String rawRating = "";
-            									boolean ratingTurn = false;
-            									char[] rawDataChar = rawData.toCharArray();
-            									for (int j = 0; j < rawDataChar.length; j++) {
-            										if (ratingTurn == true) {
-            											rawRating = rawRating + rawDataChar[j];
-            										}
-            										if (rawDataChar[j] == ' ') {
-            											ratingTurn = true;
-            										} else if (ratingTurn == false) {
-            											rawCode = rawCode + rawDataChar[j];
-            										}
+            								doujinObj[] threadPoolResult = new doujinObj[TextAreaData.length];
+            								
+            								class TaskPool implements Runnable{
+            									
+            									int taskNum;
+            									
+            									public TaskPool(int i) {
+            										taskNum = i;
+            										System.out.println(i);
             									}
-            									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
-            										rawRating = rawRating.substring(0, rawRating.length() - 1);
-            									try {
-            										switch(status) {
-            										case "plan to read":
-            											index = methods.checkIfIdExists(Arr, rawCode);
-            											if(index == -1) {
-	            											tableArr = nHentaiAPIRun.nHentaiAPIRun(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read");
-	                    									model = methods.expandTable(tableArr, Model, rawCode, SFW);
-            											}else
-            												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
-                    									break;
-            										case "reading":
-            											index = methods.checkIfIdExists(Arr, rawCode);
-            											if(index == -1) {
-	            											tableArrReading = nHentaiAPIRun.nHentaiAPIRunReading(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading");
-	                    									modelReading = methods.expandTable(tableArrReading, Model, rawCode, SFW);
-            											}else
-            												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
-                    									break;
-            										case "completed":
-            											index = methods.checkIfIdExists(Arr, rawCode);
-            											if(index == -1) {
-	            											tableArrCompleted = nHentaiAPIRun.nHentaiAPIRunCompleted(Arr, appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed");
-	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, rawCode, SFW);
-            											}else
-            												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
-                    									break;
-            									}
-            										long time = nHentaiAPIRun.getInitTime();
-                									String unit = "ms";
-                									time  = time / 1000000;
-                									if(time > 999) {
-                										time = time / 1000;
-                										unit = "s";
+
+												@Override
+												public void run(){
+													// TODO Auto-generated method stub
+													int index2;
+            										
+
+            										String rawData = TextAreaData[taskNum];
+                									String rawCode = "";
+                									String rawRating = "";
+                									boolean ratingTurn = false;
+                									char[] rawDataChar = rawData.toCharArray();
+                									for (int j = 0; j < rawDataChar.length; j++) {
+                										if (ratingTurn == true) {
+                											rawRating = rawRating + rawDataChar[j];
+                										}
+                										if (rawDataChar[j] == ' ') {
+                											ratingTurn = true;
+                										} else if (ratingTurn == false) {
+                											rawCode = rawCode + rawDataChar[j];
+                										}
                 									}
-                										
-                									label.setText("nHentai response: " + time + unit);
-            									} catch (IOException e) {
-            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            										Error errorPanel = new Error(rawCode);
-            										JOptionPane error = new JOptionPane();
-            										error.showMessageDialog(null, errorPanel, "error", 0);
-            										e.printStackTrace();
-            									}
-            									System.out.println("§");
+                									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
+                										rawRating = rawRating.substring(0, rawRating.length() - 1);
+                									try {
+                										switch(status) {
+                										case "plan to read":
+                											index2 = methods.checkIfIdExists(Arr, rawCode);
+                											if(index2 == -1) {
+                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read", new nHentaiWebBase());
+                											}else
+                												tableArr[index2][7] = String.valueOf(Integer.valueOf(tableArr[index2][7]) +1);
+                        									break;
+                										case "reading":
+                											index2 = methods.checkIfIdExists(Arr, rawCode);
+                											if(index2 == -1) {
+                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading", new nHentaiWebBase());
+                											}else
+                												tableArrReading[index2][8] = String.valueOf(Integer.valueOf(tableArrReading[index2][8]) +1);
+                        									break;
+                										case "completed":
+                											index2 = methods.checkIfIdExists(Arr, rawCode);
+                											if(index2 == -1) {
+                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed", new nHentaiWebBase());
+                											}else
+                												tableArrCompleted[index2][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index2][7]) +1);
+                        									break;
+                									}
+                										long time = nHentaiAPIRun.getInitTime();
+                    									String unit = "ms";
+                    									time  = time / 1000000;
+                    									if(time > 999) {
+                    										time = time / 1000;
+                    										unit = "s";
+                    									}
+                    										
+                    									label.setText("nHentai response: " + time + unit);
+                									} catch (IOException e) {
+                										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+                										Error errorPanel = new Error(rawCode);
+                										JOptionPane error = new JOptionPane();
+                										error.showMessageDialog(null, errorPanel, "error", 0);
+                										e.printStackTrace();
+                									}
+                									System.out.println("§2");
+												}
+            									
+												
+            									
             								}
+            								
+            								int cores = Runtime.getRuntime().availableProcessors(); 
+            								
+            								ExecutorService pool = Executors.newFixedThreadPool(cores);  
+            						        // passes the Task objects to the pool to execute (Step 3)
+            								
+            								for (int i = 0; i < TextAreaData.length; i++) {
+            									int taskNum = i;
+            									
+            									pool.execute(new TaskPool(i));
+            									
+            									Thread.sleep(200);
+            								}
+            								pool.shutdown();
+            								pool.awaitTermination(20 * TextAreaData.length, TimeUnit.SECONDS);
+            								for(int i=0;i<threadPoolResult.length;i++) {
+            									if(threadPoolResult[i] != null) {
+	            									switch(status) {
+	        										case "plan to read":
+	        											
+	            											tableArr = methods.insertObjInTableArr(tableArr, threadPoolResult[i]);
+	                    									model = methods.expandTable(tableArr, Model, threadPoolResult[i].id, SFW);
+	
+	                									break;
+	        										case "reading":
+	        											
+	        												tableArrReading = methods.insertObjInTableArr(tableArrReading, threadPoolResult[i]);
+	                    									modelReading = methods.expandTable(tableArrReading, Model, threadPoolResult[i].id, SFW);
+	                									break;
+	        										case "completed":
+	        											
+	        												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, threadPoolResult[i]);
+	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, threadPoolResult[i].id, SFW);
+	
+	                									break;
+            										}
+            									}
+            								}
+            								
+            								System.out.println("§1");
             							}
             							tableArrSave = tableArr;
             							return null;

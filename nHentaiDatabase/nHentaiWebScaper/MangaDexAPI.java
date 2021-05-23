@@ -81,10 +81,20 @@ public class MangaDexAPI {
 			e.printStackTrace();
 		}
 	    JSONObject volumes = response.getBody().getObject().getJSONObject("volumes");
-	    JSONArray[] chapters = new JSONArray[volumes.length()];
+	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	      JsonParser jp = new JsonParser();
+	      JsonElement je = jp.parse(volumes.getJSONObject("1").toString());
+	      String prettyJsonString = gson.toJson(je);
+	      System.out.println(prettyJsonString);
+	    JSONObject[] chapters = new JSONObject[volumes.length()];
+	    if(volumes.has("N/A")) {
+	    	chapters[chapters.length-1] = volumes.getJSONObject("N/A");
+	    }
 	    for(int i=0;i<chapters.length;i++) {
-	    	chapters[i] = volumes.getJSONArray(String.valueOf(i));
-	    	System.out.println(chapters[i]);
+	    	if(volumes.has(String.valueOf(i + 1))){
+	    		chapters[i] = volumes.getJSONObject(String.valueOf(i + 1));
+	    		System.out.println(chapters[i]);
+	    	}
 	    }
 	    
 	}

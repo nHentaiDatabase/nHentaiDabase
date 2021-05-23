@@ -1,26 +1,16 @@
 package nHentaiWebScaper;
 
-import java.awt.Dimension;
-import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import settings.confirmDeleteEverything;
-
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 
 public class nHentaiWebBase {
@@ -32,7 +22,18 @@ public class nHentaiWebBase {
 	 * nHentaiWebBase contains methods with JSoup and other Web accesses.
 	 */
 	public nHentaiWebBase(){
-		
+		/*try {
+			initDocWithCode("177013");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(getCoverImage());
+		System.out.println(this.getArtist());
+		System.out.println(this.getId());
+		System.out.println(this.getPages());
+		System.out.println(this.getTitle());
+		System.out.println(this.getTags());*/
 	}
 	
 	/**
@@ -48,10 +49,9 @@ public class nHentaiWebBase {
 		
 		long timer1 = System.nanoTime();
 		
-		doc = Jsoup.connect(newURL).timeout(5000).maxBodySize(0) .get();
+		doc = Jsoup.connect(newURL).timeout(60000).maxBodySize(0) .get();
 		
 		long timer2 = System.nanoTime();
-		
 		return timer2 - timer1;
 	}
 	

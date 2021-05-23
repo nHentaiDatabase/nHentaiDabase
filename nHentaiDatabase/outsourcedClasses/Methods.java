@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.imgscalr.Scalr;
 
+import SaveObj.doujinObj;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 
@@ -530,5 +531,65 @@ public class Methods {
 	        destination.close();
 	    }
 
+	}
+	
+	public String[][] insertObjInTableArr(String[][] tableArr, doujinObj Obj){
+		tableArr[tableArr.length - 1][1] = Obj.coverImage;
+		tableArr[tableArr.length - 1][3] = Obj.title;
+		tableArr[tableArr.length - 1][2] = Obj.id;
+		for(int i=0;i<Obj.tags.length;i++){
+			if(i == 0)
+				tableArr[tableArr.length - 1][9] = Obj.tags[i] + ", ";
+			else
+				tableArr[tableArr.length - 1][9] = tableArr[tableArr.length - 1][9] + Obj.tags[i] + ", ";
+		}
+		tableArr[tableArr.length - 1][4] = Obj.artist;
+		tableArr[tableArr.length - 1][5] = Obj.pages;
+		tableArr[tableArr.length - 1][6] = Obj.status;
+		tableArr[tableArr.length - 1][8] = Obj.rating;
+		tableArr[tableArr.length - 1][7] = "0";
+		
+		tableArr = expandArr(tableArr);
+		return tableArr;
+	}
+	
+	public String[][] insertObjInTableArrReading(String[][] tableArrReading, doujinObj Obj){
+		tableArrReading[tableArrReading.length - 1][1] = Obj.coverImage;
+		tableArrReading[tableArrReading.length - 1][3] = Obj.title;
+		tableArrReading[tableArrReading.length - 1][2] = Obj.id;
+		for(int i=0;i<Obj.tags.length;i++){
+			if(i == 0)
+				tableArrReading[tableArrReading.length - 1][9] = Obj.tags[i] + ", ";
+			else
+				tableArrReading[tableArrReading.length - 1][9] = tableArrReading[tableArrReading.length - 1][9] + Obj.tags[i] + ", ";
+		}
+		tableArrReading[tableArrReading.length - 1][4] = Obj.artist;
+		tableArrReading[tableArrReading.length - 1][5] = Obj.pages;
+		tableArrReading[tableArrReading.length - 1][6] = Obj.rating;
+		tableArrReading[tableArrReading.length - 1][7] = Obj.status;
+		tableArrReading[tableArrReading.length - 1][8] = "0";
+		
+		tableArrReading = expandArr(tableArrReading);
+		return tableArrReading;
+	}
+	
+	public String[][] insertObjInTableArrCompleted(String[][] tableArrCompleted, doujinObj Obj){
+		tableArrCompleted[tableArrCompleted.length - 1][1] = Obj.coverImage;
+		tableArrCompleted[tableArrCompleted.length - 1][3] = Obj.title;
+		tableArrCompleted[tableArrCompleted.length - 1][2] = Obj.id;
+		for(int i=0;i<Obj.tags.length;i++){
+			if(i == 0)
+				tableArrCompleted[tableArrCompleted.length - 1][9] = Obj.tags[i] + ", ";
+			else
+				tableArrCompleted[tableArrCompleted.length - 1][9] = tableArrCompleted[tableArrCompleted.length - 1][9] + Obj.tags[i] + ", ";
+		}
+		tableArrCompleted[tableArrCompleted.length - 1][4] = Obj.artist;
+		tableArrCompleted[tableArrCompleted.length - 1][5] = Obj.pages;
+		tableArrCompleted[tableArrCompleted.length - 1][6] = Obj.rating;
+		tableArrCompleted[tableArrCompleted.length - 1][7] = "1";
+		tableArrCompleted[tableArrCompleted.length - 1][8] = Obj.status;
+		
+		tableArrCompleted = expandArr(tableArrCompleted);
+		return tableArrCompleted;
 	}
 }
