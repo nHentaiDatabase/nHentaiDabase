@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,9 +62,11 @@ import datamanager.dataManager;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntryGeneral;
+import outsourcedClasses.AnimationExpandExportPanel;
 import outsourcedClasses.ButtonColumnAll;
 import outsourcedClasses.Methods;
 import outsourcedClasses.nHentaiAPIRun;
+import renderEngine.dropShadowPane;
 import nHentaiWebScaper.Error;
 import search.searchEngine;
 
@@ -83,6 +84,7 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
+import java.awt.FlowLayout;
 
 /**
  * 
@@ -139,6 +141,8 @@ public class nHentai {
 	private JLabel responseTime_panel3_lbl;
 	
 	private loadingScreenMainGUI loadingScreen;
+	private JPanel expandExport_panel1_internalPanel;
+	private dropShadowPane expandExport_panel1_pnl;
 
 	private JCheckBox searchId_panel1_CBox;
 	private JCheckBox searchTitle_panel1_CBox;
@@ -152,6 +156,7 @@ public class nHentai {
 	private JCheckBox searchTitle_panel3_CBox;
 	private JCheckBox searchAuthor_panel3_CBox;
 	private JCheckBox searchTags_panel3_CBox;
+
 	
 	private String title;
 	private String id;
@@ -832,10 +837,12 @@ public class nHentai {
 		saveTable_panel1_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				if(inSearchViewPlanToRead == false)
-					actionPerformedSafe(tableArr);
-				else
-					actionPerformedSafe(tableArrSave);
+				
+				
+				
+				AnimationExpandExportPanel a = new AnimationExpandExportPanel(expandExport_panel1_pnl);
+				a.execute();
+				
 			}
 		});
 		panel_panel1.add(saveTable_panel1_btn);
@@ -1019,6 +1026,107 @@ public class nHentai {
 		showMore_panel1_CBox.setBackground(new Color(0, 44, 88));
 		showMore_panel1_CBox.setBounds(10, 38, 80, 23);
 		panel_panel1.add(showMore_panel1_CBox);
+		
+		expandExport_panel1_internalPanel = new JPanel();
+		expandExport_panel1_internalPanel.setVisible(true);
+		expandExport_panel1_internalPanel.setBackground(new Color(0, 44, 88));
+		expandExport_panel1_internalPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		panel_panel1.add(expandExport_panel1_internalPanel);
+		
+		
+
+		JButton expand_button1_panel1_btn = new JButton("Save Tab      ");
+		expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+		expand_button1_panel1_btn.setForeground(Color.WHITE);
+		expand_button1_panel1_btn.setPreferredSize(new Dimension(135, 30));
+		expand_button1_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		expand_button1_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		expand_button1_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+		});
+		expandExport_panel1_internalPanel.add(expand_button1_panel1_btn);
+		
+		JButton expand_button2_panel1_btn = new JButton("Export Tab    ");
+		expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+		expand_button2_panel1_btn.setForeground(Color.WHITE);
+		expand_button2_panel1_btn.setPreferredSize(new Dimension(135, 30));
+		expand_button2_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		expand_button2_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		expand_button2_panel1_btn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewPlanToRead == false)
+					actionPerformedSafe(tableArr);
+				else
+					actionPerformedSafe(tableArrSave);
+			}
+			
+		});
+		expand_button2_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+		});
+		expandExport_panel1_internalPanel.add(expand_button2_panel1_btn);
+		
+		JButton expand_button3_panel1_btn = new JButton("Export id-List");
+		expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+		expand_button3_panel1_btn.setForeground(Color.WHITE);
+		expand_button3_panel1_btn.setPreferredSize(new Dimension(135, 30));
+		expand_button3_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		expand_button3_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		expand_button3_panel1_btn.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent evt) {
+				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+
+			public void mouseExited(MouseEvent evt) {
+				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mousePressed(MouseEvent evt) {
+				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
+			}
+
+			public void mouseReleased(MouseEvent evt) {
+				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+			}
+		});
+		expandExport_panel1_internalPanel.add(expand_button3_panel1_btn);
+		
+		expandExport_panel1_pnl = new dropShadowPane(expandExport_panel1_internalPanel, 0, 0, 0, 0);
+		expandExport_panel1_pnl.setBounds(10, 455, 143, 98);
+		expandExport_panel1_pnl.setBackground(new Color(0, 44, 88));
+		expandExport_panel1_pnl.setForeground(Color.WHITE);
+		panel_panel1.add(expandExport_panel1_pnl);
 		
 		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
@@ -2611,200 +2719,200 @@ public class nHentai {
             			safed = false;
             			
             					
-            					class Task extends SwingWorker<Void, Void> {
-            						@Override
-            						protected Void doInBackground() throws Exception {
-            							int index;
-            							if ((!code.equals("") || !URL.equals(""))) {
-            								
-            								
-            								try {
-            									System.out.println("§");
-            									switch(status) {
-            										case "plan to read":
-            											index = methods.checkIfIdExists(Arr, code);
-            											if(index == -1) {
-	            											doujinObj obj = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read", new nHentaiWebBase());
-	            											tableArr = methods.insertObjInTableArr(tableArr, obj);
-	                    									model = methods.expandTable(tableArr, Model, code, SFW);
-            											}else
-            												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
-                    									break;
-            										case "reading":
-            											index = methods.checkIfIdExists(Arr, code);
-            											if(index == -1) {
-            												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading", new nHentaiWebBase());
-            												tableArrReading = methods.insertObjInTableArr(tableArrReading, obj);
-	                    									modelReading = methods.expandTable(tableArrReading, Model, code, SFW);
-            											}else
-            												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
-                    									break;
-            										case "completed":
-            											index = methods.checkIfIdExists(Arr, code);
-            											if(index == -1) {
-            												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed", new nHentaiWebBase());
-            												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, obj);
-	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, code, SFW);
-            											}else
-            												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
-                    									break;
-            									}
-            									long time = nHentaiAPIRun.getInitTime();
-            									String unit = "ms";
-            									time  = time / 1000000;
-            									if(time > 999) {
-            										time = time / 1000;
-            										unit = "s";
-            									}
-            										
-            									label.setText("nHentai response: " + time + unit);
-            								} catch (IOException e) {
-            									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-            									Error errorPanel = new Error(code);
-            									JOptionPane error = new JOptionPane();
-            									error.showMessageDialog(null, errorPanel, "error", 0);
-            									e.printStackTrace();
-            								}
-            							}
-            							if (selected == true) {
-            								String[] TextAreaData = EntryGeneral.getDataInTextArea();
-            								doujinObj[] threadPoolResult = new doujinObj[TextAreaData.length];
-            								
-            								class TaskPool implements Runnable{
-            									
-            									int taskNum;
-            									
-            									public TaskPool(int i) {
-            										taskNum = i;
-            										System.out.println(i);
-            									}
+        					class Task extends SwingWorker<Void, Void> {
+        						@Override
+        						protected Void doInBackground() throws Exception {
+        							int index;
+        							if ((!code.equals("") || !URL.equals(""))) {
+        								
+        								
+        								try {
+        									System.out.println("§");
+        									switch(status) {
+        										case "plan to read":
+        											index = methods.checkIfIdExists(Arr, code);
+        											if(index == -1) {
+            											doujinObj obj = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "plan to read", new nHentaiWebBase());
+            											tableArr = methods.insertObjInTableArr(tableArr, obj);
+                    									model = methods.expandTable(tableArr, Model, code, SFW);
+        											}else
+        												tableArr[index][7] = String.valueOf(Integer.valueOf(tableArr[index][7]) +1);
+                									break;
+        										case "reading":
+        											index = methods.checkIfIdExists(Arr, code);
+        											if(index == -1) {
+        												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "reading", new nHentaiWebBase());
+        												tableArrReading = methods.insertObjInTableArr(tableArrReading, obj);
+                    									modelReading = methods.expandTable(tableArrReading, Model, code, SFW);
+        											}else
+        												tableArrReading[index][8] = String.valueOf(Integer.valueOf(tableArrReading[index][8]) +1);
+                									break;
+        										case "completed":
+        											index = methods.checkIfIdExists(Arr, code);
+        											if(index == -1) {
+        												doujinObj obj = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, code, "", rating, "completed", new nHentaiWebBase());
+        												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, obj);
+                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, code, SFW);
+        											}else
+        												tableArrCompleted[index][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index][7]) +1);
+                									break;
+        									}
+        									long time = nHentaiAPIRun.getInitTime();
+        									String unit = "ms";
+        									time  = time / 1000000;
+        									if(time > 999) {
+        										time = time / 1000;
+        										unit = "s";
+        									}
+        										
+        									label.setText("nHentai response: " + time + unit);
+        								} catch (IOException e) {
+        									UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+        									Error errorPanel = new Error(code);
+        									JOptionPane error = new JOptionPane();
+        									error.showMessageDialog(null, errorPanel, "error", 0);
+        									e.printStackTrace();
+        								}
+        							}
+        							if (selected == true) {
+        								String[] TextAreaData = EntryGeneral.getDataInTextArea();
+        								doujinObj[] threadPoolResult = new doujinObj[TextAreaData.length];
+        								
+        								class TaskPool implements Runnable{
+        									
+        									int taskNum;
+        									
+        									public TaskPool(int i) {
+        										taskNum = i;
+        										System.out.println(i);
+        									}
 
-												@Override
-												public void run(){
-													// TODO Auto-generated method stub
-													int index2;
-            										
+											@Override
+											public void run(){
+												// TODO Auto-generated method stub
+												int index2;
+        										
 
-            										String rawData = TextAreaData[taskNum];
-                									String rawCode = "";
-                									String rawRating = "";
-                									boolean ratingTurn = false;
-                									char[] rawDataChar = rawData.toCharArray();
-                									for (int j = 0; j < rawDataChar.length; j++) {
-                										if (ratingTurn == true) {
-                											rawRating = rawRating + rawDataChar[j];
-                										}
-                										if (rawDataChar[j] == ' ') {
-                											ratingTurn = true;
-                										} else if (ratingTurn == false) {
-                											rawCode = rawCode + rawDataChar[j];
-                										}
-                									}
-                									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
-                										rawRating = rawRating.substring(0, rawRating.length() - 1);
-                									try {
-                										switch(status) {
-                										case "plan to read":
-                											index2 = methods.checkIfIdExists(Arr, rawCode);
-                											if(index2 == -1) {
-                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read", new nHentaiWebBase());
-                											}else
-                												tableArr[index2][7] = String.valueOf(Integer.valueOf(tableArr[index2][7]) +1);
-                        									break;
-                										case "reading":
-                											index2 = methods.checkIfIdExists(Arr, rawCode);
-                											if(index2 == -1) {
-                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading", new nHentaiWebBase());
-                											}else
-                												tableArrReading[index2][8] = String.valueOf(Integer.valueOf(tableArrReading[index2][8]) +1);
-                        									break;
-                										case "completed":
-                											index2 = methods.checkIfIdExists(Arr, rawCode);
-                											if(index2 == -1) {
-                												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed", new nHentaiWebBase());
-                											}else
-                												tableArrCompleted[index2][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index2][7]) +1);
-                        									break;
-                									}
-                										long time = nHentaiAPIRun.getInitTime();
-                    									String unit = "ms";
-                    									time  = time / 1000000;
-                    									if(time > 999) {
-                    										time = time / 1000;
-                    										unit = "s";
-                    									}
-                    										
-                    									label.setText("nHentai response: " + time + unit);
-                									} catch (IOException e) {
-                										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
-                										Error errorPanel = new Error(rawCode);
-                										JOptionPane error = new JOptionPane();
-                										error.showMessageDialog(null, errorPanel, "error", 0);
-                										e.printStackTrace();
-                									}
-                									System.out.println("§2");
-												}
-            									
-												
-            									
-            								}
-            								
-            								int cores = Runtime.getRuntime().availableProcessors(); 
-            								
-            								ExecutorService pool = Executors.newFixedThreadPool(cores);  
-            						        // passes the Task objects to the pool to execute (Step 3)
-            								
-            								for (int i = 0; i < TextAreaData.length; i++) {
-            									int taskNum = i;
-            									
-            									pool.execute(new TaskPool(i));
-            									
-            									Thread.sleep(200);
-            								}
-            								pool.shutdown();
-            								pool.awaitTermination(20 * TextAreaData.length, TimeUnit.SECONDS);
-            								for(int i=0;i<threadPoolResult.length;i++) {
-            									if(threadPoolResult[i] != null) {
-	            									switch(status) {
-	        										case "plan to read":
-	        											
-	            											tableArr = methods.insertObjInTableArr(tableArr, threadPoolResult[i]);
-	                    									model = methods.expandTable(tableArr, Model, threadPoolResult[i].id, SFW);
-	
-	                									break;
-	        										case "reading":
-	        											
-	        												tableArrReading = methods.insertObjInTableArr(tableArrReading, threadPoolResult[i]);
-	                    									modelReading = methods.expandTable(tableArrReading, Model, threadPoolResult[i].id, SFW);
-	                									break;
-	        										case "completed":
-	        											
-	        												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, threadPoolResult[i]);
-	                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, threadPoolResult[i].id, SFW);
-	
-	                									break;
+        										String rawData = TextAreaData[taskNum];
+            									String rawCode = "";
+            									String rawRating = "";
+            									boolean ratingTurn = false;
+            									char[] rawDataChar = rawData.toCharArray();
+            									for (int j = 0; j < rawDataChar.length; j++) {
+            										if (ratingTurn == true) {
+            											rawRating = rawRating + rawDataChar[j];
+            										}
+            										if (rawDataChar[j] == ' ') {
+            											ratingTurn = true;
+            										} else if (ratingTurn == false) {
+            											rawCode = rawCode + rawDataChar[j];
             										}
             									}
-            								}
-            								
-            								System.out.println("§1");
-            							}
-            							tableArrSave = tableArr;
-            							return null;
-            						}
-            						
-            						@Override
-            						protected void done() {
-            							Bar.setIndeterminate(false);
-            							Bar.setVisible(false);
-            							label.setVisible(false);
-            						}
-            					}
-            					Bar.setVisible(true);
-            					Bar.setIndeterminate(true);
-            					label.setVisible(true);
-            					Task task = new Task();
-            					task.execute();
+            									if(!rawRating.equals("") && rawRating.substring(rawRating.length()-1).equals(" "))
+            										rawRating = rawRating.substring(0, rawRating.length() - 1);
+            									try {
+            										switch(status) {
+            										case "plan to read":
+            											index2 = methods.checkIfIdExists(Arr, rawCode);
+            											if(index2 == -1) {
+            												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRun(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "plan to read", new nHentaiWebBase());
+            											}else
+            												tableArr[index2][7] = String.valueOf(Integer.valueOf(tableArr[index2][7]) +1);
+                    									break;
+            										case "reading":
+            											index2 = methods.checkIfIdExists(Arr, rawCode);
+            											if(index2 == -1) {
+            												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunReading(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "reading", new nHentaiWebBase());
+            											}else
+            												tableArrReading[index2][8] = String.valueOf(Integer.valueOf(tableArrReading[index2][8]) +1);
+                    									break;
+            										case "completed":
+            											index2 = methods.checkIfIdExists(Arr, rawCode);
+            											if(index2 == -1) {
+            												threadPoolResult[taskNum] = nHentaiAPIRun.nHentaiAPIRunCompleted(appdataLocation + mainFolderLocation + photoFolderLocation, rawCode, "", rawRating, "completed", new nHentaiWebBase());
+            											}else
+            												tableArrCompleted[index2][7] = String.valueOf(Integer.valueOf(tableArrCompleted[index2][7]) +1);
+                    									break;
+            									}
+            										long time = nHentaiAPIRun.getInitTime();
+                									String unit = "ms";
+                									time  = time / 1000000;
+                									if(time > 999) {
+                										time = time / 1000;
+                										unit = "s";
+                									}
+                										
+                									label.setText("nHentai response: " + time + unit);
+            									} catch (IOException e) {
+            										UIManager.put("OptionPane.minimumSize", new Dimension(200, 100));
+            										Error errorPanel = new Error(rawCode);
+            										JOptionPane error = new JOptionPane();
+            										error.showMessageDialog(null, errorPanel, "error", 0);
+            										e.printStackTrace();
+            									}
+            									System.out.println("§2");
+											}
+        									
+											
+        									
+        								}
+        								
+        								int cores = Runtime.getRuntime().availableProcessors(); 
+        								
+        								ExecutorService pool = Executors.newFixedThreadPool(cores);  
+        						        // passes the Task objects to the pool to execute (Step 3)
+        								
+        								for (int i = 0; i < TextAreaData.length; i++) {
+        									int taskNum = i;
+        									
+        									pool.execute(new TaskPool(i));
+        									
+        									Thread.sleep(200);
+        								}
+        								pool.shutdown();
+        								pool.awaitTermination(20 * TextAreaData.length, TimeUnit.SECONDS);
+        								for(int i=0;i<threadPoolResult.length;i++) {
+        									if(threadPoolResult[i] != null) {
+            									switch(status) {
+        										case "plan to read":
+        											
+            											tableArr = methods.insertObjInTableArr(tableArr, threadPoolResult[i]);
+                    									model = methods.expandTable(tableArr, Model, threadPoolResult[i].id, SFW);
+
+                									break;
+        										case "reading":
+        											
+        												tableArrReading = methods.insertObjInTableArr(tableArrReading, threadPoolResult[i]);
+                    									modelReading = methods.expandTable(tableArrReading, Model, threadPoolResult[i].id, SFW);
+                									break;
+        										case "completed":
+        											
+        												tableArrCompleted = methods.insertObjInTableArr(tableArrCompleted, threadPoolResult[i]);
+                    									modelCompleted = methods.expandTable(tableArrCompleted, Model, threadPoolResult[i].id, SFW);
+
+                									break;
+        										}
+        									}
+        								}
+        								
+        								System.out.println("§1");
+        							}
+        							tableArrSave = tableArr;
+        							return null;
+        						}
+        						
+        						@Override
+        						protected void done() {
+        							Bar.setIndeterminate(false);
+        							Bar.setVisible(false);
+        							label.setVisible(false);
+        						}
+        					}
+        					Bar.setVisible(true);
+        					Bar.setIndeterminate(true);
+        					label.setVisible(true);
+        					Task task = new Task();
+        					task.execute();
 
             		}
                 }

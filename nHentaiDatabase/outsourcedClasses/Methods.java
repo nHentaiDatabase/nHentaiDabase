@@ -3,6 +3,7 @@ package outsourcedClasses;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -28,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -591,5 +593,14 @@ public class Methods {
 		
 		tableArrCompleted = expandArr(tableArrCompleted);
 		return tableArrCompleted;
+	}
+	
+	public void expandPanel(JPanel panel, int expansion) {
+		Dimension oldD = panel.getSize();
+		int newY = oldD.height + expansion;
+		Dimension d = new Dimension((int)oldD.getWidth(), newY);
+		panel.setSize(d);
+		Point p = new Point(panel.getLocation().x, panel.getLocation().y - expansion);
+		panel.setLocation(p);
 	}
 }

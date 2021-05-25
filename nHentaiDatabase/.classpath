@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="libs/jsoup-1.13.1.jar"/>
 	<classpathentry kind="lib" path="libs/unirest-java-1.4.7.jar"/>
 	<classpathentry kind="lib" path="libs/unirest-java-1.4.9.jar"/>
+	<classpathentry kind="lib" path="libs/swingx-all-1.6.5-1.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
