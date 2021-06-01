@@ -40,6 +40,33 @@ public class dataManager {
 	}
 	
 	/**
+	 * Save the table only with the id and the rating
+	 * 
+	 * @param table
+	 * @param location
+	 */
+	public void saveTableAsIdList(String[][] table, String location) {
+		try {
+            outputStream = new PrintWriter(location);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+		int posRating = 6;
+		if(table[0][posRating].length() > 2) {
+			posRating = 8;
+		}
+
+		for(int i=0;i<table.length-1;i++) {
+			if(table[i][posRating].equals("N/A"))
+				outputStream.println(table[i][2]);
+			else
+				outputStream.println(table[i][2] + " " + table[i][posRating]);
+		}
+		outputStream.close();
+	}
+	
+	/**
 	 * Save the Settings at the given Location.
 	 * 
 	 * @param settings Array with the settings

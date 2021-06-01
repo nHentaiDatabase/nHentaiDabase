@@ -59,6 +59,8 @@ import settings.settingsPanel;
 import updater.LocationFinder;
 import updater.gitHubUpdater;
 import datamanager.dataManager;
+import jPanels.ControlPanel;
+import jPanels.ExportPopUpPanel;
 import moreInformation.moreInformationPanel;
 import nHentaiWebScaper.nHentaiWebBase;
 import newEntry.newEntryGeneral;
@@ -141,22 +143,13 @@ public class nHentai {
 	private JLabel responseTime_panel3_lbl;
 	
 	private loadingScreenMainGUI loadingScreen;
-	private JPanel expandExport_panel1_internalPanel;
 	private dropShadowPane expandExport_panel1_pnl;
-
-	private JCheckBox searchId_panel1_CBox;
-	private JCheckBox searchTitle_panel1_CBox;
-	private JCheckBox searchAuthor_panel1_CBox;
-	private JCheckBox searchTags_panel1_CBox;
-	private JCheckBox searchId_panel2_CBox;
-	private JCheckBox searchTitle_panel2_CBox;
-	private JCheckBox searchAuthor_panel2_CBox;
-	private JCheckBox searchTags_panel2_CBox;
-	private JCheckBox searchId_panel3_CBox;
-	private JCheckBox searchTitle_panel3_CBox;
-	private JCheckBox searchAuthor_panel3_CBox;
-	private JCheckBox searchTags_panel3_CBox;
-
+	private dropShadowPane expandExport_panel2_pnl;
+	private dropShadowPane expandExport_panel3_pnl;
+	
+	private ControlPanel panel_panel1;
+	private ControlPanel panel_panel2;
+	private ControlPanel panel_panel3;
 	
 	private String title;
 	private String id;
@@ -740,101 +733,30 @@ public class nHentai {
 		
 		
 
-		JPanel panel_panel1 = new JPanel();
-		panel_panel1.setBackground(new Color(0, 44, 88));
-		panel_panel1.setBounds(10, 11, 230, 632);
-		planToRead_tab.add(panel_panel1);
-		panel_panel1.setLayout(null);
 
 		/*
 		 * Start panel 1
 		 */
-		JButton newEntry_panel1_bnt = new JButton("new Entry");
-		newEntry_panel1_bnt.setSelectedIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-		newEntry_panel1_bnt.setForeground(Color.WHITE);
-		newEntry_panel1_bnt.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		newEntry_panel1_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
-		newEntry_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-		newEntry_panel1_bnt.setBounds(10, 243, 210, 35);
-		newEntry_panel1_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				newEntry_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				newEntry_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				newEntry_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				newEntry_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
-		});
-		newEntry_panel1_bnt.addActionListener(new ActionListener() {
+		
+		//Setup the ActionListeners for panel_panel1
+		panel_panel1 = new ControlPanel();
+		
+		panel_panel1.newEntry_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 
 				actionPerformedNewEntry(tableArr, model, responseTime_panel1_lbl, EntryLoader_panel1_PBar, "plan to read");				
 			}
 		});
-		panel_panel1.add(newEntry_panel1_bnt);
 
-		JButton settings_panel1_bnt = new JButton("");
-		settings_panel1_bnt.setBounds(10, 586, 112, 35);
-		settings_panel1_bnt.requestFocus();
-		settings_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-		settings_panel1_bnt.addActionListener(new ActionListener() {
+		panel_panel1.settings_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				actionPerformedSetting();
 			}
 		});
-		settings_panel1_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				settings_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				settings_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				settings_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				settings_panel1_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
-		});
-		panel_panel1.add(settings_panel1_bnt);
-
-		JButton saveTable_panel1_btn = new JButton("");
-		saveTable_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		saveTable_panel1_btn.setForeground(Color.WHITE);
-		saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-		saveTable_panel1_btn.setBounds(10, 552, 80, 25);
-		saveTable_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		saveTable_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				saveTable_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-		});
-		saveTable_panel1_btn.addActionListener(new ActionListener() {
+		panel_panel1.saveTable_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
@@ -845,44 +767,19 @@ public class nHentai {
 				
 			}
 		});
-		panel_panel1.add(saveTable_panel1_btn);
 
-		JButton loadTable__panel1_btn = new JButton("");
-		loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-		loadTable__panel1_btn.setBounds(100, 552, 80, 25);
-		loadTable__panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				loadTable__panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
-		});
-		loadTable__panel1_btn.addActionListener(new ActionListener() {
+		panel_panel1.loadTable_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				tableArr = actionPerformedLoad("plan to read");
 				model = methods.ArrToTable(model, tableArr, SFW);
 			}
 		});
-		panel_panel1.add(loadTable__panel1_btn);
 		
-		JTextField search_panel1_TField = new JTextField();
-		search_panel1_TField.setBackground(Color.WHITE);
-		search_panel1_TField.setToolTipText("");
-		search_panel1_TField.addActionListener(new ActionListener() {
+		panel_panel1.search_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if(!search_panel1_TField.getText().equals("")) {
-						String text = search_panel1_TField.getText();
+					if(!panel_panel1.search_TField.getText().equals("")) {
+						String text = panel_panel1.search_TField.getText();
 						actionPerformedSearch(text);
 					}else {
 						for(int i=0;i<tableArr.length-1;i++) {
@@ -891,21 +788,15 @@ public class nHentai {
 						tableArr = tableArrSave;
 						methods.ArrToTable(model, tableArr, SFW);
 						inSearchViewPlanToRead = false;
-						search_panel1_TField.setText("");
+						panel_panel1.search_TField.setText("");
 					}
 			}
 		});
-		search_panel1_TField.setBounds(10, 11, 157, 23);
-		panel_panel1.add(search_panel1_TField);
-		search_panel1_TField.setColumns(10);
 		
-		JButton search_panel1_btn = new JButton();
-		search_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-		search_panel1_btn.addActionListener(new ActionListener() {
+		panel_panel1.search_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!search_panel1_TField.getText().equals("")) {
-					String text = search_panel1_TField.getText();
+				if(!panel_panel1.search_TField.getText().equals("")) {
+					String text = panel_panel1.search_TField.getText();
 					actionPerformedSearch(text);
 				}else {
 					for(int i=0;i<tableArr.length-1;i++) {
@@ -914,35 +805,12 @@ public class nHentai {
 					tableArr = tableArrSave;
 					methods.ArrToTable(model, tableArr, SFW);
 					inSearchViewPlanToRead = false;
-					search_panel1_TField.setText("");
+					panel_panel1.search_TField.setText("");
 				}
 			}
 		});
-		search_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-					search_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-		});
-		search_panel1_btn.setBounds(197, 11, 22, 23);
-		panel_panel1.add(search_panel1_btn);
 		
-		
-		JButton clear_panel1_btn = new JButton();
-		clear_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-		clear_panel1_btn.addActionListener(new ActionListener() {
+		panel_panel1.clear_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<tableArr.length-1;i++) {
 					model.removeRow(0);
@@ -950,124 +818,22 @@ public class nHentai {
 				tableArr = tableArrSave;
 				methods.ArrToTable(model, tableArr, SFW);
 				inSearchViewPlanToRead = false;
-				search_panel1_TField.setText("");
+				panel_panel1.search_TField.setText("");
 			}
 		});
-		clear_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				clear_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
-		});
-		clear_panel1_btn.setBounds(169, 11, 22, 23);
-		panel_panel1.add(clear_panel1_btn);
 		
-		searchId_panel1_CBox = new JCheckBox("id");
-		searchId_panel1_CBox.setForeground(Color.WHITE);
-		searchId_panel1_CBox.setBackground(new Color(0, 44, 88));
-		searchId_panel1_CBox.setBounds(10, 64, 52, 23);
-		searchId_panel1_CBox.setVisible(false);
-		searchId_panel1_CBox.setSelected(true);
-		panel_panel1.add(searchId_panel1_CBox);
-		
-		searchTitle_panel1_CBox = new JCheckBox("title");
-		searchTitle_panel1_CBox.setBackground(new Color(0, 44, 88));
-		searchTitle_panel1_CBox.setForeground(Color.WHITE);
-		searchTitle_panel1_CBox.setBounds(10, 90, 52, 23);
-		searchTitle_panel1_CBox.setVisible(false);
-		searchTitle_panel1_CBox.setSelected(true);
-		panel_panel1.add(searchTitle_panel1_CBox);
-		
-		searchAuthor_panel1_CBox = new JCheckBox("author");
-		searchAuthor_panel1_CBox.setBackground(new Color(0, 44, 88));
-		searchAuthor_panel1_CBox.setForeground(Color.WHITE);
-		searchAuthor_panel1_CBox.setBounds(83, 64, 68, 23);
-		searchAuthor_panel1_CBox.setVisible(false);
-		searchAuthor_panel1_CBox.setSelected(true);
-		panel_panel1.add(searchAuthor_panel1_CBox);
-		
-		searchTags_panel1_CBox = new JCheckBox("tags");
-		searchTags_panel1_CBox.setBackground(new Color(0, 44, 88));
-		searchTags_panel1_CBox.setForeground(Color.WHITE);
-		searchTags_panel1_CBox.setBounds(83, 90, 68, 23);
-		searchTags_panel1_CBox.setVisible(false);
-		searchTags_panel1_CBox.setSelected(true);
-		panel_panel1.add(searchTags_panel1_CBox);
-
-		JCheckBox showMore_panel1_CBox = new JCheckBox("show more");
-		showMore_panel1_CBox.addItemListener(new ItemListener() {
+		panel_panel1.exportPanel.expand_button1_btn.addActionListener(new ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
-					searchId_panel1_CBox.setVisible(true);
-					searchTitle_panel1_CBox.setVisible(true);
-					searchAuthor_panel1_CBox.setVisible(true);
-					searchTags_panel1_CBox.setVisible(true);
-				} else {//checkbox has been deselected
-					searchId_panel1_CBox.setVisible(false);
-					searchTitle_panel1_CBox.setVisible(false);
-					searchAuthor_panel1_CBox.setVisible(false);
-					searchTags_panel1_CBox.setVisible(false);
-				};
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+				if(inSearchViewPlanToRead == false)
+					dataManager.saveTable(tableArr, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
+				else
+					dataManager.saveTable(tableArrSave, SaveFileLocation + Slash + "nHentaiDatabasePlanToRead.nhdb");
 			}
 		});
-		showMore_panel1_CBox.setForeground(Color.WHITE);
-		showMore_panel1_CBox.setBackground(new Color(0, 44, 88));
-		showMore_panel1_CBox.setBounds(10, 38, 80, 23);
-		panel_panel1.add(showMore_panel1_CBox);
-		
-		expandExport_panel1_internalPanel = new JPanel();
-		expandExport_panel1_internalPanel.setVisible(true);
-		expandExport_panel1_internalPanel.setBackground(new Color(0, 44, 88));
-		expandExport_panel1_internalPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		panel_panel1.add(expandExport_panel1_internalPanel);
-		
-		
-
-		JButton expand_button1_panel1_btn = new JButton("Save Tab      ");
-		expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-		expand_button1_panel1_btn.setForeground(Color.WHITE);
-		expand_button1_panel1_btn.setPreferredSize(new Dimension(135, 30));
-		expand_button1_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		expand_button1_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		expand_button1_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				expand_button1_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
-			}
-		});
-		expandExport_panel1_internalPanel.add(expand_button1_panel1_btn);
-		
-		JButton expand_button2_panel1_btn = new JButton("Export Tab    ");
-		expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-		expand_button2_panel1_btn.setForeground(Color.WHITE);
-		expand_button2_panel1_btn.setPreferredSize(new Dimension(135, 30));
-		expand_button2_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		expand_button2_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		expand_button2_panel1_btn.addActionListener(new ActionListener() {
-
+		panel_panel1.exportPanel.expand_button2_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -1076,58 +842,21 @@ public class nHentai {
 				else
 					actionPerformedSafe(tableArrSave);
 			}
-			
 		});
-		expand_button2_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				expand_button2_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
+		panel_panel1.exportPanel.expand_button3_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewPlanToRead == false)
+					actionPerformedSafeIdList(tableArr);
+				else
+					actionPerformedSafeIdList(tableArrSave);
 			}
 		});
-		expandExport_panel1_internalPanel.add(expand_button2_panel1_btn);
 		
-		JButton expand_button3_panel1_btn = new JButton("Export id-List");
-		expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-		expand_button3_panel1_btn.setForeground(Color.WHITE);
-		expand_button3_panel1_btn.setPreferredSize(new Dimension(135, 30));
-		expand_button3_panel1_btn.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		expand_button3_panel1_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		expand_button3_panel1_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/Background.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				expand_button3_panel1_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/expandExort/BackgroundHover.png")));
-			}
-		});
-		expandExport_panel1_internalPanel.add(expand_button3_panel1_btn);
+		planToRead_tab.add(panel_panel1);
 		
-		expandExport_panel1_pnl = new dropShadowPane(expandExport_panel1_internalPanel, 0, 0, 0, 0);
-		expandExport_panel1_pnl.setBounds(10, 455, 143, 98);
-		expandExport_panel1_pnl.setBackground(new Color(0, 44, 88));
-		expandExport_panel1_pnl.setForeground(Color.WHITE);
-		panel_panel1.add(expandExport_panel1_pnl);
-		
+		//End setup
 		
 		JScrollPane scrollPane_panel1 = new JScrollPane();
 		scrollPane_panel1.setBounds(250, 11, 666, 632);
@@ -1269,139 +998,44 @@ public class nHentai {
 		tabbedPane.addTab("reading", null, reading_tab, null);
 		reading_tab.setLayout(null);
 
-		JPanel panel_panel2 = new JPanel();
-		panel_panel2.setLayout(null);
-		panel_panel2.setBackground(new Color(0, 44, 88));
-		panel_panel2.setBounds(10, 11, 230, 632);
+		panel_panel2 = new ControlPanel();
 		reading_tab.add(panel_panel2);
 
-		JButton newEntry_panel2_bnt = new JButton("new Entry");
-		newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-		newEntry_panel2_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
-		newEntry_panel2_bnt.setForeground(Color.WHITE);
-		newEntry_panel2_bnt.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		newEntry_panel2_bnt.setBounds(10, 243, 210, 35);
-		newEntry_panel2_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				newEntry_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
-		});
-		newEntry_panel2_bnt.addActionListener(new ActionListener() {
+		
+		panel_panel2.newEntry_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
 				actionPerformedNewEntry(tableArrReading, modelReading, responseTime_panel2_lbl, EntryLoader_panel2_PBar, "reading");				
 			}
 		});
-		panel_panel2.add(newEntry_panel2_bnt);
 
-		JButton settings_panel2_bnt = new JButton("");
-		settings_panel2_bnt.setBounds(10, 586, 112, 35);
-		settings_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-		settings_panel2_bnt.addActionListener(new ActionListener() {
+		
+		panel_panel2.settings_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				actionPerformedSetting();
 			}
 		});
-		settings_panel2_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				settings_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				settings_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				settings_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				settings_panel2_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
-		});
-		panel_panel2.add(settings_panel2_bnt);
-
-		JButton saveTable_panel2_btn = new JButton("");
-		saveTable_panel2_btn.addActionListener(new ActionListener() {
+		panel_panel2.saveTable_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewReading == false)
-					actionPerformedSafe(tableArrReading);
-				else
-					actionPerformedSafe(tableArrReadingSave);
+				AnimationExpandExportPanel a = new AnimationExpandExportPanel(expandExport_panel2_pnl);
+				a.execute();
 			}
 		});
-		saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-		saveTable_panel2_btn.setBounds(10, 552, 80, 25);
-		saveTable_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		saveTable_panel2_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				saveTable_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-		});
-		panel_panel2.add(saveTable_panel2_btn);
-
-		JButton loadTable__panel2_btn = new JButton("");
-		loadTable__panel2_btn.addActionListener(new ActionListener() {
+		
+		panel_panel2.loadTable_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tableArrReading = actionPerformedLoad("reading");
 				modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 			}
 		});
-		loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-		loadTable__panel2_btn.setBounds(100, 552, 80, 25);
-		loadTable__panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		loadTable__panel2_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				loadTable__panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
-		});
-		panel_panel2.add(loadTable__panel2_btn);
-
-		JTextField search_panel2_TField = new JTextField();
-		search_panel2_TField.setBackground(Color.WHITE);
-		search_panel2_TField.setToolTipText("");
-		search_panel2_TField.addActionListener(new ActionListener() {
+		panel_panel2.search_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if(!search_panel2_TField.getText().equals("")) {
-						String text = search_panel2_TField.getText();
+					if(!panel_panel2.search_TField.getText().equals("")) {
+						String text = panel_panel2.search_TField.getText();
 						actionPerformedSearchReading(text);
 					}else {
 						for(int i=0;i<tableArrReading.length-1;i++) {
@@ -1410,21 +1044,15 @@ public class nHentai {
 						tableArrReading = tableArrReadingSave;
 						modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 						inSearchViewReading = false;
-						search_panel2_TField.setText("");
+						panel_panel2.search_TField.setText("");
 					}
 			}
 		});
-		search_panel2_TField.setBounds(10, 11, 157, 23);
-		panel_panel2.add(search_panel2_TField);
-		search_panel2_TField.setColumns(10);
 		
-		JButton search_panel2_btn = new JButton();
-		search_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-		search_panel2_btn.addActionListener(new ActionListener() {
+		panel_panel2.search_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!search_panel2_TField.getText().equals("")) {
-					String text = search_panel2_TField.getText();
+				if(!panel_panel2.search_TField.getText().equals("")) {
+					String text = panel_panel2.search_TField.getText();
 					actionPerformedSearchReading(text);
 				}else {
 					for(int i=0;i<tableArrReading.length-1;i++) {
@@ -1433,35 +1061,12 @@ public class nHentai {
 					tableArrReading = tableArrReadingSave;
 					modelReading = methods.ArrToTable(modelReading, tableArrReading, SFW);
 					inSearchViewReading = false;
-					search_panel2_TField.setText("");
+					panel_panel2.search_TField.setText("");
 				}
 			}
 		});
-		search_panel2_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-					search_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-		});
-		search_panel2_btn.setBounds(197, 11, 22, 23);
-		panel_panel2.add(search_panel2_btn);
 		
-		
-		JButton clear_panel2_btn = new JButton();
-		clear_panel2_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-		clear_panel2_btn.addActionListener(new ActionListener() {
+		panel_panel2.clear_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<tableArr.length-1;i++) {
 					model.removeRow(0);
@@ -1469,82 +1074,41 @@ public class nHentai {
 				tableArr = tableArrSave;
 				methods.ArrToTable(modelReading, tableArrReading, SFW);
 				inSearchViewPlanToRead = false;
-				search_panel2_TField.setText("");
+				panel_panel2.search_TField.setText("");
 			}
 		});
-		clear_panel2_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				clear_panel2_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
-		});
-		clear_panel2_btn.setBounds(169, 11, 22, 23);
-		panel_panel2.add(clear_panel2_btn);
-		
-		searchId_panel2_CBox = new JCheckBox("id");
-		searchId_panel2_CBox.setForeground(Color.WHITE);
-		searchId_panel2_CBox.setBackground(new Color(0, 44, 88));
-		searchId_panel2_CBox.setBounds(10, 64, 52, 23);
-		searchId_panel2_CBox.setVisible(false);
-		searchId_panel2_CBox.setSelected(true);
-		panel_panel2.add(searchId_panel2_CBox);
-		
-		searchTitle_panel2_CBox = new JCheckBox("title");
-		searchTitle_panel2_CBox.setBackground(new Color(0, 44, 88));
-		searchTitle_panel2_CBox.setForeground(Color.WHITE);
-		searchTitle_panel2_CBox.setBounds(10, 90, 52, 23);
-		searchTitle_panel2_CBox.setVisible(false);
-		searchTitle_panel2_CBox.setSelected(true);
-		panel_panel2.add(searchTitle_panel2_CBox);
-		
-		searchAuthor_panel2_CBox = new JCheckBox("author");
-		searchAuthor_panel2_CBox.setBackground(new Color(0, 44, 88));
-		searchAuthor_panel2_CBox.setForeground(Color.WHITE);
-		searchAuthor_panel2_CBox.setBounds(83, 64, 68, 23);
-		searchAuthor_panel2_CBox.setVisible(false);
-		searchAuthor_panel2_CBox.setSelected(true);
-		panel_panel2.add(searchAuthor_panel2_CBox);
-		
-		searchTags_panel2_CBox = new JCheckBox("tags");
-		searchTags_panel2_CBox.setBackground(new Color(0, 44, 88));
-		searchTags_panel2_CBox.setForeground(Color.WHITE);
-		searchTags_panel2_CBox.setBounds(83, 90, 68, 23);
-		searchTags_panel2_CBox.setVisible(false);
-		searchTags_panel2_CBox.setSelected(true);
-		panel_panel2.add(searchTags_panel2_CBox);
-
-		JCheckBox showMore_panel2_CBox = new JCheckBox("show more");
-		showMore_panel2_CBox.addItemListener(new ItemListener() {
+		panel_panel2.exportPanel.expand_button1_btn.addActionListener(new ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
-					searchId_panel2_CBox.setVisible(true);
-					searchTitle_panel2_CBox.setVisible(true);
-					searchAuthor_panel2_CBox.setVisible(true);
-					searchTags_panel2_CBox.setVisible(true);
-				} else {//checkbox has been deselected
-					searchId_panel2_CBox.setVisible(false);
-					searchTitle_panel2_CBox.setVisible(false);
-					searchAuthor_panel2_CBox.setVisible(false);
-					searchTags_panel2_CBox.setVisible(false);
-				};
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+				if(inSearchViewReading == false)
+					dataManager.saveTable(tableArrReading, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
+				else
+					dataManager.saveTable(tableArrReadingSave, SaveFileLocation + Slash + "nHentaiDatabaseReading.nhdb");
 			}
 		});
-		showMore_panel2_CBox.setForeground(Color.WHITE);
-		showMore_panel2_CBox.setBackground(new Color(0, 44, 88));
-		showMore_panel2_CBox.setBounds(10, 38, 80, 23);
-		panel_panel2.add(showMore_panel2_CBox);
+		panel_panel2.exportPanel.expand_button2_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewReading == false)
+					actionPerformedSafe(tableArrReading);
+				else
+					actionPerformedSafe(tableArrReadingSave);
+			}
+		});
+		panel_panel2.exportPanel.expand_button3_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewReading == false)
+					actionPerformedSafeIdList(tableArrReading);
+				else
+					actionPerformedSafeIdList(tableArrReadingSave);
+			}
+		});
 		
 		JScrollPane scrollPane_panel2 = new JScrollPane();
 		scrollPane_panel2.setBounds(250, 11, 666, 632);
@@ -1687,36 +1251,10 @@ public class nHentai {
 		tabbedPane.addTab("completed", null, completed_tab, null);
 		completed_tab.setLayout(null);
 		
-		JPanel panel_panel3 = new JPanel();
-		panel_panel3.setLayout(null);
-		panel_panel3.setBackground(new Color(0, 44, 88));
-		panel_panel3.setBounds(10, 11, 230, 632);
+		panel_panel3 = new ControlPanel();
 		completed_tab.add(panel_panel3);
-		
-		JButton newEntry_panel3_bnt = new JButton("new Entry");
-		newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-		newEntry_panel3_bnt.setHorizontalTextPosition(SwingConstants.CENTER);
-		newEntry_panel3_bnt.setForeground(Color.WHITE);
-		newEntry_panel3_bnt.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		newEntry_panel3_bnt.setBounds(10, 243, 210, 35);
-		newEntry_panel3_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/Button.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				newEntry_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/ButtonHower.png")));
-			}
-		});
-		newEntry_panel3_bnt.addActionListener(new ActionListener() {
+		panel_panel3.newEntry_bnt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				
@@ -1724,107 +1262,32 @@ public class nHentai {
 				
 			}
 		});
-		panel_panel3.add(newEntry_panel3_bnt);
 		
-		JButton settings_panel3_bnt = new JButton("");
-		settings_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-		settings_panel3_bnt.addActionListener(new ActionListener() {
+		panel_panel3.settings_bnt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPerformedSetting();
 			}
 		});
-		settings_panel3_bnt.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				settings_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				settings_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settings.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				settings_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				settings_panel3_bnt.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/MainGUI/settingsHover.png")));
-			}
-		});
-		settings_panel3_bnt.setBounds(10, 586, 112, 35);
-		panel_panel3.add(settings_panel3_bnt);
 		
-		JButton saveTable_panel3_btn = new JButton("");
-		saveTable_panel3_btn.addActionListener(new ActionListener() {
+		panel_panel3.saveTable_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(inSearchViewCompleted == true)
-					actionPerformedSafe(tableArrCompleted);
-				else
-					actionPerformedSafe(tableArrCompletedSave);
+				AnimationExpandExportPanel a = new AnimationExpandExportPanel(expandExport_panel3_pnl);
+				a.execute();
 			}
 		});
-		saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-		saveTable_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		saveTable_panel3_btn.setForeground(Color.WHITE);
-		saveTable_panel3_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		saveTable_panel3_btn.setBounds(10, 552, 80, 25);
-		saveTable_panel3_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				saveTable_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/saveButtonHover.png")));
-			}
-		});
-		panel_panel3.add(saveTable_panel3_btn);
 		
-		JButton loadTable__panel3_btn = new JButton("");
-		loadTable__panel3_btn.addActionListener(new ActionListener() {
+		panel_panel3.loadTable_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				tableArrCompleted = actionPerformedLoad("completed");
 				modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 			}
 		});
-		loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-		loadTable__panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		loadTable__panel3_btn.setForeground(Color.WHITE);
-		loadTable__panel3_btn.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		loadTable__panel3_btn.setBounds(100, 552, 80, 25);
-		loadTable__panel3_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButton.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				loadTable__panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/loadButtonHover.png")));
-			}
-		});
-		panel_panel3.add(loadTable__panel3_btn);
 		
-		JTextField search_panel3_TField = new JTextField();
-		search_panel3_TField.setBackground(Color.WHITE);
-		search_panel3_TField.setToolTipText("");
-		search_panel3_TField.addActionListener(new ActionListener() {
+		panel_panel3.search_TField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if(!search_panel3_TField.getText().equals("")) {
-						String text = search_panel3_TField.getText();
+					if(!panel_panel3.search_TField.getText().equals("")) {
+						String text = panel_panel3.search_TField.getText();
 						actionPerformedSearchCompleted(text);
 					}else {
 						for(int i=0;i<tableArrCompleted.length-1;i++) {
@@ -1833,21 +1296,15 @@ public class nHentai {
 						tableArrCompleted = tableArrCompletedSave;
 						modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 						inSearchViewCompleted = false;
-						search_panel3_TField.setText("");
+						panel_panel3.search_TField.setText("");
 					}
 			}
 		});
-		search_panel3_TField.setBounds(10, 11, 157, 23);
-		panel_panel3.add(search_panel3_TField);
-		search_panel3_TField.setColumns(10);
 		
-		JButton search_panel3_btn = new JButton();
-		search_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-		search_panel3_btn.addActionListener(new ActionListener() {
+		panel_panel3.search_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!search_panel3_TField.getText().equals("")) {
-					String text = search_panel3_TField.getText();
+				if(!panel_panel3.search_TField.getText().equals("")) {
+					String text = panel_panel3.search_TField.getText();
 					actionPerformedSearchCompleted(text);
 				}else {
 					for(int i=0;i<tableArrCompleted.length-1;i++) {
@@ -1856,35 +1313,12 @@ public class nHentai {
 					tableArrCompleted = tableArrCompletedSave;
 					modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 					inSearchViewCompleted = false;
-					search_panel3_TField.setText("");
+					panel_panel3.search_TField.setText("");
 				}
 			}
-		});
-		search_panel3_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-
-			public void mouseExited(MouseEvent evt) {
-					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/search.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-					search_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/searchHover.png")));
-			}
-		});
-		search_panel3_btn.setBounds(197, 11, 22, 23);
-		panel_panel3.add(search_panel3_btn);
+		});		
 		
-		
-		JButton clear_panel3_btn = new JButton();
-		clear_panel3_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-		clear_panel3_btn.addActionListener(new ActionListener() {
+		panel_panel3.clear_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<tableArrCompleted.length-1;i++) {
 					modelCompleted.removeRow(0);
@@ -1892,82 +1326,42 @@ public class nHentai {
 				tableArrCompleted = tableArrCompletedSave;
 				modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 				inSearchViewCompleted = false;
-				search_panel3_TField.setText("");
+				panel_panel3.search_TField.setText("");
 			}
 		});
-		clear_panel3_btn.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent evt) {
-				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
 
-			public void mouseExited(MouseEvent evt) {
-				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clear.png")));
-			}
-
-			public void mousePressed(MouseEvent evt) {
-				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearSelected.png")));
-			}
-
-			public void mouseReleased(MouseEvent evt) {
-				clear_panel3_btn.setIcon(new ImageIcon(nHentai.class.getResource("/grafics/searchClear/clearHover.png")));
-			}
-		});
-		clear_panel3_btn.setBounds(169, 11, 22, 23);
-		panel_panel3.add(clear_panel3_btn);
-		
-		searchId_panel3_CBox = new JCheckBox("id");
-		searchId_panel3_CBox.setForeground(Color.WHITE);
-		searchId_panel3_CBox.setBackground(new Color(0, 44, 88));
-		searchId_panel3_CBox.setBounds(10, 64, 52, 23);
-		searchId_panel3_CBox.setVisible(false);
-		searchId_panel3_CBox.setSelected(true);
-		panel_panel3.add(searchId_panel3_CBox);
-		
-		searchTitle_panel3_CBox = new JCheckBox("title");
-		searchTitle_panel3_CBox.setBackground(new Color(0, 44, 88));
-		searchTitle_panel3_CBox.setForeground(Color.WHITE);
-		searchTitle_panel3_CBox.setBounds(10, 90, 52, 23);
-		searchTitle_panel3_CBox.setVisible(false);
-		searchTitle_panel3_CBox.setSelected(true);
-		panel_panel3.add(searchTitle_panel3_CBox);
-		
-		searchAuthor_panel3_CBox = new JCheckBox("author");
-		searchAuthor_panel3_CBox.setBackground(new Color(0, 44, 88));
-		searchAuthor_panel3_CBox.setForeground(Color.WHITE);
-		searchAuthor_panel3_CBox.setBounds(83, 64, 68, 23);
-		searchAuthor_panel3_CBox.setVisible(false);
-		searchAuthor_panel3_CBox.setSelected(true);
-		panel_panel3.add(searchAuthor_panel3_CBox);
-		
-		searchTags_panel3_CBox = new JCheckBox("tags");
-		searchTags_panel3_CBox.setBackground(new Color(0, 44, 88));
-		searchTags_panel3_CBox.setForeground(Color.WHITE);
-		searchTags_panel3_CBox.setBounds(83, 90, 68, 23);
-		searchTags_panel3_CBox.setVisible(false);
-		searchTags_panel3_CBox.setSelected(true);
-		panel_panel3.add(searchTags_panel3_CBox);
-
-		JCheckBox showMore_panel3_CBox = new JCheckBox("show more");
-		showMore_panel3_CBox.addItemListener(new ItemListener() {
+		panel_panel3.exportPanel.expand_button1_btn.addActionListener(new ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
-					searchId_panel3_CBox.setVisible(true);
-					searchTitle_panel3_CBox.setVisible(true);
-					searchAuthor_panel3_CBox.setVisible(true);
-					searchTags_panel3_CBox.setVisible(true);
-				} else {//checkbox has been deselected
-					searchId_panel3_CBox.setVisible(false);
-					searchTitle_panel3_CBox.setVisible(false);
-					searchAuthor_panel3_CBox.setVisible(false);
-					searchTags_panel3_CBox.setVisible(false);
-				};
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String SaveFileLocation = appdataLocation + mainFolderLocation + userDataFolderLocation;
+				if(inSearchViewCompleted == false)
+					dataManager.saveTable(tableArrCompleted, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
+				else
+					dataManager.saveTable(tableArrCompletedSave, SaveFileLocation + Slash + "nHentaiDatabaseCompleted.nhdb");
 			}
 		});
-		showMore_panel3_CBox.setForeground(Color.WHITE);
-		showMore_panel3_CBox.setBackground(new Color(0, 44, 88));
-		showMore_panel3_CBox.setBounds(10, 38, 80, 23);
-		panel_panel3.add(showMore_panel3_CBox);
+		panel_panel3.exportPanel.expand_button2_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewCompleted == false)
+					actionPerformedSafe(tableArrCompleted);
+				else
+					actionPerformedSafe(tableArrCompletedSave);
+			}
+		});
+		panel_panel3.exportPanel.expand_button3_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(inSearchViewCompleted == false)
+					actionPerformedSafeIdList(tableArrCompleted);
+				else
+					actionPerformedSafeIdList(tableArrCompletedSave);
+			}
+		});
+		
 		
 		JScrollPane scrollPane_panel3 = new JScrollPane();
 		scrollPane_panel3.getViewport().setBackground(new Color(54, 57, 63));
@@ -3150,13 +2544,53 @@ public class nHentai {
             	reversed += end.charAt(j);
             }
             	            
-            if(!end.equals(".nhdb")) {
+            if(!reversed.equals(".nhdb")) {
             	SaveFileLocation = SaveFileLocation + ".nhdb";
             }
-            UIManager.put("OptionPane.background", new Color(35, 35, 35));
-            UIManager.put("Panel.background", new Color(35, 35, 35));
 
             dataManager.saveTable(inputArr, SaveFileLocation);
+        }
+        
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void actionPerformedSafeIdList(String[][] inputArr) {
+		FlatDarkLaf.install();
+
+		JFileChooser myJFileChooserSave = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+		myJFileChooserSave.setDialogTitle("Chosse the save location");
+		myJFileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	int returnValue = myJFileChooserSave.showOpenDialog(null);
+    	String SaveFileLocation = "";
+    	
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = myJFileChooserSave.getSelectedFile();
+            System.out.println(selectedFile.getAbsolutePath());
+            SaveFileLocation = selectedFile.getAbsolutePath();
+            
+            char[] location = SaveFileLocation.toCharArray();
+            String end = "";
+            for(int i=location.length-1;i>location.length-5;i--) {
+            	end = end + location[i];
+            }
+            
+            String reversed = "";
+            for ( int j = end.length()-1; j >= 0; j-- ) {
+            	reversed += end.charAt(j);
+            }
+            	            
+            if(!reversed.equals(".txt")) {
+            	SaveFileLocation = SaveFileLocation + ".txt";
+            }
+            
+            dataManager.saveTableAsIdList(inputArr, SaveFileLocation);
         }
         
         try {
@@ -3629,7 +3063,7 @@ public class nHentai {
 	public void actionPerformedSearch(String input) {
 		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrSave, searchInput, getSearchConfig("plan to read"));
+		filteredTable = searchEngine.search(tableArrSave, searchInput, panel_panel1.getSearchConfig());
 		
 		if(inSearchViewPlanToRead == false)
 			tableArrSave = tableArr;
@@ -3660,7 +3094,7 @@ public class nHentai {
 	public void actionPerformedSearchReading(String input) {
 		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrReading, searchInput, getSearchConfig("reading"));
+		filteredTable = searchEngine.search(tableArrReading, searchInput, panel_panel2.getSearchConfig());
 		
 		if(inSearchViewReading == false)
 			tableArrReadingSave = tableArrReading;
@@ -3691,7 +3125,7 @@ public class nHentai {
 	public void actionPerformedSearchCompleted(String input) {
 		String searchInput = input;
 		String[] filteredTable;
-		filteredTable = searchEngine.search(tableArrCompletedSave, searchInput, getSearchConfig("completed"));
+		filteredTable = searchEngine.search(tableArrCompletedSave, searchInput, panel_panel3.getSearchConfig());
 		
 		if(inSearchViewCompleted == false)
 			tableArrCompletedSave = tableArrCompleted;
@@ -3717,30 +3151,5 @@ public class nHentai {
 		tableArrCompleted = resultArr;
 		modelCompleted = methods.ArrToTable(modelCompleted, tableArrCompleted, SFW);
 		inSearchViewCompleted = true;
-	}
-	
-	public boolean[] getSearchConfig(String panel) {
-		boolean[] config = new boolean[4];
-		switch (panel) {
-		case "plan to read":
-			config[0] = searchId_panel1_CBox.isSelected();
-			config[1] = searchTitle_panel1_CBox.isSelected();
-			config[2] = searchAuthor_panel1_CBox.isSelected();
-			config[3] = searchTags_panel1_CBox.isSelected();
-			break;
-		case "reading":
-			config[0] = searchId_panel2_CBox.isSelected();
-			config[1] = searchTitle_panel2_CBox.isSelected();
-			config[2] = searchAuthor_panel2_CBox.isSelected();
-			config[3] = searchTags_panel2_CBox.isSelected();
-			break;
-		case "completed":
-			config[0] = searchId_panel3_CBox.isSelected();
-			config[1] = searchTitle_panel3_CBox.isSelected();
-			config[2] = searchAuthor_panel3_CBox.isSelected();
-			config[3] = searchTags_panel3_CBox.isSelected();
-			break;
-		}
-		return config;
 	}
 }

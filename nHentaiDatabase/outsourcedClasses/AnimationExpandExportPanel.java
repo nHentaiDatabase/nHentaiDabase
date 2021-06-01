@@ -1,5 +1,7 @@
 package outsourcedClasses;
 
+import java.awt.Component;
+
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
@@ -34,10 +36,9 @@ public class AnimationExpandExportPanel extends SwingWorker<Void, Void> {
 			start = System.nanoTime();
 			
 			methods.expandPanel(animatedPanel, movement);
-			animatedPanel.revalidate();
-			animatedPanel.repaint();
-			animatedPanel.getParent().revalidate();
-			animatedPanel.getParent().repaint();
+			
+			rerender(animatedPanel);
+			
 			end = System.nanoTime();
 			long delta = ((int)end - (int)start) + 1;
 			Thread.sleep(0, (int)(1000000000 / delta));
@@ -46,7 +47,27 @@ public class AnimationExpandExportPanel extends SwingWorker<Void, Void> {
 		if(contract == true) {
 			animatedPanel.setVisible(false);
 		}
+		
+		for(int i=0;i<animatedPanel.getParent().getComponentCount();i++) {
+			if(animatedPanel.getParent().getComponent(i) != animatedPanel) {
+				animatedPanel.getParent().getComponent(i).revalidate();
+				animatedPanel.getParent().getComponent(i).repaint();
+			}
+		}
+		
 		return null;
+	}
+	
+	public void rerender(JPanel panel) {
+		
+		//Apply changes to Panel
+		panel.revalidate();
+		panel.repaint();
+		
+		for(int i=0;i<panel.getParent().getComponentCount();i++) {
+			panel.getParent().getComponent(i).revalidate();
+			panel.getParent().getComponent(i).repaint();
+		}
 	}
 	
 }
